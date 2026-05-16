@@ -1,0 +1,41 @@
+{
+  "name": "elva-group",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ELVA — India's #1 Premium Handcrafted Gifting & Lifestyle Platform",
+  "workspaces": [
+    "backend",
+    "frontend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=shared && npm run build --workspace=backend && npm run build --workspace=frontend",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "typecheck": "npm run typecheck --workspaces",
+    "docker:dev": "docker-compose -f infra/docker/docker-compose.dev.yml up",
+    "docker:prod": "docker-compose -f infra/docker/docker-compose.prod.yml up -d",
+    "seed": "npm run seed --workspace=backend",
+    "migrate": "npm run migrate --workspace=backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "prettier": "^3.3.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{js,jsx,json,css,md}": ["prettier --write"]
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

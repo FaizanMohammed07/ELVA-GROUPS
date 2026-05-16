@@ -1,0 +1,79 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: elva-mongo-dev
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: elva
+      MONGO_INITDB_ROOT_PASSWORD: elvadev123
+      MONGO_INITDB_DATABASE: elva_dev
+    volumes:
+      - mongo_dev_data:/data/db
+    networks:
+      - elva-dev
+
+  redis:
+    image: redis:7-alpine
+    container_name: elva-redis-dev
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass elvadev123
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - elva-dev
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: elva-backend-dev
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      MONGODB_URI: mongodb://elva:elvadev123@mongodb:27017/elva_dev?authSource=admin
+      REDIS_URL: redis://:elvadev123@redis:6379
+    env_file:
+      - ./backend/.env.dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - elva-dev
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: elva-frontend-dev
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - elva-dev
+    command: npm run dev -- --host
+
+volumes:
+  mongo_dev_data:
+  redis_dev_data:
+
+networks:
+  elva-dev:
+    driver: bridge

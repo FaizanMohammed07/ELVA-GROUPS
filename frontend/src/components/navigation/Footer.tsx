@@ -1,0 +1,88 @@
+import { Link } from 'react-router-dom';
+import { Instagram, Facebook, Youtube, MessageCircle } from 'lucide-react';
+
+const FOOTER_LINKS = {
+  Shop: [
+    { label: 'New Arrivals', href: '/products?sort=new' },
+    { label: 'Best Sellers', href: '/products?sort=bestseller' },
+    { label: 'Personalized Gifts', href: '/category/personalized-gifts' },
+    { label: 'Corporate Gifting', href: '/category/corporate-gifting' },
+    { label: 'Subscription Boxes', href: '/category/subscription-boxes' },
+    { label: 'Gift Finder', href: '/gift-finder' },
+  ],
+  Help: [
+    { label: 'Shipping & Delivery', href: '/help/shipping' },
+    { label: 'Returns & Exchange', href: '/help/returns' },
+    { label: 'Order Tracking', href: '/account/orders' },
+    { label: 'Contact Us', href: '/contact' },
+    { label: 'FAQ', href: '/help/faq' },
+  ],
+  Company: [
+    { label: 'About ELVA', href: '/about' },
+    { label: 'Our Artisans', href: '/about#artisans' },
+    { label: 'Sustainability', href: '/about#sustainability' },
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+  ],
+};
+
+const SOCIAL = [
+  { icon: Instagram, href: 'https://instagram.com/elva.in', label: 'Instagram' },
+  { icon: Facebook, href: 'https://facebook.com/elva.in', label: 'Facebook' },
+  { icon: Youtube, href: 'https://youtube.com/@elva', label: 'YouTube' },
+  { icon: MessageCircle, href: 'https://wa.me/919999999999', label: 'WhatsApp' },
+];
+
+export const Footer = () => (
+  <footer className="bg-charcoal-950 text-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+        {/* Brand */}
+        <div className="col-span-2 md:col-span-1">
+          <Link to="/">
+            <span className="font-display text-3xl tracking-[0.4em] text-white">ELVA</span>
+          </Link>
+          <p className="font-sans text-charcoal-400 text-sm mt-4 leading-relaxed">
+            India's finest handcrafted gifting & lifestyle brand. Every piece made with love.
+          </p>
+          <div className="flex gap-4 mt-6">
+            {SOCIAL.map(({ icon: Icon, href, label }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                className="w-9 h-9 bg-charcoal-800 flex items-center justify-center hover:bg-gold-500 transition-colors"
+                aria-label={label}>
+                <Icon size={16} />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Links */}
+        {Object.entries(FOOTER_LINKS).map(([title, links]) => (
+          <div key={title}>
+            <h4 className="font-sans font-semibold text-white text-sm tracking-widest uppercase mb-5">{title}</h4>
+            <ul className="space-y-3">
+              {links.map(({ label, href }) => (
+                <li key={label}>
+                  <Link to={href} className="font-sans text-charcoal-400 text-sm hover:text-gold-400 transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-charcoal-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="font-sans text-charcoal-500 text-xs">
+          © {new Date().getFullYear()} ELVA. All rights reserved. Made with 🤍 in India.
+        </p>
+        <div className="flex items-center gap-4">
+          <img src="/payments/razorpay.svg" alt="Razorpay" className="h-5 opacity-50" />
+          <img src="/payments/upi.svg" alt="UPI" className="h-5 opacity-50" />
+        </div>
+      </div>
+    </div>
+  </footer>
+);
