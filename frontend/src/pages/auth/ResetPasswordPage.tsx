@@ -73,13 +73,13 @@ export default function ResetPasswordPage() {
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {errors.password && <p className="text-red-500 text-xs mt-1 font-sans">{errors.password.message}</p>}
+                {errors.password && <p className="text-red-500 text-xs mt-1 font-sans">{errors.password.message as string}</p>}
               </div>
 
               <div>
                 <label className="block text-xs font-sans text-charcoal-600 mb-1.5 uppercase tracking-wide">Confirm New Password</label>
                 <input {...register('confirmPassword')} type="password" placeholder="Confirm your new password" className="input-luxury" />
-                {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 font-sans">{errors.confirmPassword.message}</p>}
+                {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 font-sans">{errors.confirmPassword.message as string}</p>}
               </div>
 
               <button type="submit" disabled={isLoading} className="btn-primary w-full py-4">

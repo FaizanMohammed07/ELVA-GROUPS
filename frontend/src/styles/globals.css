@@ -87,11 +87,11 @@
   }
 
   .product-card {
-    @apply group relative bg-white overflow-hidden cursor-pointer;
+    @apply relative bg-white overflow-hidden cursor-pointer;
   }
 
   .product-card-image {
-    @apply w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105;
+    @apply w-full aspect-[3/4] object-cover transition-transform duration-700;
   }
 
   .badge {

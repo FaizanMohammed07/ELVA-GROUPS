@@ -26,7 +26,7 @@ const questions = [
   },
 ];
 
-const categoryMap: Record<string, Record<string, string>> = {
+const categoryMap: Record<string, string> = {
   'Birthday-Partner': 'couple-collections',
   'Birthday-Friends': 'personalized-gifts',
   'Wedding-Colleagues': 'luxury-hampers',

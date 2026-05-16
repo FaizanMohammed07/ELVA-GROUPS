@@ -1,6 +1,6 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import Lenis from '@studio-freight/lenis';
+import Lenis from 'lenis';
 import { useAuthStore } from '@store/authStore';
 import { PublicLayout } from '@components/layouts/PublicLayout';
 import { AdminLayout } from '@components/layouts/AdminLayout';

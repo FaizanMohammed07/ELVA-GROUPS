@@ -9,16 +9,17 @@ import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const schema = z.object({ email: z.string().email('Valid email required') });
+type ForgotForm = { email: string };
 
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm({
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<ForgotForm>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async ({ email }: { email: string }) => {
+  const onSubmit = async ({ email }: ForgotForm) => {
     setIsLoading(true);
     try {
       await authApi.forgotPassword(email);
