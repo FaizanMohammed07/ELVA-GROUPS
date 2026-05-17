@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { UserRepository } from './repositories/user.repository';
 import { sendSuccess } from '../../utils/apiResponse';
-import { parsePagination, buildPaginationMeta } from '../../utils/pagination';
+import { parsePagination } from '../../utils/pagination';
+import { buildPaginationMeta } from '../../utils/apiResponse';
 import { AppError } from '../../utils/appError';
 
 const userRepo = new UserRepository();
@@ -20,7 +21,7 @@ export const UserController = {
   },
 
   async getPublicProfile(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.findById(req.params.id);
+    const user = await userRepo.findById(req.params["id"] as string);
     if (!user) throw AppError.notFound('User not found');
     sendSuccess(res, { name: user.name, avatar: user.avatar }, 'Profile fetched');
   },
@@ -36,12 +37,12 @@ export const UserController = {
   },
 
   async updateAddress(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.updateAddress(req.user!.id, req.params.addressId, req.body);
+    const user = await userRepo.updateAddress(req.user!.id, req.params["addressId"] as string, req.body);
     sendSuccess(res, user.addresses, 'Address updated');
   },
 
   async deleteAddress(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.deleteAddress(req.user!.id, req.params.addressId);
+    const user = await userRepo.deleteAddress(req.user!.id, req.params["addressId"] as string);
     sendSuccess(res, user.addresses, 'Address removed');
   },
 
@@ -78,33 +79,26 @@ export const UserController = {
   },
 
   async getUserById(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.findById(req.params.id);
+    const user = await userRepo.findById(req.params["id"] as string);
     if (!user) throw AppError.notFound('User not found');
     sendSuccess(res, user, 'User fetched');
   },
 
   async toggleUserStatus(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.findById(req.params.id);
+    const user = await userRepo.findById(req.params["id"] as string);
     if (!user) throw AppError.notFound('User not found');
-    await userRepo.update(req.params.id, { isActive: !user.isActive });
+    await userRepo.update(req.params["id"] as string, { isActive: !user.isActive });
     sendSuccess(res, null, `User ${user.isActive ? 'deactivated' : 'activated'}`);
   },
 
   async updateUserRole(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.update(req.params.id, { role: req.body.role });
+    const user = await userRepo.update(req.params["id"] as string, { role: req.body.role });
     sendSuccess(res, user, 'User role updated');
   },
 
   async deleteUser(req: Request, res: Response): Promise<void> {
-    await userRepo.deactivate(req.params.id);
+    await userRepo.deactivate(req.params["id"] as string);
     sendSuccess(res, null, 'User deactivated');
   },
 };
 
-// Re-export for pagination utility
-const buildPaginationMeta = (total: number, page: number, limit: number) => ({
-  page, limit, total,
-  totalPages: Math.ceil(total / limit),
-  hasNext: page < Math.ceil(total / limit),
-  hasPrev: page > 1,
-});

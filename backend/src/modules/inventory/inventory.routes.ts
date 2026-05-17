@@ -37,6 +37,6 @@ inventoryRouter.patch('/:id/stock', async (req, res) => {
   const { quantity, operation } = req.body;
   const inc = operation === 'set' ? undefined : (operation === 'decrement' ? -quantity : quantity);
   const update = operation === 'set' ? { $set: { stock: quantity } } : { $inc: { stock: inc } };
-  await ProductModel.findByIdAndUpdate(req.params.id, update);
+  await ProductModel.findByIdAndUpdate(req.params["id"] as string, update);
   sendSuccess(res, null, 'Stock updated');
 });

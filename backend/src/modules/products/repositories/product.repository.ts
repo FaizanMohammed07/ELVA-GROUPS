@@ -101,6 +101,10 @@ export class ProductRepository {
       .exec();
   }
 
+  async findByIds(ids: string[]): Promise<IProduct[]> {
+    return ProductModel.find({ _id: { $in: ids } }).exec();
+  }
+
   async incrementView(id: string): Promise<void> {
     await ProductModel.findByIdAndUpdate(id, { $inc: { viewCount: 1 } });
   }

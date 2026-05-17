@@ -50,10 +50,10 @@ export const errorHandler = (
   }
 
   if (statusCode >= 500) {
-    logger.error('Unhandled error', {
+    logger.error({
       err: { message: err.message, stack: err.stack, name: err.name },
       req: { method: req.method, url: req.url, requestId: req.headers['x-request-id'] },
-    });
+    }, 'Unhandled error');
   }
 
   res.status(statusCode).json({

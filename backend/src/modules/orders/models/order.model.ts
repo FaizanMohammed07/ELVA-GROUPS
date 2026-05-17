@@ -20,6 +20,7 @@ export interface IOrderItem {
   productId: mongoose.Types.ObjectId;
   variantId?: string;
   title: string;
+  slug: string;
   sku: string;
   thumbnail: string;
   quantity: number;
@@ -92,6 +93,7 @@ const OrderItemSchema = new Schema<IOrderItem>({
   productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
   variantId: String,
   title: { type: String, required: true },
+  slug: { type: String, required: true },
   sku: { type: String, required: true },
   thumbnail: String,
   quantity: { type: Number, required: true, min: 1 },

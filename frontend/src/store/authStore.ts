@@ -41,12 +41,12 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (email, password, rememberMe = false) => {
         const { data } = await authApi.login({ email, password, rememberMe });
-        set({ user: data.user, accessToken: data.tokens.accessToken, isAuthenticated: true });
+        set({ user: data.data.user, accessToken: data.data.tokens.accessToken, isAuthenticated: true });
       },
 
       register: async (payload) => {
         const { data } = await authApi.register(payload);
-        set({ user: data.user, accessToken: data.tokens.accessToken, isAuthenticated: true });
+        set({ user: data.data.user, accessToken: data.data.tokens.accessToken, isAuthenticated: true });
       },
 
       logout: async () => {
@@ -59,11 +59,13 @@ export const useAuthStore = create<AuthState>()(
         if (!accessToken) return;
         try {
           const { data } = await authApi.me();
-          set({ user: data, isAuthenticated: true });
+          set({ user: data.data, isAuthenticated: true });
         } catch {
           try {
             const { data } = await authApi.refresh();
-            set({ accessToken: data.tokens.accessToken, isAuthenticated: true });
+            set({ accessToken: data.data.tokens.accessToken, isAuthenticated: true });
+            const { data: meData } = await authApi.me();
+            set({ user: meData.data, isAuthenticated: true });
           } catch {
             set({ user: null, accessToken: null, isAuthenticated: false });
           }

@@ -33,13 +33,13 @@ export const CategoryController = {
   },
 
   async getBySlug(req: Request, res: Response): Promise<void> {
-    const category = await CategoryModel.findOne({ slug: req.params.slug, isActive: true });
+    const category = await CategoryModel.findOne({ slug: req.params["slug"] as string, isActive: true });
     if (!category) throw AppError.notFound('Category not found');
     sendSuccess(res, category, 'Category fetched');
   },
 
   async getProducts(req: Request, res: Response): Promise<void> {
-    const products = await productRepo.findByCategory(req.params.id);
+    const products = await productRepo.findByCategory(req.params["id"] as string);
     sendSuccess(res, products, 'Category products');
   },
 
@@ -52,7 +52,7 @@ export const CategoryController = {
   async update(req: Request, res: Response): Promise<void> {
     if (req.body.name) req.body.slug = slugify(req.body.name, { lower: true, strict: true });
     const category = await CategoryModel.findByIdAndUpdate(
-      req.params.id,
+      req.params["id"] as string,
       { $set: req.body },
       { new: true, runValidators: true },
     );
@@ -61,7 +61,7 @@ export const CategoryController = {
   },
 
   async toggleStatus(req: Request, res: Response): Promise<void> {
-    const category = await CategoryModel.findById(req.params.id);
+    const category = await CategoryModel.findById(req.params["id"] as string);
     if (!category) throw AppError.notFound('Category not found');
     category.isActive = !category.isActive;
     await category.save();
@@ -69,7 +69,7 @@ export const CategoryController = {
   },
 
   async delete(req: Request, res: Response): Promise<void> {
-    await CategoryModel.findByIdAndDelete(req.params.id);
+    await CategoryModel.findByIdAndDelete(req.params["id"] as string);
     sendSuccess(res, null, 'Category deleted');
   },
 

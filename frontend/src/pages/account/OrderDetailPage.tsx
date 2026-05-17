@@ -110,7 +110,7 @@ export default function OrderDetailPage() {
                     </div>
                   )}
                 </div>
-                <p className="font-sans font-semibold text-charcoal-950 text-sm">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                <p className="font-sans font-semibold text-charcoal-950 text-sm">₹{(item.unitPrice * item.quantity).toLocaleString('en-IN')}</p>
               </div>
             ))}
           </div>
@@ -121,8 +121,8 @@ export default function OrderDetailPage() {
           <div className="border border-charcoal-100 p-5">
             <h2 className="font-sans font-semibold text-charcoal-950 text-sm uppercase tracking-wider mb-4">Delivery Address</h2>
             <p className="font-sans text-sm text-charcoal-700">{order.shippingAddress?.fullName}</p>
-            <p className="font-sans text-sm text-charcoal-600">{order.shippingAddress?.addressLine1}</p>
-            {order.shippingAddress?.addressLine2 && <p className="font-sans text-sm text-charcoal-600">{order.shippingAddress.addressLine2}</p>}
+            <p className="font-sans text-sm text-charcoal-600">{order.shippingAddress?.line1}</p>
+            {order.shippingAddress?.line2 && <p className="font-sans text-sm text-charcoal-600">{order.shippingAddress.line2}</p>}
             <p className="font-sans text-sm text-charcoal-600">{order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}</p>
             <p className="font-sans text-sm text-charcoal-600 mt-1">📞 {order.shippingAddress?.phone}</p>
           </div>
@@ -135,7 +135,7 @@ export default function OrderDetailPage() {
               <div className="flex justify-between"><span>Shipping</span><span>{order.shippingCost === 0 ? 'FREE' : `₹${order.shippingCost}`}</span></div>
               {order.discount > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>-₹{order.discount?.toLocaleString('en-IN')}</span></div>}
               <div className="flex justify-between font-semibold text-charcoal-950 border-t border-charcoal-100 pt-2 mt-2">
-                <span>Total</span><span>₹{order.finalAmount?.toLocaleString('en-IN')}</span>
+                <span>Total</span><span>₹{order.total?.toLocaleString('en-IN')}</span>
               </div>
             </div>
             <p className="font-sans text-xs text-charcoal-400 mt-3 capitalize">Payment: {order.paymentMethod}</p>

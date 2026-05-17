@@ -31,14 +31,14 @@ export const ProductController = {
   },
 
   async getBySlug(req: Request, res: Response): Promise<void> {
-    const cacheKey = `slug:${req.params.slug}`;
+    const cacheKey = `slug:${req.params["slug"] as string}`;
     const cached = await cache.get(cacheKey);
     if (cached) {
       sendSuccess(res, cached, 'Product fetched');
       return;
     }
 
-    const product = await productRepo.findBySlug(req.params.slug);
+    const product = await productRepo.findBySlug(req.params["slug"] as string);
     if (!product) throw AppError.notFound('Product not found');
 
     await productRepo.incrementView(product.id);
@@ -71,8 +71,14 @@ export const ProductController = {
     sendSuccess(res, products, `Search results for "${q}"`);
   },
 
+  async getById(req: Request, res: Response): Promise<void> {
+    const product = await productRepo.findById(req.params["id"] as string);
+    if (!product) throw AppError.notFound('Product not found');
+    sendSuccess(res, product, 'Product fetched');
+  },
+
   async getRelated(req: Request, res: Response): Promise<void> {
-    const product = await productRepo.findById(req.params.id);
+    const product = await productRepo.findById(req.params["id"] as string);
     if (!product) throw AppError.notFound('Product not found');
     const related = await productRepo.findRelated(
       product.id,
@@ -92,27 +98,27 @@ export const ProductController = {
     if (req.body.title) {
       req.body.slug = slugify(req.body.title, { lower: true, strict: true });
     }
-    const product = await productRepo.update(req.params.id, req.body);
+    const product = await productRepo.update(req.params["id"] as string, req.body);
     await cache.invalidatePattern('');
     sendSuccess(res, product, 'Product updated');
   },
 
   async updateStatus(req: Request, res: Response): Promise<void> {
-    const product = await productRepo.update(req.params.id, { status: req.body.status });
+    const product = await productRepo.update(req.params["id"] as string, { status: req.body.status });
     sendSuccess(res, product, 'Status updated');
   },
 
   async delete(req: Request, res: Response): Promise<void> {
-    await productRepo.delete(req.params.id);
+    await productRepo.delete(req.params["id"] as string);
     sendSuccess(res, null, 'Product deleted');
   },
 
   async updateStock(req: Request, res: Response): Promise<void> {
     const { quantity, operation } = req.body;
     if (operation === 'increment') {
-      await productRepo.incrementStock(req.params.id, quantity);
+      await productRepo.incrementStock(req.params["id"] as string, quantity);
     } else {
-      await productRepo.decrementStock(req.params.id, quantity);
+      await productRepo.decrementStock(req.params["id"] as string, quantity);
     }
     sendSuccess(res, null, 'Stock updated');
   },

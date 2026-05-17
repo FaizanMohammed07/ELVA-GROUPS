@@ -13,6 +13,7 @@ productRouter.get('/featured', ProductController.getFeatured);
 productRouter.get('/new-arrivals', ProductController.getNewArrivals);
 productRouter.get('/best-sellers', ProductController.getBestSellers);
 productRouter.get('/search', ProductController.search);
+productRouter.get('/id/:id', ProductController.getById);
 productRouter.get('/:slug', optionalAuthenticate, ProductController.getBySlug);
 productRouter.get('/:id/related', ProductController.getRelated);
 

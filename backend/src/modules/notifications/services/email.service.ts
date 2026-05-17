@@ -21,7 +21,7 @@ export class EmailService {
         await smtpTransporter.sendMail({ from: `${env.RESEND_FROM_NAME} <${env.RESEND_FROM_EMAIL}>`, to, subject, html });
       }
     } catch (err) {
-      logger.error('Email send failed', { err, to, subject });
+      logger.error({ err, to, subject }, 'Email send failed');
     }
   }
 
@@ -59,7 +59,7 @@ export class EmailService {
       <p>Your order <strong>${orderNumber}</strong> has been confirmed.</p>
       <p><strong>Total: ₹${total}</strong></p>
       <p>We'll notify you when it's shipped.</p>
-      <a href="${env.FRONTEND_URL}/orders/${orderNumber}" style="background:#1a1a1a;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">Track Order</a>
+      <a href="${env.FRONTEND_URL}/order-confirmation/${orderNumber}" style="background:#1a1a1a;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">Track Order</a>
     `);
   }
 }

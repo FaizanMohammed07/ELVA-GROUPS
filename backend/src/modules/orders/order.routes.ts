@@ -10,6 +10,7 @@ orderRouter.use(authenticate);
 // Customer
 orderRouter.post('/', OrderController.createOrder);
 orderRouter.get('/my', OrderController.getMyOrders);
+orderRouter.get('/my/number/:orderNumber', OrderController.getMyOrderByNumber);
 orderRouter.get('/my/:id', OrderController.getMyOrder);
 orderRouter.post('/my/:id/cancel', OrderController.cancelOrder);
 orderRouter.post('/my/:id/return', OrderController.requestReturn);

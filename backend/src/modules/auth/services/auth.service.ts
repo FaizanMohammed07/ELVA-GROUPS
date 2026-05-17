@@ -45,26 +45,26 @@ export class AuthService {
     const user = await this.userRepo.create({
       name: payload.name,
       email: payload.email,
-      phone: payload.phone,
+      ...(payload.phone && { phone: payload.phone }),
       passwordHash,
       role: 'customer',
       isEmailVerified: false,
       tokenVersion: 0,
     });
 
-    await verifyTokenCache.set(user.id, hashToken(verificationToken), 86400);
+    await verifyTokenCache.set(hashToken(verificationToken), user.id, 86400);
     await this.emailService.sendVerificationEmail(user.email, user.name, verificationToken);
 
     if (payload.referralCode) {
       await this.referralService.applyReferral(payload.referralCode, user.id).catch((e) =>
-        logger.warn('Referral apply failed', { e }),
+        logger.warn({ e }, 'Referral apply failed'),
       );
     }
 
     await this.loyaltyService.addPoints(user.id, 100, 'WELCOME_BONUS');
 
     const tokens = await this.createSession(user, req);
-    logger.info('User registered', { userId: user.id, email: user.email });
+    logger.info({ userId: user.id, email: user.email }, 'User registered');
 
     return { user: this.sanitizeUser(user), tokens };
   }
@@ -73,6 +73,7 @@ export class AuthService {
     const user = await this.userRepo.findByEmailWithPassword(payload.email);
     if (!user) throw AppError.unauthorized('Invalid email or password');
 
+    if (!user.passwordHash) throw AppError.unauthorized('Invalid email or password');
     const passwordValid = await comparePassword(payload.password, user.passwordHash);
     if (!passwordValid) {
       await this.userRepo.incrementFailedLogins(user.id);
@@ -86,7 +87,7 @@ export class AuthService {
     await this.userRepo.updateLastLogin(user.id);
 
     const tokens = await this.createSession(user, req);
-    logger.info('User logged in', { userId: user.id });
+    logger.info({ userId: user.id }, 'User logged in');
 
     return { user: this.sanitizeUser(user), tokens };
   }
@@ -128,7 +129,7 @@ export class AuthService {
       await this.tokenService.blacklistAccessToken(accessToken, remainingTtl);
     }
     await this.sessionService.revokeSession(userId, sessionId);
-    logger.info('User logged out', { userId, sessionId });
+    logger.info({ userId, sessionId }, 'User logged out');
   }
 
   async logoutAll(userId: string): Promise<void> {
@@ -142,46 +143,33 @@ export class AuthService {
     if (!user) return; // Silently succeed to prevent email enumeration
 
     const token = generateRandomToken();
-    await resetTokenCache.set(user.id, hashToken(token), 3600);
+    await resetTokenCache.set(hashToken(token), user.id, 3600);
     await this.emailService.sendPasswordResetEmail(user.email, user.name, token);
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
-    const users = await this.userRepo.findAll({ isActive: true });
-    let targetUser: any = null;
+    const userId = await resetTokenCache.get<string>(hashToken(token));
+    if (!userId) throw AppError.badRequest('Invalid or expired reset token');
 
-    for (const user of users) {
-      const stored = await resetTokenCache.get<string>(user.id);
-      if (stored && stored === hashToken(token)) {
-        targetUser = user;
-        break;
-      }
-    }
-
-    if (!targetUser) throw AppError.badRequest('Invalid or expired reset token');
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw AppError.badRequest('Invalid or expired reset token');
 
     const passwordHash = await hashPassword(newPassword);
-    await this.userRepo.updatePassword(targetUser.id, passwordHash);
-    await this.tokenService.revokeAllUserTokens(targetUser.id);
-    await resetTokenCache.del(targetUser.id);
-    await this.emailService.sendPasswordChangedEmail(targetUser.email, targetUser.name);
+    await this.userRepo.updatePassword(user.id, passwordHash);
+    await this.tokenService.revokeAllUserTokens(user.id);
+    await resetTokenCache.del(hashToken(token));
+    await this.emailService.sendPasswordChangedEmail(user.email, user.name);
   }
 
   async verifyEmail(token: string): Promise<void> {
-    const users = await this.userRepo.findAll({ isEmailVerified: false });
-    let targetUser: any = null;
+    const userId = await verifyTokenCache.get<string>(hashToken(token));
+    if (!userId) throw AppError.badRequest('Invalid or expired verification token');
 
-    for (const user of users) {
-      const stored = await verifyTokenCache.get<string>(user.id);
-      if (stored && stored === hashToken(token)) {
-        targetUser = user;
-        break;
-      }
-    }
+    const user = await this.userRepo.findById(userId);
+    if (!user) throw AppError.badRequest('Invalid or expired verification token');
 
-    if (!targetUser) throw AppError.badRequest('Invalid or expired verification token');
-    await this.userRepo.verifyEmail(targetUser.id);
-    await verifyTokenCache.del(targetUser.id);
+    await this.userRepo.verifyEmail(user.id);
+    await verifyTokenCache.del(hashToken(token));
   }
 
   async oauthLogin(profile: OAuthProfile, req: Request): Promise<{ user: any; tokens: TokenPair; isNew: boolean }> {

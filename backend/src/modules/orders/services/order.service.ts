@@ -37,6 +37,7 @@ export class OrderService {
         productId: product.id,
         variantId: item.variantId,
         title: product.title,
+        slug: product.slug,
         sku: product.sku,
         thumbnail: product.thumbnail || product.images[0],
         quantity: item.quantity,
@@ -97,7 +98,7 @@ export class OrderService {
 
     await notificationService.sendOrderConfirmation(userId, order.orderNumber, total);
 
-    logger.info('Order created', { orderId: order.id, userId, total });
+    logger.info({ orderId: order.id, userId, total }, 'Order created');
     return order;
   }
 
@@ -150,6 +151,12 @@ export class OrderService {
     const filter: any = { _id: orderId };
     if (userId) filter.userId = userId;
     const order = await OrderModel.findOne(filter).populate('items.productId', 'title slug thumbnail');
+    if (!order) throw AppError.notFound('Order not found');
+    return order;
+  }
+
+  async getOrderByNumber(orderNumber: string, userId: string): Promise<IOrder> {
+    const order = await OrderModel.findOne({ orderNumber, userId }).populate('items.productId', 'title slug thumbnail');
     if (!order) throw AppError.notFound('Order not found');
     return order;
   }

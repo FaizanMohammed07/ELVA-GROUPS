@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Gift, Star, Truck, RefreshCw, Shield } from 'lucide-react';
@@ -432,5 +432,3 @@ const PLACEHOLDER_PRODUCTS = Array.from({ length: 8 }, (_, i) => ({
   reviewCount: 12 + i * 5,
 }));
 
-import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';

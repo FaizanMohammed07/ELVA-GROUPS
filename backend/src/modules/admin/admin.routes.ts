@@ -22,12 +22,12 @@ adminRouter.post('/staff/invite', requireSuperAdmin, async (req, res) => {
 });
 
 adminRouter.patch('/staff/:id/role', requireSuperAdmin, async (req, res) => {
-  await UserModel.findByIdAndUpdate(req.params.id, { $set: { role: req.body.role, permissions: req.body.permissions || [] } });
+  await UserModel.findByIdAndUpdate(req.params["id"] as string, { $set: { role: req.body.role, permissions: req.body.permissions || [] } });
   sendSuccess(res, null, 'Role updated');
 });
 
 adminRouter.patch('/staff/:id/deactivate', requireSuperAdmin, async (req, res) => {
-  await UserModel.findByIdAndUpdate(req.params.id, { $set: { isActive: false } });
+  await UserModel.findByIdAndUpdate(req.params["id"] as string, { $set: { isActive: false } });
   sendSuccess(res, null, 'Staff deactivated');
 });
 

@@ -28,7 +28,7 @@ export const PaymentController = {
 
   async refund(req: Request, res: Response): Promise<void> {
     const { amount } = req.body;
-    await paymentService.initiateRefund(req.params.orderId, amount);
+    await paymentService.initiateRefund(req.params["orderId"] as string, amount);
     sendSuccess(res, null, 'Refund initiated');
   },
 };

@@ -13,14 +13,13 @@ export class TokenService {
   generateTokenPair(
     payload: Omit<JwtPayload, 'iat' | 'exp'>,
   ): TokenPair {
-    const sessionId = uuidv4();
     const accessToken = jwt.sign(
-      { ...payload, sessionId },
+      payload,
       env.JWT_ACCESS_SECRET,
       { expiresIn: env.JWT_ACCESS_EXPIRES_IN as any },
     );
     const refreshToken = jwt.sign(
-      { sub: payload.sub, sessionId },
+      { sub: payload.sub, sessionId: payload.sessionId },
       env.JWT_REFRESH_SECRET,
       { expiresIn: env.JWT_REFRESH_EXPIRES_IN as any },
     );

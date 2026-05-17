@@ -78,8 +78,12 @@ export class CartService {
     const enriched = [];
     let subtotal = 0;
 
+    const productIds = [...new Set(cart.items.map((i) => i.productId))];
+    const products = await productRepo.findByIds(productIds);
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
     for (const item of cart.items) {
-      const product = await productRepo.findById(item.productId);
+      const product = productMap.get(item.productId);
       if (!product) continue;
 
       const variant = item.variantId

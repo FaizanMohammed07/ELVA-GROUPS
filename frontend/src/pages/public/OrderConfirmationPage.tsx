@@ -72,14 +72,14 @@ export default function OrderConfirmationPage() {
                 <div className="flex-1">
                   <p className="font-sans text-sm font-medium text-charcoal-950">{item.title}</p>
                   <p className="font-sans text-xs text-charcoal-500">Qty: {item.quantity}</p>
-                  <p className="font-sans text-sm font-semibold text-charcoal-950 mt-1">₹{item.price.toLocaleString('en-IN')}</p>
+                  <p className="font-sans text-sm font-semibold text-charcoal-950 mt-1">₹{item.unitPrice.toLocaleString('en-IN')}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className="border-t border-charcoal-100 mt-4 pt-4 flex justify-between font-sans font-semibold text-charcoal-950">
             <span>Total Paid</span>
-            <span>₹{order.finalAmount?.toLocaleString('en-IN')}</span>
+            <span>₹{order.total?.toLocaleString('en-IN')}</span>
           </div>
         </div>
 

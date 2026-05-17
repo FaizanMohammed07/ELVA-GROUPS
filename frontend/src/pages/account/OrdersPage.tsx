@@ -88,7 +88,7 @@ export default function OrdersPage() {
               </div>
               <div className="mt-3 flex justify-between items-center">
                 <p className="font-sans text-xs text-charcoal-500">{order.items?.length} item{order.items?.length !== 1 ? 's' : ''}</p>
-                <p className="font-sans font-semibold text-charcoal-950">₹{order.finalAmount?.toLocaleString('en-IN')}</p>
+                <p className="font-sans font-semibold text-charcoal-950">₹{order.total?.toLocaleString('en-IN')}</p>
               </div>
             </Link>
           ))}

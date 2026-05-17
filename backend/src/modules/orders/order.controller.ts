@@ -22,18 +22,23 @@ export const OrderController = {
   },
 
   async getMyOrder(req: Request, res: Response): Promise<void> {
-    const order = await orderService.getOrder(req.params.id, req.user!.id);
+    const order = await orderService.getOrder(req.params["id"] as string, req.user!.id);
+    sendSuccess(res, order, 'Order fetched');
+  },
+
+  async getMyOrderByNumber(req: Request, res: Response): Promise<void> {
+    const order = await orderService.getOrderByNumber(req.params["orderNumber"] as string, req.user!.id);
     sendSuccess(res, order, 'Order fetched');
   },
 
   async cancelOrder(req: Request, res: Response): Promise<void> {
-    const order = await orderService.cancelOrder(req.params.id, req.user!.id, req.body.reason);
+    const order = await orderService.cancelOrder(req.params["id"] as string, req.user!.id, req.body.reason);
     sendSuccess(res, order, 'Order cancelled');
   },
 
   async requestReturn(req: Request, res: Response): Promise<void> {
-    const order = await orderService.updateStatus(req.params.id, 'return_requested', `Return requested: ${req.body.reason}`);
-    await OrderModel.findByIdAndUpdate(req.params.id, { returnReason: req.body.reason });
+    const order = await orderService.updateStatus(req.params["id"] as string, 'return_requested', `Return requested: ${req.body.reason}`);
+    await OrderModel.findByIdAndUpdate(req.params["id"] as string, { returnReason: req.body.reason });
     sendSuccess(res, order, 'Return request submitted');
   },
 
@@ -57,19 +62,19 @@ export const OrderController = {
   },
 
   async getOrder(req: Request, res: Response): Promise<void> {
-    const order = await orderService.getOrder(req.params.id);
+    const order = await orderService.getOrder(req.params["id"] as string);
     sendSuccess(res, order, 'Order fetched');
   },
 
   async updateStatus(req: Request, res: Response): Promise<void> {
     const { status, message } = req.body;
-    const order = await orderService.updateStatus(req.params.id, status, message, req.user!.id);
+    const order = await orderService.updateStatus(req.params["id"] as string, status, message, req.user!.id);
     sendSuccess(res, order, 'Order status updated');
   },
 
   async updateTracking(req: Request, res: Response): Promise<void> {
     const order = await OrderModel.findByIdAndUpdate(
-      req.params.id,
+      req.params["id"] as string,
       { $set: { tracking: req.body } },
       { new: true },
     );

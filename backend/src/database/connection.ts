@@ -13,7 +13,7 @@ export const connectDatabase = async (): Promise<void> => {
   };
 
   mongoose.connection.on('connected', () => logger.info('✅ MongoDB connected'));
-  mongoose.connection.on('error', (err) => logger.error('MongoDB error', { err }));
+  mongoose.connection.on('error', (err) => logger.error({ err }, 'MongoDB error'));
   mongoose.connection.on('disconnected', () => logger.warn('MongoDB disconnected'));
 
   await mongoose.connect(env.MONGODB_URI, options);

@@ -5,19 +5,19 @@ const emailService = new EmailService();
 
 export class NotificationService {
   async sendOrderConfirmation(userId: string, orderNumber: string, total: number): Promise<void> {
-    logger.info('Order confirmation notification', { userId, orderNumber, total });
+    logger.info({ userId, orderNumber, total }, 'Order confirmation notification');
     // Firebase push + WhatsApp + Email can be triggered here
   }
 
   async sendDeliveryConfirmation(userId: string, orderNumber: string): Promise<void> {
-    logger.info('Delivery confirmation notification', { userId, orderNumber });
+    logger.info({ userId, orderNumber }, 'Delivery confirmation notification');
   }
 
   async sendShippingUpdate(userId: string, orderNumber: string, carrier: string, trackingNumber: string): Promise<void> {
-    logger.info('Shipping update notification', { userId, orderNumber, carrier, trackingNumber });
+    logger.info({ userId, orderNumber, carrier, trackingNumber }, 'Shipping update notification');
   }
 
   async sendLowStockAlert(productTitle: string, sku: string, stock: number): Promise<void> {
-    logger.warn('Low stock alert', { productTitle, sku, stock });
+    logger.warn({ productTitle, sku, stock }, 'Low stock alert');
   }
 }

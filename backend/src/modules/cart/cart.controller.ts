@@ -18,13 +18,13 @@ export const CartController = {
 
   async updateItem(req: Request, res: Response): Promise<void> {
     const { quantity, variantId } = req.body;
-    const cart = await cartService.updateItem(req.user!.id, req.params.productId, quantity, variantId);
+    const cart = await cartService.updateItem(req.user!.id, req.params["productId"] as string, quantity, variantId);
     sendSuccess(res, cart, 'Cart updated');
   },
 
   async removeItem(req: Request, res: Response): Promise<void> {
     const { variantId } = req.query;
-    const cart = await cartService.removeItem(req.user!.id, req.params.productId, variantId as string);
+    const cart = await cartService.removeItem(req.user!.id, req.params["productId"] as string, variantId as string);
     sendSuccess(res, cart, 'Item removed');
   },
 

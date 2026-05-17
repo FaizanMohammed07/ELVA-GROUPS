@@ -53,8 +53,8 @@ export default function CheckoutPage() {
         shippingAddress: {
           fullName: data.fullName,
           phone: data.phone,
-          addressLine1: data.addressLine1,
-          addressLine2: data.addressLine2,
+          line1: data.addressLine1,
+          line2: data.addressLine2,
           city: data.city,
           state: data.state,
           pincode: data.pincode,
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
         currency: rzpOrder.currency,
         name: 'ELVA',
         description: `Order #${order.orderNumber}`,
-        order_id: rzpOrder.id,
+        order_id: rzpOrder.razorpayOrderId,
         prefill: { name: data.fullName, contact: data.phone, email: user?.email },
         theme: { color: '#1a1a1a' },
         handler: async (response: any) => {

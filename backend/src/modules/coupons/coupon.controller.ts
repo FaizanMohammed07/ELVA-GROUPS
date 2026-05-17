@@ -19,11 +19,11 @@ export const CouponController = {
     sendCreated(res, coupon, 'Coupon created');
   },
   async update(req: Request, res: Response): Promise<void> {
-    const coupon = await couponService.update(req.params.id, req.body);
+    const coupon = await couponService.update(req.params["id"] as string, req.body);
     sendSuccess(res, coupon, 'Coupon updated');
   },
   async deactivate(req: Request, res: Response): Promise<void> {
-    await couponService.deactivate(req.params.id);
+    await couponService.deactivate(req.params["id"] as string);
     sendSuccess(res, null, 'Coupon deactivated');
   },
 };

@@ -96,13 +96,13 @@ export default function LoyaltyPage() {
               {transactions?.map((tx: any) => (
                 <div key={tx.id} className="flex justify-between items-center py-4">
                   <div>
-                    <p className="font-sans text-sm font-medium text-charcoal-950">{tx.description}</p>
+                    <p className="font-sans text-sm font-medium text-charcoal-950">{tx.reason}</p>
                     <p className="font-sans text-xs text-charcoal-500 mt-0.5">
                       {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
-                  <span className={cn('font-sans font-semibold text-sm', tx.type === 'earn' ? 'text-green-600' : 'text-red-500')}>
-                    {tx.type === 'earn' ? '+' : '-'}{Math.abs(tx.points)} pts
+                  <span className={cn('font-sans font-semibold text-sm', tx.type === 'credit' ? 'text-green-600' : 'text-red-500')}>
+                    {tx.type === 'credit' ? '+' : '-'}{Math.abs(tx.points)} pts
                   </span>
                 </div>
               ))}

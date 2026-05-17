@@ -29,15 +29,15 @@ const bootstrap = async () => {
     process.on('SIGINT', () => shutdown('SIGINT'));
 
     process.on('unhandledRejection', (reason, promise) => {
-      logger.error('Unhandled Rejection', { reason, promise });
+      logger.error({ reason, promise }, 'Unhandled Rejection');
     });
 
     process.on('uncaughtException', (error) => {
-      logger.error('Uncaught Exception', { error });
+      logger.error({ error }, 'Uncaught Exception');
       process.exit(1);
     });
   } catch (error) {
-    logger.error('Failed to bootstrap application', { error });
+    logger.error({ error }, 'Failed to bootstrap application');
     process.exit(1);
   }
 };

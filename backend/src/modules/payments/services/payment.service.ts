@@ -73,7 +73,7 @@ export class PaymentService {
       },
     });
 
-    logger.info('Payment confirmed', { orderId, razorpayPaymentId });
+    logger.info({ orderId, razorpayPaymentId }, 'Payment confirmed');
   }
 
   async handleWebhook(body: string, signature: string): Promise<void> {
@@ -87,7 +87,7 @@ export class PaymentService {
     }
 
     const event = JSON.parse(body);
-    logger.info('Razorpay webhook received', { event: event.event });
+    logger.info({ event: event.event }, 'Razorpay webhook received');
 
     switch (event.event) {
       case 'payment.captured': {
@@ -110,7 +110,7 @@ export class PaymentService {
         break;
       }
       default:
-        logger.debug('Unhandled webhook event', { event: event.event });
+        logger.debug({ event: event.event }, 'Unhandled webhook event');
     }
   }
 

@@ -36,6 +36,11 @@ export const authenticate = async (
   if (!token) throw AppError.unauthorized('Authentication required');
 
   const payload = tokenService.verifyAccessToken(token);
+
+  if (await tokenService.isTokenBlacklisted(token)) {
+    throw AppError.unauthorized('Token has been revoked');
+  }
+
   const user = await userRepo.findById(payload.sub);
 
   if (!user) throw AppError.unauthorized('User not found');
@@ -52,7 +57,7 @@ export const authenticate = async (
     sessionId: payload.sessionId,
   };
 
-  logger.debug('User authenticated', { userId: user.id, role: user.role });
+  logger.debug({ userId: user.id, role: user.role }, 'User authenticated');
   next();
 };
 

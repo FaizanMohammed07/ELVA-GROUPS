@@ -21,7 +21,7 @@ export const WishlistController = {
 
   async addToWishlist(req: Request, res: Response): Promise<void> {
     await WishlistModel.findOneAndUpdate(
-      { userId: req.user!.id, productId: req.params.productId },
+      { userId: req.user!.id, productId: req.params["productId"] as string },
       { $set: { addedAt: new Date() } },
       { upsert: true, new: true },
     );
@@ -29,12 +29,12 @@ export const WishlistController = {
   },
 
   async removeFromWishlist(req: Request, res: Response): Promise<void> {
-    await WishlistModel.findOneAndDelete({ userId: req.user!.id, productId: req.params.productId });
+    await WishlistModel.findOneAndDelete({ userId: req.user!.id, productId: req.params["productId"] as string });
     sendSuccess(res, null, 'Removed from wishlist');
   },
 
   async checkWishlist(req: Request, res: Response): Promise<void> {
-    const item = await WishlistModel.findOne({ userId: req.user!.id, productId: req.params.productId });
+    const item = await WishlistModel.findOne({ userId: req.user!.id, productId: req.params["productId"] as string });
     sendSuccess(res, { isWishlisted: !!item }, 'Wishlist status');
   },
 };
