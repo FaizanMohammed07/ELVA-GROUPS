@@ -1,6 +1,8 @@
 import rateLimit from 'express-rate-limit';
 import { env } from '../config/env';
 
+const isDev = env.NODE_ENV === 'development';
+
 export const rateLimiter = rateLimit({
   windowMs: env.RATE_LIMIT_WINDOW_MS,
   max: env.RATE_LIMIT_MAX_REQUESTS,
@@ -11,12 +13,12 @@ export const rateLimiter = rateLimit({
     code: 'RATE_LIMITED',
     message: 'Too many requests, please try again later.',
   },
-  skip: (req) => req.method === 'OPTIONS',
+  skip: (req) => isDev || req.method === 'OPTIONS',
 });
 
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: isDev ? 1000 : 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -24,6 +26,7 @@ export const authRateLimiter = rateLimit({
     code: 'RATE_LIMITED',
     message: 'Too many authentication attempts. Please wait 15 minutes.',
   },
+  skip: () => isDev,
 });
 
 export const paymentRateLimiter = rateLimit({
