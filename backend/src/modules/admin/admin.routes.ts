@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { authenticate } from '../../middleware/authenticate';
 import { requireAdmin, requireSuperAdmin } from '../../middleware/authorize';
-import { sendSuccess } from '../../utils/apiResponse';
+import { sendSuccess, sendCreated } from '../../utils/apiResponse';
+import { AppError } from '../../utils/appError';
 import { UserModel } from '../users/models/user.model';
 import { OrderModel } from '../orders/models/order.model';
 import { ProductModel } from '../products/models/product.model';
+import { hashPassword } from '../../utils/crypto';
 
 export const adminRouter = Router();
 
@@ -15,6 +17,29 @@ adminRouter.get('/staff', requireSuperAdmin, async (_req, res) => {
   const staff = await UserModel.find({ role: { $in: ['admin', 'support', 'marketing', 'inventory'] } })
     .select('name email role isActive lastLoginAt createdAt');
   sendSuccess(res, staff, 'Staff list');
+});
+
+adminRouter.post('/staff/create', requireSuperAdmin, async (req, res) => {
+  const { name, email, password, role } = req.body;
+  const validRoles = ['admin', 'support', 'marketing', 'inventory'];
+  if (!name || !email || !password) throw AppError.badRequest('name, email and password are required');
+  if (!validRoles.includes(role)) throw AppError.badRequest(`role must be one of: ${validRoles.join(', ')}`);
+
+  const existing = await UserModel.findOne({ email: email.toLowerCase() });
+  if (existing) throw AppError.conflict('Email already registered');
+
+  const passwordHash = await hashPassword(password);
+  const user = await UserModel.create({
+    name,
+    email: email.toLowerCase(),
+    passwordHash,
+    role,
+    isEmailVerified: true,
+    isActive: true,
+    tokenVersion: 0,
+  });
+
+  sendCreated(res, { id: user.id, name: user.name, email: user.email, role: user.role }, 'Admin user created');
 });
 
 adminRouter.post('/staff/invite', requireSuperAdmin, async (req, res) => {

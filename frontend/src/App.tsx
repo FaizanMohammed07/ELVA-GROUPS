@@ -5,7 +5,9 @@ import { useAuthStore } from '@store/authStore';
 import { PublicLayout } from '@components/layouts/PublicLayout';
 import { AdminLayout } from '@components/layouts/AdminLayout';
 import { ProtectedRoute } from '@components/common/ProtectedRoute';
+import { AdminProtectedRoute } from '@components/common/AdminProtectedRoute';
 import { PageLoader } from '@components/common/PageLoader';
+import { ADMIN_LOGIN_SLUG, SUPER_ADMIN_LOGIN_SLUG } from '@config/admin';
 
 // Lazy load pages for optimal performance
 const HomePage = lazy(() => import('@pages/public/HomePage'));
@@ -47,6 +49,10 @@ const AdminAnalytics = lazy(() => import('@pages/admin/AnalyticsPage'));
 const SuperAdminDashboard = lazy(() => import('@pages/superadmin/DashboardPage'));
 const SuperAdminStaff = lazy(() => import('@pages/superadmin/StaffPage'));
 const SuperAdminFinancials = lazy(() => import('@pages/superadmin/FinancialsPage'));
+
+// Admin auth
+const AdminLoginPage = lazy(() => import('@pages/auth/AdminLoginPage'));
+const SuperAdminLoginPage = lazy(() => import('@pages/auth/SuperAdminLoginPage'));
 
 export default function App() {
   const { initializeAuth } = useAuthStore();
@@ -107,9 +113,19 @@ export default function App() {
           <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Route>
 
+        {/* Admin login — standalone, no layout */}
+        <Route path={`/${ADMIN_LOGIN_SLUG}/login`} element={<AdminLoginPage />} />
+
         {/* Admin routes */}
-        <Route path="/admin" element={<ProtectedRoute roles={['admin', 'super_admin', 'support', 'marketing', 'inventory']}><AdminLayout /></ProtectedRoute>}>
-          <Route index element={<AdminDashboard />} />
+        <Route
+          path={`/${ADMIN_LOGIN_SLUG}`}
+          element={
+            <AdminProtectedRoute roles={['admin', 'super_admin', 'support', 'marketing', 'inventory']}>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />
@@ -121,9 +137,19 @@ export default function App() {
           <Route path="analytics" element={<AdminAnalytics />} />
         </Route>
 
+        {/* Super Admin login — standalone */}
+        <Route path={`/${SUPER_ADMIN_LOGIN_SLUG}/login`} element={<SuperAdminLoginPage />} />
+
         {/* Super Admin routes */}
-        <Route path="/super-admin" element={<ProtectedRoute roles={['super_admin']}><AdminLayout isSuperAdmin /></ProtectedRoute>}>
-          <Route index element={<SuperAdminDashboard />} />
+        <Route
+          path={`/${SUPER_ADMIN_LOGIN_SLUG}`}
+          element={
+            <AdminProtectedRoute roles={['super_admin']}>
+              <AdminLayout isSuperAdmin />
+            </AdminProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<SuperAdminDashboard />} />
           <Route path="staff" element={<SuperAdminStaff />} />
           <Route path="financials" element={<SuperAdminFinancials />} />
         </Route>

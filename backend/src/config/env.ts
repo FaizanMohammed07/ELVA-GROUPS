@@ -72,6 +72,26 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   GOOGLE_CALLBACK_URL: z.string().optional(),
 
+  // Default super admin account
+  SUPER_ADMIN_FIRST_NAME: z.string().default('Super'),
+  SUPER_ADMIN_LAST_NAME: z.string().default('Admin'),
+  SUPER_ADMIN_EMAIL: z.string().email().default('superadmin@elva.in'),
+  SUPER_ADMIN_PASSWORD: z.string().min(8).default('Elva@SuperAdmin2024!'),
+  SUPER_ADMIN_PHONE: z.string().optional(),
+
+  // Default admin account
+  ADMIN_FIRST_NAME: z.string().default('Admin'),
+  ADMIN_LAST_NAME: z.string().default('ELVA'),
+  ADMIN_EMAIL: z.string().email().default('admin@elva.in'),
+  ADMIN_PASSWORD: z.string().min(8).default('Elva@Admin2024!'),
+  ADMIN_PHONE: z.string().optional(),
+
+  // Admin portal slug & paths
+  ADMIN_LOGIN_SLUG: z.string().default('elva-admin-x7k9m2'),
+  ADMIN_LOGIN_PATH: z.string().default('/elva-admin-x7k9m2/login'),
+  SUPER_ADMIN_LOGIN_SLUG: z.string().default('elva-superadmin-p4k8r5'),
+  SUPER_ADMIN_LOGIN_PATH: z.string().default('/elva-superadmin-p4k8r5/login'),
+
   // Security
   BCRYPT_ROUNDS: z.coerce.number().default(12),
   ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),

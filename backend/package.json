@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "seed": "tsx src/database/seeds/index.ts",
+    "seed:superadmin": "tsx src/database/seeds/super-admin.ts",
     "migrate": "tsx src/database/migrations/index.ts"
   },
   "dependencies": {
