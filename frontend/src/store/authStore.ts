@@ -55,19 +55,27 @@ export const useAuthStore = create<AuthState>()(
       },
 
       initializeAuth: async () => {
+        set({ isLoading: true });
         const { accessToken } = get();
-        if (!accessToken) return;
         try {
-          const { data } = await authApi.me();
-          set({ user: data.data, isAuthenticated: true });
+          // If we have a stored token, validate it first
+          if (accessToken) {
+            const { data } = await authApi.me();
+            set({ user: data.data, isAuthenticated: true, isLoading: false });
+            return;
+          }
+          // No stored token — still try refresh cookie (user may have a valid session from another tab)
+          throw new Error('no_token');
         } catch {
+          // Token expired or missing — attempt silent refresh via httpOnly cookie
           try {
             const { data } = await authApi.refresh();
-            set({ accessToken: data.data.tokens.accessToken, isAuthenticated: true });
+            set({ accessToken: data.data.tokens.accessToken });
             const { data: meData } = await authApi.me();
-            set({ user: meData.data, isAuthenticated: true });
+            set({ user: meData.data, isAuthenticated: true, isLoading: false });
           } catch {
-            set({ user: null, accessToken: null, isAuthenticated: false });
+            // Refresh token also invalid/expired — clear everything, force re-login
+            set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
           }
         }
       },
@@ -77,7 +85,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'elva-auth',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ accessToken: state.accessToken }),
+      partialize: (state) => ({ accessToken: state.accessToken, user: state.user, isAuthenticated: state.isAuthenticated }),
     },
   ),
 );

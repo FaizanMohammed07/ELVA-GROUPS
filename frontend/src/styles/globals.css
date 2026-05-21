@@ -107,6 +107,26 @@
     @apply animate-pulse bg-gradient-to-r from-charcoal-100 via-charcoal-50 to-charcoal-100;
     background-size: 200% 100%;
   }
+
+  .input-field {
+    @apply w-full border border-charcoal-200 px-3 py-2 text-sm focus:outline-none focus:border-charcoal-400 bg-white;
+  }
+
+  .label-xs {
+    @apply block text-xs font-medium text-charcoal-600 uppercase tracking-wide mb-1.5;
+  }
+
+  .admin-card {
+    @apply bg-white border border-charcoal-100 p-6;
+  }
+
+  .stat-card {
+    @apply bg-white border border-charcoal-100 p-5 flex flex-col gap-1;
+  }
+
+  .input-sm {
+    @apply border border-gray-200 rounded px-2 py-1.5 text-xs font-sans focus:outline-none focus:border-indigo-400 w-full;
+  }
 }
 
 @layer utilities {

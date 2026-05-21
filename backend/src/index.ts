@@ -8,7 +8,7 @@ import { env } from './config/env';
 const bootstrap = async () => {
   try {
     await connectDatabase();
-    await connectRedis();
+    await connectRedis(); // non-fatal — falls back to in-memory cache if Redis is down
 
     const app = createApp();
 

@@ -3,7 +3,7 @@ import { AppError } from '../../../utils/appError';
 import { PaginationQuery } from '../../../utils/pagination';
 
 export interface ProductFilter {
-  status?: string;
+  status?: string; // 'all' = no status filter
   categoryIds?: string[];
   tags?: string[];
   minPrice?: number;
@@ -140,8 +140,8 @@ export class ProductRepository {
 
   private buildQuery(filter: ProductFilter): Record<string, any> {
     const query: Record<string, any> = {};
-    if (filter.status) query.status = filter.status;
-    else query.status = 'active';
+    if (filter.status && filter.status !== 'all') query.status = filter.status;
+    else if (!filter.status) query.status = 'active';
 
     if (filter.categoryIds?.length) query.categoryIds = { $in: filter.categoryIds };
     if (filter.tags?.length) query.tags = { $in: filter.tags };

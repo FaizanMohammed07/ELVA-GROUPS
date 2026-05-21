@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -8,11 +8,15 @@ import { requireAdmin } from '../../middleware/authorize';
 import { uploadRateLimiter } from '../../middleware/rateLimiter';
 import { sendSuccess } from '../../utils/apiResponse';
 import { AppError } from '../../utils/appError';
+import { asyncHandler } from '../../utils/asyncHandler';
 import { env } from '../../config/env';
 
 const s3 = new S3Client({
   region: env.AWS_REGION,
-  credentials: { accessKeyId: env.AWS_ACCESS_KEY_ID ?? '', secretAccessKey: env.AWS_SECRET_ACCESS_KEY ?? '' },
+  credentials: {
+    accessKeyId: env.AWS_ACCESS_KEY_ID ?? '',
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY ?? '',
+  },
 });
 
 const storage = multer.memoryStorage();
@@ -29,46 +33,75 @@ const upload = multer({
   },
 });
 
-const uploadToS3 = async (buffer: Buffer, key: string, mimeType: string): Promise<string> => {
-  await s3.send(new PutObjectCommand({
-    Bucket: env.AWS_S3_BUCKET,
-    Key: key,
-    Body: buffer,
-    ContentType: mimeType,
-    ACL: 'public-read' as any,
-  }));
+const uploadToS3 = async (buffer: Buffer, key: string): Promise<string> => {
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: env.AWS_S3_BUCKET,
+      Key: key,
+      Body: buffer,
+      ContentType: 'image/webp',
+      // ACL removed — configure public access via S3 bucket policy instead
+    }),
+  );
+
   return env.AWS_S3_CDN_URL
     ? `${env.AWS_S3_CDN_URL}/${key}`
     : `https://${env.AWS_S3_BUCKET}.s3.${env.AWS_REGION}.amazonaws.com/${key}`;
 };
 
-export const uploadRouter = Router();
+// Multer error → AppError so it reaches the global error handler
+const handleMulterError = (err: any, _req: Request, _res: Response, next: NextFunction) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') return next(AppError.badRequest('File too large. Max 10MB per image.'));
+    if (err.code === 'LIMIT_FILE_COUNT') return next(AppError.badRequest('Too many files. Max 10 images at once.'));
+    return next(AppError.badRequest(err.message));
+  }
+  if (err) return next(AppError.badRequest(err.message));
+  next();
+};
 
+export const uploadRouter = Router();
 uploadRouter.use(authenticate, requireAdmin, uploadRateLimiter);
 
-uploadRouter.post('/image', upload.single('image'), async (req: Request, res: Response) => {
-  if (!req.file) throw AppError.badRequest('No file uploaded');
+// ── Single image ────────────────────────────────────────────────────────────
+uploadRouter.post(
+  '/image',
+  (req, res, next) => upload.single('image')(req, res, (err) => handleMulterError(err, req, res, next)),
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.file) throw AppError.badRequest('No file uploaded. Send the file in the "image" field.');
 
-  const optimized = await sharp(req.file.buffer)
-    .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 85 })
-    .toBuffer();
+    const optimized = await sharp(req.file.buffer)
+      .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 85 })
+      .toBuffer();
 
-  const key = `products/${uuidv4()}.webp`;
-  const url = await uploadToS3(optimized, key, 'image/webp');
-  sendSuccess(res, { url, key }, 'Image uploaded');
-});
+    const key = `products/${uuidv4()}.webp`;
+    const url = await uploadToS3(optimized, key);
 
-uploadRouter.post('/images', upload.array('images', 10), async (req: Request, res: Response) => {
-  if (!req.files?.length) throw AppError.badRequest('No files uploaded');
-  const files = req.files as Express.Multer.File[];
+    sendSuccess(res, { url, key }, 'Image uploaded successfully');
+  }),
+);
 
-  const urls = await Promise.all(
-    files.map(async (file) => {
-      const optimized = await sharp(file.buffer).resize({ width: 1200, fit: 'inside' }).webp({ quality: 85 }).toBuffer();
-      const key = `products/${uuidv4()}.webp`;
-      return uploadToS3(optimized, key, 'image/webp');
-    }),
-  );
-  sendSuccess(res, { urls }, 'Images uploaded');
-});
+// ── Multiple images (up to 10) ──────────────────────────────────────────────
+uploadRouter.post(
+  '/images',
+  (req, res, next) => upload.array('images', 10)(req, res, (err) => handleMulterError(err, req, res, next)),
+  asyncHandler(async (req: Request, res: Response) => {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files?.length) throw AppError.badRequest('No files uploaded. Send files in the "images" field.');
+
+    const urls = await Promise.all(
+      files.map(async (file) => {
+        const optimized = await sharp(file.buffer)
+          .resize({ width: 1200, fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer();
+
+        const key = `products/${uuidv4()}.webp`;
+        return uploadToS3(optimized, key);
+      }),
+    );
+
+    sendSuccess(res, { urls, count: urls.length }, `${urls.length} image${urls.length > 1 ? 's' : ''} uploaded`);
+  }),
+);

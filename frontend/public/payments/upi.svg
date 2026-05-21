@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 40" width="80" height="40">
+  <rect width="80" height="40" rx="4" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <!-- UPI logo colors: green, orange, dark blue -->
+  <!-- Arrow up-left (green) -->
+  <polygon points="18,28 10,20 26,20" fill="#097939"/>
+  <rect x="16" y="12" width="4" height="14" fill="#097939"/>
+  <!-- Arrow down-right (orange) -->
+  <polygon points="32,12 40,20 24,20" fill="#ed752e"/>
+  <rect x="30" y="14" width="4" height="14" fill="#ed752e"/>
+  <!-- UPI text -->
+  <text x="46" y="25" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1a1a2e">UPI</text>
+</svg>

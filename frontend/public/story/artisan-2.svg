@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1C1410"/>
+      <stop offset="100%" style="stop-color:#2A1F16"/>
+    </linearGradient>
+    <linearGradient id="candleGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD580;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FF8C42;stop-opacity:0"/>
+    </linearGradient>
+    <radialGradient id="flameGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFE066;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#FF6B00;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Dark rich background -->
+  <rect width="600" height="800" fill="url(#bg)"/>
+
+  <!-- Candlelight ambient glow center -->
+  <ellipse cx="300" cy="350" rx="220" ry="280" fill="url(#flameGlow)" opacity="0.25"/>
+
+  <!-- Multiple candles on wooden surface -->
+  <!-- Tall center candle -->
+  <rect x="270" y="260" width="60" height="280" rx="4" fill="#F5F0E8" opacity="0.95"/>
+  <rect x="268" y="258" width="64" height="15" rx="3" fill="#E8E0D0"/>
+  <!-- Candle wax drip -->
+  <path d="M 270 280 Q 265 300 268 320 Q 270 330 272 320 Q 272 300 270 280 Z" fill="#F5F0E8" opacity="0.8"/>
+  <!-- Wick -->
+  <line x1="300" y1="258" x2="300" y2="240" stroke="#4A3728" stroke-width="2"/>
+  <!-- Flame -->
+  <ellipse cx="300" cy="232" rx="12" ry="18" fill="#FFE066" opacity="0.95"/>
+  <ellipse cx="300" cy="236" rx="7" ry="12" fill="#FF8C42"/>
+  <ellipse cx="300" cy="240" rx="4" ry="7" fill="#FF6B00"/>
+  <!-- Flame glow -->
+  <ellipse cx="300" cy="235" rx="30" ry="40" fill="#FFD580" opacity="0.15"/>
+
+  <!-- Left shorter candle -->
+  <rect x="160" y="340" width="45" height="200" rx="3" fill="#F5EFE0" opacity="0.9"/>
+  <line x1="182" y1="340" x2="182" y2="325" stroke="#4A3728" stroke-width="1.5"/>
+  <ellipse cx="182" cy="318" rx="9" ry="13" fill="#FFE066" opacity="0.9"/>
+  <ellipse cx="182" cy="321" rx="5" ry="8" fill="#FF8C42"/>
+  <ellipse cx="182" cy="320" rx="20" ry="28" fill="#FFD580" opacity="0.12"/>
+
+  <!-- Right candle, different height -->
+  <rect x="395" y="310" width="50" height="230" rx="3" fill="#F5F0E8" opacity="0.88"/>
+  <line x1="420" y1="310" x2="420" y2="294" stroke="#4A3728" stroke-width="1.5"/>
+  <ellipse cx="420" cy="287" rx="10" ry="15" fill="#FFE066" opacity="0.9"/>
+  <ellipse cx="420" cy="290" rx="6" ry="9" fill="#FF8C42"/>
+  <ellipse cx="420" cy="288" rx="25" ry="35" fill="#FFD580" opacity="0.12"/>
+
+  <!-- Wooden surface/tray -->
+  <rect x="80" y="535" width="440" height="30" rx="4" fill="#3D2B1F" opacity="0.9"/>
+  <rect x="80" y="535" width="440" height="6" rx="2" fill="#5C4032" opacity="0.7"/>
+
+  <!-- Candle holders -->
+  <ellipse cx="300" cy="545" rx="35" ry="8" fill="#8B7355" opacity="0.8"/>
+  <ellipse cx="182" cy="545" rx="25" ry="6" fill="#8B7355" opacity="0.7"/>
+  <ellipse cx="420" cy="545" rx="28" ry="7" fill="#8B7355" opacity="0.75"/>
+
+  <!-- Decorative foliage -->
+  <path d="M 120 500 Q 100 470 130 450 Q 150 470 140 500 Z" fill="#2D5016" opacity="0.5"/>
+  <path d="M 105 510 Q 85 480 115 460 Q 135 480 120 510 Z" fill="#3D6B20" opacity="0.4"/>
+  <path d="M 470 490 Q 490 460 510 480 Q 495 505 470 490 Z" fill="#2D5016" opacity="0.5"/>
+  <path d="M 480 505 Q 505 475 520 498 Q 502 515 480 505 Z" fill="#3D6B20" opacity="0.4"/>
+
+  <!-- Soft shadow on surface -->
+  <ellipse cx="300" cy="548" rx="240" ry="20" fill="#000" opacity="0.4"/>
+
+  <!-- ELVA label -->
+  <rect x="0" y="760" width="600" height="40" fill="#000" opacity="0.6"/>
+  <text x="300" y="785" font-family="Georgia, serif" font-size="13" fill="#C9A96E" text-anchor="middle" letter-spacing="6">HANDCRAFTED WITH LOVE</text>
+</svg>

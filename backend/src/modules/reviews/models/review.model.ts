@@ -28,7 +28,7 @@ const ReviewSchema = new Schema<IReview>(
     body: { type: String, required: true, maxlength: 2000 },
     images: [String],
     isVerifiedPurchase: { type: Boolean, default: false },
-    isApproved: { type: Boolean, default: false, index: true },
+    isApproved: { type: Boolean, default: true, index: true },
     isFeatured: { type: Boolean, default: false },
     helpfulVotes: { type: Number, default: 0 },
     response: {

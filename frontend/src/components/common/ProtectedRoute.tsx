@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@store/authStore';
+import { PageLoader } from './PageLoader';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -7,8 +8,10 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children, roles }: ProtectedRouteProps) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, isLoading } = useAuthStore();
   const location = useLocation();
+
+  if (isLoading) return <PageLoader />;
 
   if (!isAuthenticated) {
     return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;

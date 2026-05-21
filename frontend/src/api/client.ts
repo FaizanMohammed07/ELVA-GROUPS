@@ -17,7 +17,7 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-// Response interceptor — handle 401, token refresh
+// Response interceptor — auto-refresh on 401, queue concurrent requests
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (token: string) => void; reject: (err: any) => void }> = [];
 
@@ -29,19 +29,30 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+const clearAuthLocally = () => {
+  // Clears auth state without hitting the server — used when token is already dead
+  useAuthStore.setState({ user: null, accessToken: null, isAuthenticated: false });
+};
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const original = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-    if (error.response?.status === 401 && !original._retry) {
+    // Skip refresh loop for auth endpoints themselves
+    const isAuthEndpoint = original.url?.includes('/auth/refresh') ||
+                           original.url?.includes('/auth/login') ||
+                           original.url?.includes('/auth/register');
+
+    if (error.response?.status === 401 && !original._retry && !isAuthEndpoint) {
       if (isRefreshing) {
+        // Queue this request until the in-flight refresh completes
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         }).then((token) => {
           original.headers.Authorization = `Bearer ${token}`;
           return apiClient(original);
-        });
+        }).catch((err) => Promise.reject(err));
       }
 
       original._retry = true;
@@ -56,7 +67,7 @@ apiClient.interceptors.response.use(
         return apiClient(original);
       } catch (refreshError) {
         processQueue(refreshError);
-        useAuthStore.getState().logout();
+        clearAuthLocally();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

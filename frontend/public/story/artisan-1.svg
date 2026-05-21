@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2C2C2C"/>
+      <stop offset="100%" style="stop-color:#1A1A1A"/>
+    </linearGradient>
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4956A"/>
+      <stop offset="100%" style="stop-color:#B8784E"/>
+    </linearGradient>
+    <linearGradient id="lightRay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C9A96E;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#C9A96E;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark rich background -->
+  <rect width="600" height="800" fill="url(#bg)"/>
+
+  <!-- Warm light from top left -->
+  <ellipse cx="100" cy="0" rx="300" ry="200" fill="url(#lightRay)" opacity="0.6"/>
+
+  <!-- Warm floor/table glow -->
+  <ellipse cx="300" cy="750" rx="250" ry="80" fill="#C9A96E" opacity="0.12"/>
+
+  <!-- Workshop table -->
+  <rect x="50" y="560" width="500" height="20" rx="2" fill="#3D2B1F" opacity="0.8"/>
+
+  <!-- Clay pot being crafted on table -->
+  <g transform="translate(220, 440)">
+    <!-- Pot body -->
+    <ellipse cx="80" cy="110" rx="75" ry="30" fill="#8B5E3C" opacity="0.9"/>
+    <path d="M 5 110 Q 0 60 25 30 Q 50 0 80 0 Q 110 0 135 30 Q 160 60 155 110 Z" fill="#A0714A"/>
+    <!-- Pot rim -->
+    <ellipse cx="80" cy="0" rx="55" ry="15" fill="#8B5E3C"/>
+    <!-- Pot sheen -->
+    <path d="M 30 30 Q 50 10 70 25" stroke="#D4956A" stroke-width="2" fill="none" opacity="0.5"/>
+  </g>
+
+  <!-- Artisan hands (simplified silhouette) -->
+  <g opacity="0.85" transform="translate(160, 480)">
+    <!-- Left hand -->
+    <path d="M 0 80 Q 20 60 50 70 Q 70 75 60 95 Q 40 110 10 100 Z" fill="url(#skinGrad)"/>
+    <path d="M 50 70 Q 60 50 80 55 Q 95 60 85 80 Q 70 85 50 70 Z" fill="url(#skinGrad)"/>
+    <!-- Right hand -->
+    <path d="M 200 80 Q 180 60 150 70 Q 130 75 140 95 Q 160 110 190 100 Z" fill="url(#skinGrad)"/>
+    <path d="M 150 70 Q 140 50 120 55 Q 105 60 115 80 Q 130 85 150 70 Z" fill="url(#skinGrad)"/>
+  </g>
+
+  <!-- Tools on table -->
+  <rect x="420" y="540" width="4" height="40" rx="2" fill="#5C4A3A" opacity="0.7"/>
+  <ellipse cx="422" cy="538" rx="8" ry="5" fill="#8B7355" opacity="0.7"/>
+  <rect x="80" y="545" width="60" height="4" rx="2" fill="#5C4A3A" opacity="0.6"/>
+
+  <!-- Clay dust particles -->
+  <circle cx="350" cy="500" r="2" fill="#D4956A" opacity="0.3"/>
+  <circle cx="180" cy="520" r="1.5" fill="#D4956A" opacity="0.25"/>
+  <circle cx="400" cy="510" r="1" fill="#D4956A" opacity="0.2"/>
+
+  <!-- Warm ambient light overlay -->
+  <rect x="0" y="500" width="600" height="300" fill="#C9A96E" opacity="0.05"/>
+
+  <!-- ELVA label bottom -->
+  <rect x="0" y="760" width="600" height="40" fill="#000" opacity="0.5"/>
+  <text x="300" y="785" font-family="Georgia, serif" font-size="13" fill="#C9A96E" text-anchor="middle" letter-spacing="6">ARTISAN CRAFT</text>
+</svg>

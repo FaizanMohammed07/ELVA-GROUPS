@@ -68,8 +68,40 @@ export const createApp = (): Application => {
   // Compression
   app.use(compression());
 
+  const isProd = env.NODE_ENV === 'production';
+
   // HTTP request logger
-  app.use(pinoHttp({ logger: logger as any, autoLogging: env.NODE_ENV !== 'test' }));
+  app.use(
+    pinoHttp({
+      logger: logger as any,
+      autoLogging: env.NODE_ENV !== 'test',
+      redact: {
+        paths: [
+          'req.headers.authorization',
+          'req.headers.cookie',
+          'req.headers["x-api-key"]',
+          'req.headers["x-csrf-token"]',
+        ],
+        censor: '[REDACTED]',
+      },
+      serializers: {
+        req: (req) =>
+          isProd
+            ? { id: req.id, method: req.method, url: req.url }
+            : { id: req.id, method: req.method, url: req.url, headers: req.headers },
+        res: (res) =>
+          isProd ? { statusCode: res.statusCode } : { statusCode: res.statusCode, headers: res.headers },
+      },
+      customLogLevel: (_req, res, err) => {
+        if (err || res.statusCode >= 500) return 'error';
+        if (res.statusCode >= 400) return 'warn';
+        if (res.statusCode >= 300) return 'silent';
+        return 'info';
+      },
+      customSuccessMessage: (req, res) => `${req.method} ${req.url} ${res.statusCode}`,
+      customErrorMessage: (req, res, err) => `${req.method} ${req.url} ${res.statusCode} — ${err.message}`,
+    }),
+  );
 
   // Security middleware
   app.use(mongoSanitize());

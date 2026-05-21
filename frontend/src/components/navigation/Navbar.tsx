@@ -6,6 +6,7 @@ import { useCartStore } from '@store/cartStore';
 import { useAuthStore } from '@store/authStore';
 import { useUIStore } from '@store/uiStore';
 import { cn } from '@utils/cn';
+import { ADMIN_BASE, SUPER_BASE } from '@config/admin';
 
 const NAV_LINKS = [
   { label: 'New Arrivals', href: '/products?sort=new' },
@@ -51,8 +52,11 @@ export const Navbar = () => {
       scrolled ? 'bg-white/95 backdrop-blur-md shadow-luxury' : 'bg-transparent',
     )}>
       {/* Top announcement bar */}
-      <div className="bg-charcoal-950 text-white text-center py-2 text-xs tracking-widest uppercase font-sans">
-        Free Shipping on Orders Above ₹999 &nbsp;|&nbsp; Handcrafted with Love 🤍
+      <div
+        className="text-center py-2 text-xs tracking-widest uppercase font-sans font-medium"
+        style={{ background: '#1E0812', color: '#D4A853' }}
+      >
+        Free Shipping on Orders Above ₹999 &nbsp;✦&nbsp; Handcrafted with Love
       </div>
 
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -121,7 +125,12 @@ export const Navbar = () => {
 
             {isAuthenticated ? (
               <button
-                onClick={() => navigate(user?.role !== 'customer' ? '/admin' : '/account')}
+                onClick={() => {
+                  if (!user) return;
+                  if (user.role === 'super_admin') navigate(`${SUPER_BASE}/dashboard`);
+                  else if (user.role !== 'customer') navigate(`${ADMIN_BASE}/dashboard`);
+                  else navigate('/account');
+                }}
                 className="p-2 text-charcoal-700 hover:text-charcoal-950 transition-colors"
               >
                 <User size={20} />
@@ -132,7 +141,7 @@ export const Navbar = () => {
               </Link>
             )}
 
-            <button onClick={openCart} className="p-2 text-charcoal-700 hover:text-charcoal-950 transition-colors relative">
+            <button onClick={openCart} data-cart-icon className="p-2 text-charcoal-700 hover:text-charcoal-950 transition-colors relative">
               <ShoppingBag size={20} />
               {itemCount() > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-gold-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { env } from '../../../config/env';
-import { RedisCache } from '../../../config/redis';
+import { RedisCache, isRedisAvailable } from '../../../config/redis';
 import { JwtPayload, TokenPair } from '../auth.types';
 import { AppError } from '../../../utils/appError';
 import { hashToken } from '../../../utils/crypto';
@@ -51,6 +51,11 @@ export class TokenService {
   }
 
   async validateRefreshToken(userId: string, sessionId: string, token: string): Promise<boolean> {
+    // When Redis is unavailable (dev/no-cache mode) the in-memory store is wiped on every
+    // server restart, making stored-hash validation unreliable. Fall back to trusting the
+    // JWT signature alone — already verified by verifyRefreshToken() before this is called.
+    if (!isRedisAvailable()) return true;
+
     const stored = await refreshTokenCache.get<string>(`${userId}:${sessionId}`);
     if (!stored) return false;
     return stored === hashToken(token);

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticate } from '../../middleware/authenticate';
 import { requireAdmin } from '../../middleware/authorize';
-import { sendSuccess } from '../../utils/apiResponse';
+import { sendSuccess, buildPaginationMeta } from '../../utils/apiResponse';
 import { ProductModel } from '../products/models/product.model';
 
 export const inventoryRouter = Router();
@@ -16,6 +16,47 @@ inventoryRouter.get('/summary', async (_req, res) => {
     ProductModel.countDocuments({ status: 'active', $expr: { $lte: ['$stock', '$lowStockThreshold'] } }),
   ]);
   sendSuccess(res, { total, active, outOfStock, lowStock }, 'Inventory summary');
+});
+
+inventoryRouter.get('/products', async (req, res) => {
+  const tab = String(req.query.tab || 'all');
+  const search = req.query.search ? String(req.query.search) : null;
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(100, Number(req.query.limit) || 20);
+  const skip = (page - 1) * limit;
+
+  const filter: any = {};
+  if (tab === 'low') {
+    filter.trackInventory = true;
+    filter.$expr = { $and: [{ $gt: ['$stock', 0] }, { $lte: ['$stock', '$lowStockThreshold'] }] };
+  } else if (tab === 'out') {
+    filter.stock = { $lte: 0 };
+  }
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { sku: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  const [products, total] = await Promise.all([
+    ProductModel.find(filter)
+      .select('title sku stock lowStockThreshold status thumbnail categoryIds')
+      .populate('categoryIds', 'name')
+      .skip(skip)
+      .limit(limit)
+      .sort({ stock: 1 }),
+    ProductModel.countDocuments(filter),
+  ]);
+
+  const meta = buildPaginationMeta(total, page, limit);
+  sendSuccess(res, products, 'Inventory products', 200, meta);
+});
+
+inventoryRouter.patch('/:id/adjust', async (req, res) => {
+  const { quantity, note: _note } = req.body;
+  await ProductModel.findByIdAndUpdate(req.params["id"], { $set: { stock: Number(quantity) } });
+  sendSuccess(res, null, 'Stock adjusted');
 });
 
 inventoryRouter.get('/low-stock', async (_req, res) => {

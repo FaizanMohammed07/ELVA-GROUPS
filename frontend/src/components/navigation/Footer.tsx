@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Youtube, MessageCircle } from 'lucide-react';
+import { Instagram, Facebook, Youtube, MessageCircle, Heart } from 'lucide-react';
 
 const FOOTER_LINKS = {
   Shop: [
@@ -34,7 +34,9 @@ const SOCIAL = [
 ];
 
 export const Footer = () => (
-  <footer className="bg-charcoal-950 text-white">
+  <footer
+    style={{ background: 'linear-gradient(160deg, #1E0812 0%, #2E1428 55%, #1A0820 100%)' }}
+  >
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
         {/* Brand */}
@@ -42,28 +44,52 @@ export const Footer = () => (
           <Link to="/">
             <span className="font-display text-3xl tracking-[0.4em] text-white">ELVA</span>
           </Link>
-          <p className="font-sans text-charcoal-400 text-sm mt-4 leading-relaxed">
+          <p
+            className="font-sans text-sm mt-4 leading-relaxed"
+            style={{ color: '#8A6070' }}
+          >
             India's finest handcrafted gifting & lifestyle brand. Every piece made with love.
           </p>
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-3 mt-6">
             {SOCIAL.map(({ icon: Icon, href, label }) => (
-              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                className="w-9 h-9 bg-charcoal-800 flex items-center justify-center hover:bg-gold-500 transition-colors"
-                aria-label={label}>
-                <Icon size={16} />
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center transition-all duration-200 hover:scale-110"
+                style={{
+                  background: 'rgba(196,96,122,0.12)',
+                  border: '1px solid rgba(196,96,122,0.2)',
+                  color: '#C4A0B0',
+                }}
+                aria-label={label}
+              >
+                <Icon size={15} />
               </a>
             ))}
           </div>
         </div>
 
-        {/* Links */}
+        {/* Link columns */}
         {Object.entries(FOOTER_LINKS).map(([title, links]) => (
           <div key={title}>
-            <h4 className="font-sans font-semibold text-white text-sm tracking-widest uppercase mb-5">{title}</h4>
+            <h4
+              className="font-sans font-semibold text-xs tracking-widest uppercase mb-5"
+              style={{ color: '#D4A853' }}
+            >
+              {title}
+            </h4>
             <ul className="space-y-3">
               {links.map(({ label, href }) => (
                 <li key={label}>
-                  <Link to={href} className="font-sans text-charcoal-400 text-sm hover:text-gold-400 transition-colors">
+                  <Link
+                    to={href}
+                    className="font-sans text-sm transition-colors duration-200"
+                    style={{ color: '#8A6070' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#C4A0B0')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '#8A6070')}
+                  >
                     {label}
                   </Link>
                 </li>
@@ -74,13 +100,18 @@ export const Footer = () => (
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-charcoal-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="font-sans text-charcoal-500 text-xs">
-          © {new Date().getFullYear()} ELVA. All rights reserved. Made with 🤍 in India.
+      <div
+        className="border-t pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+        style={{ borderColor: 'rgba(196,96,122,0.15)' }}
+      >
+        <p className="font-sans text-xs flex items-center gap-1.5" style={{ color: '#5A3040' }}>
+          © {new Date().getFullYear()} ELVA. All rights reserved. Made with
+          <Heart size={11} className="fill-current" style={{ color: '#C4607A' }} />
+          in India.
         </p>
-        <div className="flex items-center gap-4">
-          <img src="/payments/razorpay.svg" alt="Razorpay" className="h-5 opacity-50" />
-          <img src="/payments/upi.svg" alt="UPI" className="h-5 opacity-50" />
+        <div className="flex items-center gap-4 opacity-40">
+          <img src="/payments/razorpay.svg" alt="Razorpay" className="h-5" />
+          <img src="/payments/upi.svg" alt="UPI" className="h-5" />
         </div>
       </div>
     </div>

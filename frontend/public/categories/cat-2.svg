@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A1A2E"/>
+      <stop offset="100%" style="stop-color:#0F0F1E"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- Gift box -->
+  <rect x="110" y="180" width="180" height="150" rx="6" fill="none" stroke="#C9A96E" stroke-width="2"/>
+  <rect x="100" y="155" width="200" height="35" rx="4" fill="none" stroke="#C9A96E" stroke-width="2"/>
+  <!-- Ribbon -->
+  <rect x="190" y="155" width="20" height="175" fill="none" stroke="#E8C97A" stroke-width="2"/>
+  <rect x="110" y="212" width="180" height="18" fill="none" stroke="#E8C97A" stroke-width="2"/>
+  <!-- Bow -->
+  <path d="M 200 155 Q 155 110 135 130 Q 155 155 200 155" fill="none" stroke="#E8C97A" stroke-width="2.5"/>
+  <path d="M 200 155 Q 245 110 265 130 Q 245 155 200 155" fill="none" stroke="#E8C97A" stroke-width="2.5"/>
+  <circle cx="200" cy="155" r="8" fill="#C9A96E" opacity="0.6"/>
+  <!-- Stars decoration -->
+  <circle cx="130" cy="230" r="2" fill="#C9A96E" opacity="0.5"/>
+  <circle cx="270" cy="250" r="2" fill="#C9A96E" opacity="0.4"/>
+  <circle cx="150" cy="290" r="1.5" fill="#C9A96E" opacity="0.3"/>
+  <!-- Outer ring -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#C9A96E" stroke-width="0.5" opacity="0.15"/>
+</svg>

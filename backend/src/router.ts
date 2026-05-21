@@ -17,10 +17,16 @@ import { loyaltyRouter } from './modules/loyalty/loyalty.routes';
 import { referralRouter } from './modules/referrals/referral.routes';
 import { shippingRouter } from './modules/shipping/shipping.routes';
 import { contentRouter } from './modules/content/content.routes';
+import { supportRouter, contactRouter } from './modules/support/support.routes';
+import { customOrderRouter } from './modules/custom-orders/custom-order.routes';
 import { searchRouter } from './modules/search/search.routes';
 import { adminRouter } from './modules/admin/admin.routes';
 import { uploadRouter } from './modules/upload/upload.routes';
 import { aiRouter } from './modules/ai/ai.routes';
+import { materialRouter } from './modules/materials/material.routes';
+import { supplierRouter } from './modules/suppliers/supplier.routes';
+import { packagingItemRouter } from './modules/packaging-items/packaging-item.routes';
+import { costingRouter } from './modules/costing/costing.routes';
 
 export const router = Router();
 
@@ -53,9 +59,18 @@ router.use('/referrals', referralRouter);
 router.use('/notifications', notificationRouter);
 router.use('/analytics', analyticsRouter);
 router.use('/content', contentRouter);
+router.use('/support', supportRouter);
+router.use('/contact', contactRouter);
+router.use('/custom-orders', customOrderRouter);
 router.use('/search', searchRouter);
 router.use('/upload', uploadRouter);
 router.use('/ai', aiRouter);
+
+// CFO / Ops Intelligence (super-admin)
+router.use('/materials', materialRouter);
+router.use('/suppliers', supplierRouter);
+router.use('/packaging-items', packagingItemRouter);
+router.use('/costing', costingRouter);
 
 // Admin
 router.use('/admin', adminRouter);

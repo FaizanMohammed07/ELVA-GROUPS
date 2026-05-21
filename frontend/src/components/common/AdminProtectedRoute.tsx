@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@store/authStore';
 import { ADMIN_LOGIN_SLUG, ADMIN_BASE, SUPER_ADMIN_LOGIN_SLUG } from '@config/admin';
+import { PageLoader } from './PageLoader';
 
 const ADMIN_ROLES = ['admin', 'super_admin', 'support', 'marketing', 'inventory'];
 
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export const AdminProtectedRoute = ({ children, roles }: Props) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, isLoading } = useAuthStore();
   const location = useLocation();
 
   // Determine which login page to redirect to based on current path
@@ -18,6 +19,8 @@ export const AdminProtectedRoute = ({ children, roles }: Props) => {
   const loginPath = isSuperAdminRoute
     ? `/${SUPER_ADMIN_LOGIN_SLUG}/login`
     : `/${ADMIN_LOGIN_SLUG}/login`;
+
+  if (isLoading) return <PageLoader />;
 
   if (!isAuthenticated || !user) {
     return <Navigate to={loginPath} state={{ from: location }} replace />;

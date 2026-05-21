@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { TokenService } from '../modules/auth/services/token.service';
 import { UserRepository } from '../modules/users/repositories/user.repository';
 import { AppError } from '../utils/appError';
-import { logger } from '../utils/logger';
 
 declare global {
   namespace Express {
@@ -57,7 +56,6 @@ export const authenticate = async (
     sessionId: payload.sessionId,
   };
 
-  logger.debug({ userId: user.id, role: user.role }, 'User authenticated');
   next();
 };
 

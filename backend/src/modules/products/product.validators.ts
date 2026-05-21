@@ -25,13 +25,14 @@ const personalizationFieldSchema = z.object({
 
 export const productCreateSchema = z.object({
   title: z.string().min(2).max(200),
-  description: z.string().min(10),
+  description: z.string().min(1).max(10000).default(''),
   shortDescription: z.string().max(500).optional(),
   sku: z.string().min(1),
   type: z.enum(['simple', 'variable', 'digital', 'subscription']).default('simple'),
-  categoryIds: z.array(z.string()).min(1, 'At least one category required'),
+  status: z.enum(['draft', 'active', 'archived']).default('draft'),
+  categoryIds: z.array(z.string()).default([]),
   tags: z.array(z.string()).optional().default([]),
-  images: z.array(z.string()).min(1, 'At least one image required'),
+  images: z.array(z.string()).default([]),
   thumbnail: z.string().optional(),
   price: z.number().min(0),
   compareAtPrice: z.number().min(0).optional(),
@@ -71,7 +72,8 @@ export const productUpdateSchema = productCreateSchema.partial();
 
 export const productQuerySchema = z.object({
   page: z.coerce.number().default(1),
-  limit: z.coerce.number().max(100).default(20),
+  limit: z.coerce.number().max(500).default(20),
+  search: z.string().optional(),
   category: z.string().optional(),
   tags: z.string().optional(),
   minPrice: z.coerce.number().optional(),
@@ -80,5 +82,5 @@ export const productQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   isPersonalizable: z.coerce.boolean().optional(),
   collections: z.string().optional(),
-  status: z.enum(['active', 'draft', 'archived', 'out_of_stock']).optional(),
+  status: z.enum(['active', 'draft', 'archived', 'out_of_stock', 'all']).optional(),
 });

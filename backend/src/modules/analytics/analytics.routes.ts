@@ -19,3 +19,4 @@ analyticsRouter.get('/conversion', AnalyticsController.getConversion);
 analyticsRouter.get('/revenue/categories', requireSuperAdmin, AnalyticsController.getRevenueByCategory);
 analyticsRouter.get('/payments/breakdown', requireSuperAdmin, AnalyticsController.getPaymentBreakdown);
 analyticsRouter.get('/cfo-summary', requireSuperAdmin, AnalyticsController.getCfoSummary);
+analyticsRouter.get('/startup-health', requireSuperAdmin, AnalyticsController.getStartupHealthScore);

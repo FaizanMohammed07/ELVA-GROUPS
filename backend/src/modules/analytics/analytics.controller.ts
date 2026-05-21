@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import dayjs from 'dayjs';
 import { AnalyticsService } from './analytics.service';
 import { sendSuccess } from '../../utils/apiResponse';
+import { ProductCostingModel } from '../costing/models/product-costing.model';
+import { MaterialModel } from '../materials/models/material.model';
 
 const analyticsService = new AnalyticsService();
 
@@ -70,17 +72,71 @@ export const AnalyticsController = {
     const thisMonth = dayjs().startOf('month').toDate();
     const lastMonth = dayjs().subtract(1, 'month').startOf('month').toDate();
     const lastMonthEnd = dayjs().subtract(1, 'month').endOf('month').toDate();
-    const [thisMonthData, lastMonthData, top, conv] = await Promise.all([
+    const [thisMonthData, lastMonthData, top, conv, costBreakdown, lowStockCount] = await Promise.all([
       analyticsService.getRevenueAnalytics(thisMonth, now),
       analyticsService.getRevenueAnalytics(lastMonth, lastMonthEnd),
-      analyticsService.getTopProducts(thisMonth, now, 5),
+      analyticsService.getTopProducts(thisMonth, now, 8),
       analyticsService.getConversionMetrics(thisMonth, now),
+      ProductCostingModel.find({ isActive: true })
+        .select('productTitle netMarginPercent grossMarginPercent trueProductionCost currentSellingPrice')
+        .sort({ netMarginPercent: -1 }).limit(20),
+      MaterialModel.countDocuments({ isActive: true, $expr: { $lte: ['$currentStock', '$reorderPoint'] } }),
     ]);
+
+    // Aggregate profit metrics across all costed products
+    const profitMetrics = costBreakdown.length
+      ? {
+          avgNetMargin: Math.round(costBreakdown.reduce((s, c) => s + c.netMarginPercent, 0) / costBreakdown.length * 10) / 10,
+          avgGrossMargin: Math.round(costBreakdown.reduce((s, c) => s + c.grossMarginPercent, 0) / costBreakdown.length * 10) / 10,
+          topMarginProducts: costBreakdown.slice(0, 5),
+          bottomMarginProducts: [...costBreakdown].sort((a, b) => a.netMarginPercent - b.netMarginPercent).slice(0, 5),
+          costedProductCount: costBreakdown.length,
+        }
+      : null;
+
     sendSuccess(res, {
       currentMonth: thisMonthData,
       lastMonth: lastMonthData,
       topProducts: top,
       conversion: conv,
+      profitMetrics,
+      lowStockMaterials: lowStockCount,
     }, 'CFO Summary');
+  },
+
+  async getStartupHealthScore(_req: Request, res: Response): Promise<void> {
+    const now = new Date();
+    const thisMonth = dayjs().startOf('month').toDate();
+    const lastMonth = dayjs().subtract(1, 'month').startOf('month').toDate();
+    const lastMonthEnd = dayjs().subtract(1, 'month').endOf('month').toDate();
+
+    const [thisMonthData, lastMonthData, costings, alerts] = await Promise.all([
+      analyticsService.getRevenueAnalytics(thisMonth, now),
+      analyticsService.getRevenueAnalytics(lastMonth, lastMonthEnd),
+      ProductCostingModel.find({ isActive: true }).select('netMarginPercent'),
+      analyticsService.getInventoryAlerts(),
+    ]);
+
+    const revenueGrowth = lastMonthData.totalRevenue > 0
+      ? ((thisMonthData.totalRevenue - lastMonthData.totalRevenue) / lastMonthData.totalRevenue) * 100
+      : 0;
+    const avgMargin = costings.length
+      ? costings.reduce((s, c) => s + c.netMarginPercent, 0) / costings.length
+      : 0;
+
+    // Score components (0-100 each)
+    const revenueScore = Math.min(100, Math.max(0, 50 + revenueGrowth));
+    const marginScore = Math.min(100, Math.max(0, avgMargin * 2));
+    const inventoryScore = Math.max(0, 100 - (alerts.lowStock.length + alerts.outOfStock.length * 3) * 5);
+    const orderScore = Math.min(100, (thisMonthData.totalOrders / 10) * 10);
+
+    const healthScore = Math.round((revenueScore * 0.35 + marginScore * 0.35 + inventoryScore * 0.15 + orderScore * 0.15));
+
+    sendSuccess(res, {
+      healthScore,
+      revenueGrowth: Math.round(revenueGrowth * 10) / 10,
+      avgNetMargin: Math.round(avgMargin * 10) / 10,
+      components: { revenueScore, marginScore, inventoryScore, orderScore },
+    }, 'Startup health score');
   },
 };

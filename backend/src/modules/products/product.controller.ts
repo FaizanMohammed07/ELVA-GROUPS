@@ -14,12 +14,14 @@ export const ProductController = {
     const pagination = parsePagination(req);
     const filter: any = {};
 
+    if (req.query.search) filter.search = req.query.search as string;
     if (req.query.category) filter.categoryIds = [req.query.category as string];
     if (req.query.tags) filter.tags = (req.query.tags as string).split(',');
     if (req.query.minPrice) filter.minPrice = Number(req.query.minPrice);
     if (req.query.maxPrice) filter.maxPrice = Number(req.query.maxPrice);
     if (req.query.isPersonalizable) filter.isPersonalizable = req.query.isPersonalizable === 'true';
     if (req.query.collections) filter.collections = [req.query.collections as string];
+    if (req.query.status) filter.status = req.query.status as string;
 
     const [products, total] = await Promise.all([
       productRepo.findAll(filter, pagination),

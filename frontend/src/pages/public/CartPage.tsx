@@ -1,10 +1,31 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCartStore } from '@store/cartStore';
-import { ShoppingBag, Trash2, Plus, Minus } from 'lucide-react';
+import { apiClient } from '@api/client';
+import { ShoppingBag, Trash2, Plus, Minus, Tag, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal, shippingCost, total } = useCartStore();
+  const { items, removeItem, updateQuantity, subtotal, shippingCost, total, couponCode, couponDiscount, applyCoupon, removeCoupon } = useCartStore();
+  const [couponInput, setCouponInput] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setCouponLoading(true);
+    try {
+      const r = await apiClient.post('/coupons/validate', { code: couponInput.trim().toUpperCase(), orderTotal: subtotal() });
+      const { discount } = r.data.data;
+      applyCoupon(couponInput.trim().toUpperCase(), discount);
+      toast.success(`Coupon applied! You save ₹${discount}`);
+      setCouponInput('');
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Invalid coupon code');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -73,6 +94,36 @@ export default function CartPage() {
           <div className="mt-10 lg:mt-0">
             <div className="bg-cream-50 p-6 space-y-4 sticky top-24">
               <h2 className="font-serif text-xl text-charcoal-950">Order Summary</h2>
+
+              {/* Coupon */}
+              {couponCode ? (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 px-3 py-2 text-sm">
+                  <span className="flex items-center gap-2 text-green-700 font-sans font-medium">
+                    <Tag size={13} /> {couponCode} · -₹{couponDiscount.toLocaleString('en-IN')}
+                  </span>
+                  <button onClick={removeCoupon} className="text-green-500 hover:text-red-500 transition-colors">
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    value={couponInput}
+                    onChange={e => setCouponInput(e.target.value.toUpperCase())}
+                    onKeyDown={e => e.key === 'Enter' && handleApplyCoupon()}
+                    placeholder="Coupon code"
+                    className="flex-1 border border-charcoal-200 px-3 py-2 text-sm font-sans focus:outline-none focus:border-charcoal-400 bg-white uppercase tracking-wider"
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    disabled={couponLoading || !couponInput.trim()}
+                    className="bg-charcoal-950 text-white px-4 py-2 text-xs font-sans hover:bg-charcoal-800 transition-colors disabled:opacity-50"
+                  >
+                    {couponLoading ? '…' : 'Apply'}
+                  </button>
+                </div>
+              )}
+
               <div className="space-y-3 font-sans text-sm border-b border-charcoal-200 pb-4">
                 <div className="flex justify-between text-charcoal-600">
                   <span>Subtotal</span>
@@ -82,12 +133,18 @@ export default function CartPage() {
                   <span>Shipping</span>
                   <span>{shippingCost() === 0 ? <span className="text-green-600">FREE</span> : `₹${shippingCost()}`}</span>
                 </div>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Coupon Discount</span>
+                    <span>-₹{couponDiscount.toLocaleString('en-IN')}</span>
+                  </div>
+                )}
               </div>
               <div className="flex justify-between font-sans font-semibold text-charcoal-950">
                 <span>Total</span>
                 <span>₹{total().toLocaleString('en-IN')}</span>
               </div>
-              {shippingCost() > 0 && (
+              {shippingCost() > 0 && subtotal() < 999 && (
                 <p className="text-xs text-charcoal-500 font-sans">Add ₹{(999 - subtotal()).toLocaleString('en-IN')} more for free shipping</p>
               )}
               <Link to="/checkout" className="btn-primary w-full py-4 flex items-center justify-center gap-2 mt-2">

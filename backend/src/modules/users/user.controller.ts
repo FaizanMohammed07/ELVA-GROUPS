@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserRepository } from './repositories/user.repository';
+import { UserModel } from './models/user.model';
 import { sendSuccess } from '../../utils/apiResponse';
 import { parsePagination } from '../../utils/pagination';
 import { buildPaginationMeta } from '../../utils/apiResponse';
@@ -44,6 +45,19 @@ export const UserController = {
   async deleteAddress(req: Request, res: Response): Promise<void> {
     const user = await userRepo.deleteAddress(req.user!.id, req.params["addressId"] as string);
     sendSuccess(res, user.addresses, 'Address removed');
+  },
+
+  async setDefaultAddress(req: Request, res: Response): Promise<void> {
+    const addressId = req.params["addressId"] as string;
+    await UserModel.findByIdAndUpdate(req.user!.id, {
+      $set: { 'addresses.$[].isDefault': false },
+    });
+    await UserModel.findOneAndUpdate(
+      { _id: req.user!.id, 'addresses._id': addressId },
+      { $set: { 'addresses.$.isDefault': true } },
+    );
+    const user = await userRepo.findById(req.user!.id);
+    sendSuccess(res, user?.addresses || [], 'Default address updated');
   },
 
   async updatePreferences(req: Request, res: Response): Promise<void> {

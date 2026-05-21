@@ -15,7 +15,25 @@ export const logger = pino({
         }
       : undefined,
   redact: {
-    paths: ['password', 'token', 'secret', 'authorization', 'cookie', '*.password', '*.token'],
+    paths: [
+      'password',
+      'passwordHash',
+      'token',
+      'accessToken',
+      'refreshToken',
+      'secret',
+      'authorization',
+      'cookie',
+      '*.password',
+      '*.passwordHash',
+      '*.token',
+      '*.accessToken',
+      '*.refreshToken',
+      '*.secret',
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'req.headers["x-api-key"]',
+    ],
     censor: '[REDACTED]',
   },
   serializers: {

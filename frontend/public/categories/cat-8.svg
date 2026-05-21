@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0E1220"/>
+      <stop offset="100%" style="stop-color:#080C18"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- Briefcase/Corporate -->
+  <rect x="110" y="180" width="180" height="140" rx="8" fill="none" stroke="#C9A96E" stroke-width="2"/>
+  <rect x="155" y="162" width="90" height="25" rx="4" fill="none" stroke="#C9A96E" stroke-width="2"/>
+  <rect x="110" y="220" width="180" height="8" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.5"/>
+  <!-- Lock clasp -->
+  <rect x="188" y="215" width="24" height="18" rx="4" fill="none" stroke="#E8C97A" stroke-width="1.5"/>
+  <circle cx="200" cy="224" r="4" fill="none" stroke="#E8C97A" stroke-width="1.5"/>
+  <!-- Corner accents -->
+  <rect x="110" y="180" width="16" height="16" rx="4" fill="none" stroke="#E8C97A" stroke-width="1" opacity="0.5"/>
+  <rect x="274" y="180" width="16" height="16" rx="4" fill="none" stroke="#E8C97A" stroke-width="1" opacity="0.5"/>
+  <rect x="110" y="304" width="16" height="16" rx="4" fill="none" stroke="#E8C97A" stroke-width="1" opacity="0.5"/>
+  <rect x="274" y="304" width="16" height="16" rx="4" fill="none" stroke="#E8C97A" stroke-width="1" opacity="0.5"/>
+  <!-- Stars/sparkles for premium feel -->
+  <circle cx="100" cy="140" r="2" fill="#C9A96E" opacity="0.5"/>
+  <circle cx="300" cy="130" r="2" fill="#C9A96E" opacity="0.5"/>
+  <circle cx="80" cy="300" r="1.5" fill="#C9A96E" opacity="0.4"/>
+  <circle cx="320" cy="310" r="1.5" fill="#C9A96E" opacity="0.4"/>
+  <!-- Decorative lines above -->
+  <line x1="160" y1="130" x2="240" y2="130" stroke="#C9A96E" stroke-width="0.5" opacity="0.3"/>
+  <line x1="170" y1="120" x2="230" y2="120" stroke="#C9A96E" stroke-width="0.5" opacity="0.2"/>
+  <text x="200" y="360" font-family="Georgia, serif" font-size="11" fill="#C9A96E" text-anchor="middle" letter-spacing="4" opacity="0.5">CORPORATE</text>
+</svg>

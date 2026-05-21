@@ -16,6 +16,7 @@ userRouter.get('/me/addresses', UserController.getAddresses);
 userRouter.post('/me/addresses', UserController.addAddress);
 userRouter.put('/me/addresses/:addressId', UserController.updateAddress);
 userRouter.delete('/me/addresses/:addressId', UserController.deleteAddress);
+userRouter.patch('/me/addresses/:addressId/default', UserController.setDefaultAddress);
 userRouter.put('/me/preferences', UserController.updatePreferences);
 userRouter.get('/me/orders', UserController.getMyOrders);
 userRouter.get('/me/sessions', UserController.getMySessions);
