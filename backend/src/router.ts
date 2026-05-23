@@ -27,6 +27,7 @@ import { materialRouter } from './modules/materials/material.routes';
 import { supplierRouter } from './modules/suppliers/supplier.routes';
 import { packagingItemRouter } from './modules/packaging-items/packaging-item.routes';
 import { costingRouter } from './modules/costing/costing.routes';
+import { materialTemplateRouter } from './modules/material-templates/material-template.routes';
 
 export const router = Router();
 
@@ -71,6 +72,7 @@ router.use('/materials', materialRouter);
 router.use('/suppliers', supplierRouter);
 router.use('/packaging-items', packagingItemRouter);
 router.use('/costing', costingRouter);
+router.use('/material-templates', materialTemplateRouter);
 
 // Admin
 router.use('/admin', adminRouter);

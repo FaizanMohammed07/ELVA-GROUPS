@@ -60,6 +60,8 @@ const ProfitIntelligencePage = lazy(() => import('@pages/superadmin/ProfitIntell
 const SuperAdminMaterials = lazy(() => import('@pages/superadmin/MaterialsPage'));
 const SuperAdminSuppliers = lazy(() => import('@pages/superadmin/SuppliersPage'));
 const SuperAdminPackaging = lazy(() => import('@pages/superadmin/PackagingPage'));
+const MaterialTemplatesPage = lazy(() => import('@pages/superadmin/MaterialTemplatesPage'));
+const AdminCategories = lazy(() => import('@pages/admin/CategoriesPage'));
 
 // Admin auth
 const AdminLoginPage = lazy(() => import('@pages/auth/AdminLoginPage'));
@@ -158,6 +160,7 @@ export default function App() {
             <Route path="content" element={<AdminContent />} />
             <Route path="support" element={<AdminSupport />} />
             <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="categories" element={<AdminCategories />} />
           </Route>
 
           {/* Super Admin login */}
@@ -182,6 +185,7 @@ export default function App() {
             <Route path="materials" element={<SuperAdminMaterials />} />
             <Route path="suppliers" element={<SuperAdminSuppliers />} />
             <Route path="packaging" element={<SuperAdminPackaging />} />
+            <Route path="material-templates" element={<MaterialTemplatesPage />} />
           </Route>
 
           {/* Convenience redirect — /admin goes to the actual admin login */}

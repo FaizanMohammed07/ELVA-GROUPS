@@ -8,7 +8,7 @@ import { MobileBottomNav } from '@components/navigation/MobileBottomNav';
 export const PublicLayout = () => (
   <div className="min-h-screen flex flex-col">
     <Navbar />
-    <main className="flex-1">
+    <main className="flex-1 pb-24 md:pb-0">
       <Outlet />
     </main>
     <Footer />

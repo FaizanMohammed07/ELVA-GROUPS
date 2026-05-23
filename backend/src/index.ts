@@ -2,6 +2,7 @@ import 'express-async-errors';
 import { createApp } from './app';
 import { connectDatabase } from './database/connection';
 import { connectRedis } from './config/redis';
+import { seedMaterialTemplates } from './modules/material-templates/material-template.routes';
 import { logger } from './utils/logger';
 import { env } from './config/env';
 
@@ -9,6 +10,7 @@ const bootstrap = async () => {
   try {
     await connectDatabase();
     await connectRedis(); // non-fatal — falls back to in-memory cache if Redis is down
+    await seedMaterialTemplates();
 
     const app = createApp();
 
