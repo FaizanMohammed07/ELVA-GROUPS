@@ -16,4 +16,6 @@ export const authApi = {
   forgotPassword: (email: string) => apiClient.post('/auth/forgot-password', { email }),
   resetPassword: (token: string, password: string) => apiClient.post('/auth/reset-password', { token, password }),
   verifyEmail: (token: string) => apiClient.post('/auth/verify-email', { token }),
+
+  firebaseLogin: (idToken: string) => apiClient.post('/auth/firebase', { idToken }),
 };

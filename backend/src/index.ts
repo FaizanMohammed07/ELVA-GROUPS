@@ -3,6 +3,7 @@ import { createApp } from './app';
 import { connectDatabase } from './database/connection';
 import { connectRedis } from './config/redis';
 import { seedMaterialTemplates } from './modules/material-templates/material-template.routes';
+import { seedIntelligenceData } from './modules/intelligence/seed/intelligence.seed';
 import { logger } from './utils/logger';
 import { env } from './config/env';
 
@@ -11,6 +12,7 @@ const bootstrap = async () => {
     await connectDatabase();
     await connectRedis(); // non-fatal — falls back to in-memory cache if Redis is down
     await seedMaterialTemplates();
+    await seedIntelligenceData();
 
     const app = createApp();
 

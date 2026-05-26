@@ -40,7 +40,7 @@ export const MobileBottomNav = () => {
         {active && (
           <motion.div
             layoutId="nav-glow"
-            className="absolute inset-x-1 inset-y-0.5 rounded-xl"
+            className="absolute inset-x-2 inset-y-1.5 rounded-[18px]"
             style={{ background: 'rgba(212,168,83,0.13)' }}
             transition={{ type: 'spring', stiffness: 420, damping: 34 }}
           />
@@ -98,7 +98,7 @@ export const MobileBottomNav = () => {
       />
 
       <div
-        className="relative flex items-center rounded-[26px] overflow-hidden"
+        className="relative flex items-center rounded-[26px]"
         style={{
           background: 'rgba(18,4,11,0.92)',
           backdropFilter: 'blur(28px)',
@@ -111,12 +111,12 @@ export const MobileBottomNav = () => {
           style={{ background: 'linear-gradient(to right, transparent, rgba(212,168,83,0.3), transparent)' }} />
 
         {/* Left items */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 h-[68px]">
           {LEFT_ITEMS.map(item => <NavItem key={item.href} {...item} />)}
         </div>
 
         {/* Centre — raised Search button */}
-        <div className="relative flex items-center justify-center px-2" style={{ marginTop: -24 }}>
+        <div className="relative flex flex-col items-center justify-end h-[68px] px-2" style={{ transform: 'translateY(-16px)' }}>
           <motion.button
             whileTap={{ scale: 0.88 }}
             whileHover={{ scale: 1.06 }}
@@ -125,22 +125,25 @@ export const MobileBottomNav = () => {
             className="relative w-14 h-14 rounded-full flex items-center justify-center"
             style={{
               background: 'linear-gradient(135deg, #8B2D4E 0%, #C4607A 55%, #D4A853 100%)',
-              boxShadow: '0 -4px 20px rgba(196,96,122,0.5), 0 4px 20px rgba(0,0,0,0.4), 0 0 0 3px rgba(18,4,11,0.92)',
+              boxShadow: '0 8px 32px rgba(196,96,122,0.4), 0 4px 16px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.3)',
             }}
           >
             {/* Inner glow ring */}
             <div className="absolute inset-0 rounded-full"
-              style={{ background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.18) 0%, transparent 60%)' }} />
-            <Search size={20} color="white" strokeWidth={2} className="relative z-10" />
+              style={{ background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.2) 0%, transparent 60%)' }} />
+            <Search size={24} color="white" strokeWidth={2} className="relative z-10 drop-shadow-md" />
           </motion.button>
-          <span className="absolute bottom-1 text-[8px] font-sans font-semibold tracking-wide"
-            style={{ color: 'rgba(255,255,255,0.28)' }}>
+          
+          <span 
+            className="absolute -bottom-1 w-full text-center text-[9px] font-sans font-semibold tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.3)', transform: 'translateY(12px)' }}
+          >
             Search
           </span>
         </div>
 
         {/* Right items */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 h-[68px]">
           {RIGHT_ITEMS.map(item => <NavItem key={item.href} {...item} />)}
         </div>
       </div>

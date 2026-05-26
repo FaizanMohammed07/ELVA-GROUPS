@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense, useState } from 'react';
+import { useEffect, useRef, lazy, Suspense, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import { useAuthStore } from '@store/authStore';
@@ -61,6 +61,7 @@ const SuperAdminMaterials = lazy(() => import('@pages/superadmin/MaterialsPage')
 const SuperAdminSuppliers = lazy(() => import('@pages/superadmin/SuppliersPage'));
 const SuperAdminPackaging = lazy(() => import('@pages/superadmin/PackagingPage'));
 const MaterialTemplatesPage = lazy(() => import('@pages/superadmin/MaterialTemplatesPage'));
+const ProductIntelligencePage = lazy(() => import('@pages/superadmin/ProductIntelligencePage'));
 const AdminCategories = lazy(() => import('@pages/admin/CategoriesPage'));
 
 // Admin auth
@@ -74,6 +75,7 @@ export default function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith(`/${ADMIN_LOGIN_SLUG}`) || location.pathname.startsWith(`/${SUPER_ADMIN_LOGIN_SLUG}`);
   const [splashDone, setSplashDone] = useState(() => !!sessionStorage.getItem(SPLASH_SEEN_KEY) || isAdminRoute);
+  const lenisRef = useRef<Lenis | null>(null);
 
   const handleSplashComplete = () => {
     sessionStorage.setItem(SPLASH_SEEN_KEY, '1');
@@ -91,15 +93,20 @@ export default function App() {
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+    lenisRef.current = lenis;
     const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
-    return () => { lenis.destroy(); };
+    return () => { lenis.destroy(); lenisRef.current = null; };
   }, [isAdminRoute]);
 
   useEffect(() => { initializeAuth(); }, [initializeAuth]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo({ top: 0 });
+    }
   }, [location.pathname]);
 
   return (
@@ -186,6 +193,7 @@ export default function App() {
             <Route path="suppliers" element={<SuperAdminSuppliers />} />
             <Route path="packaging" element={<SuperAdminPackaging />} />
             <Route path="material-templates" element={<MaterialTemplatesPage />} />
+            <Route path="product-intelligence" element={<ProductIntelligencePage />} />
           </Route>
 
           {/* Convenience redirect — /admin goes to the actual admin login */}

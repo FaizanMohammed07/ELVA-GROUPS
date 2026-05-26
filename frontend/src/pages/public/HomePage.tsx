@@ -4,10 +4,11 @@ import {
 } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Gift, Star, Truck, RefreshCw, Shield } from 'lucide-react';
+import { ArrowRight, Gift, Star, Truck, RefreshCw, Shield, Sparkles, ShoppingBag } from 'lucide-react';
 import { productsApi, categoriesApi } from '@api/products.api';
 import { ProductCard } from '@components/products/ProductCard';
 import { CategoryCard } from '@components/categories/CategoryCard';
+import { InstagramReels } from '@components/home/InstagramReels';
 
 const HERO_WORDS = ['Cherish', 'Celebrate', 'Personalise', 'Gift'];
 
@@ -28,57 +29,32 @@ const CAROUSEL_SLIDES = [
   {
     title: 'Premium Candles', desc: 'Hand-poured soy & beeswax — every flame tells a story',
     stat: '50,000+', statLabel: 'Happy Customers', emoji: '🕯️', href: '/category/premium-candles',
-    bg: 'linear-gradient(150deg,#3D0820 0%,#8B2D4E 60%,#C4607A 100%)', accent: '#F9C0D0',
-    image: '/categories/cat-1.svg',
-    floats: [
-      { img: '/products/prod-1.svg', top: '12%', right: '8%',  rotate: 8,  delay: 0.35 },
-      { img: '/products/prod-2.svg', top: '38%', right: '14%', rotate: -5, delay: 0.45 },
-      { img: '/products/prod-3.svg', top: '62%', right: '5%',  rotate: 10, delay: 0.55 },
-    ],
+    bg: '#1A0B12', accent: '#D4A853',
+    image: '/categories/cat_candles_1779782736599.png',
   },
   {
     title: 'Clay Art', desc: 'Sculpted by hand, fired with love, gifted with intention',
     stat: '500+', statLabel: 'Unique Designs', emoji: '🏺', href: '/category/clay-art',
-    bg: 'linear-gradient(150deg,#2A1210 0%,#7A3820 60%,#C4723A 100%)', accent: '#F9C090',
-    image: '/categories/cat-3.svg',
-    floats: [
-      { img: '/products/prod-4.svg', top: '10%', right: '10%', rotate: -7, delay: 0.35 },
-      { img: '/products/prod-5.svg', top: '42%', right: '6%',  rotate: 9,  delay: 0.48 },
-      { img: '/products/prod-1.svg', top: '65%', right: '13%', rotate: -4, delay: 0.58 },
-    ],
+    bg: '#1A100B', accent: '#F9C090',
+    image: '/categories/cat_clay_1779782751534.png',
   },
   {
     title: 'Luxury Hampers', desc: 'Curated for your most unforgettable occasions',
     stat: '100%', statLabel: 'Handcrafted', emoji: '🧺', href: '/category/luxury-hampers',
-    bg: 'linear-gradient(150deg,#0A1A10 0%,#1A5030 60%,#3A8050 100%)', accent: '#90F4C0',
-    image: '/categories/cat-4.svg',
-    floats: [
-      { img: '/products/prod-6.svg', top: '8%',  right: '7%',  rotate: 6,  delay: 0.33 },
-      { img: '/products/prod-7.svg', top: '40%', right: '12%', rotate: -8, delay: 0.44 },
-      { img: '/products/prod-2.svg', top: '66%', right: '4%',  rotate: 4,  delay: 0.54 },
-    ],
+    bg: '#0A1A10', accent: '#90F4C0',
+    image: '/categories/cat_hampers_1779782767460.png',
   },
   {
     title: 'Personalized Gifts', desc: 'Your name, your story — made just for them',
     stat: '4.9★', statLabel: 'Average Rating', emoji: '🎁', href: '/category/personalized-gifts',
-    bg: 'linear-gradient(150deg,#180830 0%,#481878 60%,#7840C0 100%)', accent: '#C8A8FF',
-    image: '/categories/cat-2.svg',
-    floats: [
-      { img: '/products/prod-8.svg', top: '10%', right: '9%',  rotate: -6, delay: 0.36 },
-      { img: '/products/prod-3.svg', top: '44%', right: '5%',  rotate: 11, delay: 0.46 },
-      { img: '/products/prod-5.svg', top: '68%', right: '14%', rotate: -3, delay: 0.56 },
-    ],
+    bg: '#180B22', accent: '#C8A8FF',
+    image: '/categories/cat_personalized_1779782786385.png',
   },
   {
     title: 'Wedding Collections', desc: 'Gifts as eternal as the vows they celebrate',
     stat: '10,000+', statLabel: 'Weddings Gifted', emoji: '💍', href: '/category/wedding-collections',
-    bg: 'linear-gradient(150deg,#201008 0%,#5A3808 60%,#9A6818 100%)', accent: '#F4D890',
-    image: '/categories/cat-5.svg',
-    floats: [
-      { img: '/products/prod-4.svg', top: '9%',  right: '11%', rotate: 7,  delay: 0.34 },
-      { img: '/products/prod-6.svg', top: '41%', right: '7%',  rotate: -9, delay: 0.44 },
-      { img: '/products/prod-8.svg', top: '64%', right: '3%',  rotate: 5,  delay: 0.54 },
-    ],
+    bg: '#22160A', accent: '#F4D890',
+    image: '/categories/cat_wedding_1779782802829.png',
   },
 ];
 
@@ -132,202 +108,64 @@ export default function HomePage() {
       {/* ===== HERO ===== */}
       <section ref={heroRef} className="relative min-h-screen overflow-hidden">
 
-        {/* ── Mobile hero: full-bleed atmospheric ── */}
-        <div className="lg:hidden absolute inset-0">
-          {/* Rich gradient base */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg,#FDF0F5 0%,#F8E8F0 30%,#EFE0F8 65%,#FDF6EC 100%)' }} />
-          {/* Subtle background artwork */}
-          <img src="/hero/hero-bg.svg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none select-none" />
-          {/* Floating orbs on mobile */}
-          <div className="absolute top-[-10%] right-[-15%] w-80 h-80 rounded-full blur-3xl pointer-events-none" style={{ background: 'radial-gradient(circle,rgba(196,96,122,0.28) 0%,transparent 70%)' }} />
-          <div className="absolute bottom-[10%] left-[-10%] w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ background: 'radial-gradient(circle,rgba(212,168,83,0.18) 0%,transparent 70%)' }} />
-          {/* Floating product cards — decorative */}
-          {HERO_CARDS.slice(0, 3).map((card, i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, scale: 0.7, rotate: card.rotate * 0.5 }}
-              animate={{ opacity: 1, scale: 1, rotate: card.rotate, y: [0, i % 2 === 0 ? -8 : 6, 0] }}
-              transition={{
-                opacity: { delay: card.delay, duration: 0.7 },
-                scale:   { delay: card.delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-                y:       { delay: card.delay + 0.6, duration: 3.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' },
-              }}
-              className="absolute rounded-2xl p-3.5 border pointer-events-none"
-              style={{
-                top:  i === 0 ? '14%' : i === 1 ? '36%' : '58%',
-                right: i === 0 ? '5%' : i === 1 ? '18%' : '4%',
-                width: i === 1 ? 92 : 80,
-                background: card.bg,
-                borderColor: 'rgba(196,96,122,0.18)',
-                boxShadow: '0 16px 40px rgba(196,96,122,0.16)',
-              }}
-            >
-              <div className="aspect-square rounded-xl mb-2 flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.75)', fontSize: i === 1 ? 28 : 22 }}>
-                {card.emoji}
-              </div>
-              <p className="font-sans text-[8px] font-bold truncate" style={{ color: '#1A0812' }}>{card.label}</p>
-              <p className="font-display text-sm" style={{ color: '#C4607A' }}>{card.price}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* ── Desktop hero background ── */}
-        <div className="hidden lg:block absolute inset-0"
-          style={{ background: 'linear-gradient(140deg, #1A0810 0%, #2E1228 38%, #1E0820 65%, #150610 100%)' }}>
-          {/* Soft rose bloom — top right */}
-          <div className="absolute top-[-12%] right-[-8%] w-[700px] h-[700px] rounded-full blur-[130px] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(139,45,78,0.38) 0%, transparent 60%)' }} />
-          {/* Gold warmth — bottom left */}
-          <div className="absolute bottom-[-8%] left-[-6%] w-[520px] h-[520px] rounded-full blur-[110px] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(212,168,83,0.18) 0%, transparent 60%)' }} />
-          {/* Deep center glow */}
-          <div className="absolute top-[45%] left-[40%] w-[440px] h-[440px] rounded-full blur-[100px] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(196,96,122,0.13) 0%, transparent 60%)' }} />
-          {/* Horizontal grain lines — architectural feel */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
-            style={{ backgroundImage: 'repeating-linear-gradient(0deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 80px)' }} />
-          {/* Gold corner accent */}
-          <div className="absolute top-0 right-0 w-px h-40 pointer-events-none"
-            style={{ background: 'linear-gradient(to bottom, rgba(212,168,83,0.55), transparent)' }} />
-          <div className="absolute top-0 right-0 h-px w-40 pointer-events-none"
-            style={{ background: 'linear-gradient(to left, rgba(212,168,83,0.55), transparent)' }} />
+        {/* ── Immersive Background ── */}
+        <div className="absolute inset-0">
+          <img src="/hero/hero-3d.png" alt="Luxury Gifts" className="absolute inset-0 w-full h-full object-cover object-[75%_center]" />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #080208 0%, transparent 60%)' }} />
+          <div className="absolute inset-0 hidden sm:block" style={{ background: 'linear-gradient(to right, rgba(8,2,8,0.9) 0%, transparent 70%)' }} />
+          <div className="absolute inset-0 sm:hidden" style={{ background: 'linear-gradient(to right, rgba(8,2,8,0.85) 0%, rgba(8,2,8,0.6) 100%)' }} />
         </div>
 
         {/* ── Content ── */}
         <motion.div style={{ y: heroY, opacity: heroOpacity }}
-          className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-
-          {/* Mobile layout: centered, bottom-half text over the visual */}
-          <div className="lg:hidden flex flex-col justify-end min-h-screen pb-10 pt-[72px]">
-            <div className="text-center">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}
-                className="inline-flex items-center gap-2.5 mb-5">
-                <div className="h-px w-7" style={{ background: '#C4607A' }} />
-                <span className="text-[9px] font-sans tracking-[0.36em] uppercase font-semibold" style={{ color: '#C4607A' }}>India's Finest Handcrafted Brand</span>
-                <div className="h-px w-7" style={{ background: '#C4607A' }} />
-              </motion.div>
-
-              <div className="overflow-hidden">
-                <motion.h1 initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.32, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  className="font-display leading-none"
-                  style={{ fontSize: 'clamp(54px, 14vw, 76px)', color: '#1A0812', letterSpacing: '-0.02em' }}>
-                  Made to
-                </motion.h1>
-              </div>
-              <div className="overflow-hidden" style={{ height: 'clamp(54px, 14vw, 76px)' }}>
-                <AnimatedWords words={HERO_WORDS} size="clamp(54px, 14vw, 76px)" />
-              </div>
-
-              <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.55, duration: 0.6 }}
-                className="font-sans text-[14px] leading-relaxed mt-5 mb-7 mx-auto max-w-[280px]"
-                style={{ color: '#6B3A4E' }}>
-                Handcrafted by skilled artisans, personalized for your most precious moments.
-              </motion.p>
-
-              <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.68, duration: 0.6 }}
-                className="flex flex-col gap-3 mx-auto max-w-xs">
-                <Link to="/products"
-                  className="inline-flex items-center justify-center gap-2.5 py-4 text-[12px] font-bold tracking-[0.22em] uppercase font-sans"
-                  style={{ background: '#1A0812', color: '#FDF6EE' }}>
-                  Explore Collection <ArrowRight size={13} />
-                </Link>
-                <Link to="/gift-finder"
-                  className="inline-flex items-center justify-center gap-2.5 py-3.5 text-[12px] font-bold tracking-[0.22em] uppercase font-sans border"
-                  style={{ borderColor: '#C4607A', color: '#C4607A' }}>
-                  <Gift size={13} /> Find Perfect Gift
-                </Link>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9, duration: 0.6 }}
-                className="flex items-center justify-center gap-8 mt-8 pt-6 border-t mx-8"
-                style={{ borderColor: '#EAD0DA' }}>
-                {[{ n: '50K+', l: 'Customers' }, { n: '4.9★', l: 'Rating' }, { n: '500+', l: 'Products' }].map(item => (
-                  <div key={item.l}>
-                    <div className="font-display text-xl" style={{ color: '#C4607A' }}>{item.n}</div>
-                    <div className="font-sans text-[9px] tracking-wide uppercase mt-0.5" style={{ color: '#9B7080' }}>{item.l}</div>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Desktop layout: dark cinematic 2-col */}
-          <div className="hidden lg:grid lg:grid-cols-2 gap-16 items-center py-32">
-            <div>
-              <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-center gap-3 mb-8">
-                <div className="h-px w-10" style={{ background: 'rgba(212,168,83,0.6)' }} />
-                <span className="text-[10px] font-sans tracking-[0.42em] uppercase font-semibold" style={{ color: 'rgba(212,168,83,0.8)' }}>India's Finest Handcrafted Brand</span>
-                <div className="h-px w-10" style={{ background: 'rgba(212,168,83,0.6)' }} />
-              </motion.div>
-
-              <div className="overflow-hidden mb-1">
-                <motion.h1 initial={{ y: 70, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                  className="font-display leading-none"
-                  style={{ fontSize: 'clamp(60px, 7.5vw, 108px)', color: 'white', letterSpacing: '-0.02em' }}>
-                  Made to
-                </motion.h1>
-              </div>
-              <div className="overflow-hidden mb-8" style={{ height: 'clamp(60px, 7.5vw, 108px)' }}>
-                <AnimatedWords words={HERO_WORDS} size="clamp(60px, 7.5vw, 108px)" color="#D4A853" />
-              </div>
-
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.55, duration: 0.7 }}
-                className="font-sans text-lg leading-relaxed mb-10 max-w-lg" style={{ color: 'rgba(255,255,255,0.52)' }}>
-                Every ELVA piece is a labour of love — handcrafted by skilled artisans, personalized for your most precious moments.
-              </motion.p>
-
-              <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.7 }}
-                className="flex flex-row gap-4">
-                <Link to="/products"
-                  className="group inline-flex items-center gap-3 px-8 py-4 text-sm font-semibold tracking-widest uppercase font-sans transition-all duration-300"
-                  style={{ background: '#D4A853', color: '#08020F' }}>
-                  Explore Collection <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform" />
-                </Link>
-                <Link to="/gift-finder"
-                  className="group inline-flex items-center gap-3 px-8 py-4 text-sm font-semibold tracking-widest uppercase font-sans border transition-all duration-300"
-                  style={{ borderColor: 'rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.72)' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)')}>
-                  <Gift size={15} /> Find Perfect Gift
-                </Link>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                transition={{ delay: 0.95, duration: 0.7 }}
-                className="flex items-center gap-8 mt-12 pt-10 border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                {[{ n: '50K+', l: 'Customers' }, { n: '4.9★', l: 'Avg Rating' }, { n: '500+', l: 'Products' }].map(item => (
-                  <div key={item.l}>
-                    <div className="font-display text-2xl" style={{ color: '#D4A853' }}>{item.n}</div>
-                    <div className="font-sans text-[10px] tracking-[0.28em] uppercase mt-1" style={{ color: 'rgba(255,255,255,0.32)' }}>{item.l}</div>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-
-            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.38, duration: 1, ease: [0.22, 1, 0.36, 1] }}>
-              <ProductGallery />
+          className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 min-h-screen flex flex-col justify-center pt-28 sm:pt-32 pb-16">
+          
+          <div className="max-w-2xl">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-3 mb-8 px-5 py-2.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
+              <Star size={14} className="text-gold-400" fill="#D4A853" />
+              <span className="text-[11px] sm:text-xs font-sans tracking-[0.3em] uppercase text-white/90 font-semibold">India's Finest Handcrafted Brand</span>
             </motion.div>
+
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-white leading-[1.2] mb-8 flex flex-wrap items-center sm:items-baseline gap-x-3 sm:gap-x-5"
+              style={{ fontSize: 'clamp(56px, 10vw, 96px)', letterSpacing: '-0.02em' }}>
+              <span>Made to</span>
+              <span className="overflow-hidden relative inline-flex items-center" style={{ height: '1.2em' }}>
+                <span className="opacity-0 pointer-events-none select-none" style={{ visibility: 'hidden' }}>Personalise</span>
+                <AnimatedWords words={HERO_WORDS} size="clamp(56px, 10vw, 96px)" color="#D4A853" />
+              </span>
+            </motion.h1>
+
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.8 }}
+              className="font-sans text-base sm:text-xl leading-relaxed text-white/70 max-w-lg mb-12">
+              Every ELVA piece is a labour of love — crafted by skilled artisans, personalized for your most precious moments, and delivered with unparalleled luxury.
+            </motion.p>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.8 }}
+              className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <Link to="/products"
+                className="w-full sm:w-auto group inline-flex items-center justify-center gap-3 px-8 py-4 sm:py-5 text-xs sm:text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300 hover:scale-105"
+                style={{ background: '#D4A853', color: '#080208', boxShadow: '0 10px 30px rgba(212,168,83,0.3)' }}>
+                Explore Collection <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link to="/gift-finder"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 sm:py-5 text-xs sm:text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300 border border-white/20 bg-black/20 backdrop-blur-md text-white hover:bg-white/10 hover:border-white/40">
+                <Gift size={16} /> Find Perfect Gift
+              </Link>
+            </motion.div>
+
+
           </div>
         </motion.div>
 
-        {/* Scroll cue — desktop only */}
-        <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 hidden lg:flex flex-col items-center gap-2">
-          <span className="font-sans text-[10px] tracking-[0.35em] uppercase" style={{ color: 'rgba(255,255,255,0.28)' }}>Scroll</span>
-          <div className="w-px h-10" style={{ background: 'linear-gradient(to bottom,rgba(212,168,83,0.5),transparent)' }} />
-        </motion.div>
+
       </section>
 
+
       {/* ===== MARQUEE — desktop only (mobile already has navbar announcement) ===== */}
-      <div className="hidden sm:block py-4 overflow-hidden" style={{ background: '#1E0812' }}>
+      <div className="hidden sm:block py-4 overflow-hidden" style={{ background: '#100610' }}>
         <MarqueeStrip items={MARQUEE_ITEMS} />
       </div>
 
@@ -335,7 +173,7 @@ export default function HomePage() {
       <VisualCarousel />
 
       {/* ===== CATEGORIES ===== */}
-      <section className="py-14 lg:py-28 bg-white">
+      <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             eyebrow="Collections"
@@ -343,7 +181,7 @@ export default function HomePage() {
             subtitle="From personalized gifts to luxury hampers — discover what makes your moments unforgettable."
           />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12">
-            {(categories || PLACEHOLDER_CATEGORIES).slice(0, 8).map((cat: any, i: number) => (
+            {(!categories || categories.length === 0 ? PLACEHOLDER_CATEGORIES : categories).slice(0, 8).map((cat: any, i: number) => (
               <CategoryCard key={cat.id || i} category={cat} index={i} />
             ))}
           </div>
@@ -355,9 +193,92 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== SIGNATURE BUNDLE HIGH-IMPACT PROMO ===== */}
+      <section className="py-6 sm:py-10 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative overflow-hidden rounded-[32px] border border-[#D4A853]/30 shadow-[0_20px_50px_rgba(212,168,83,0.12)] bg-gradient-to-br from-[#1E0812] to-[#0D0208] p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 lg:gap-12"
+          >
+            {/* Decorative Ambient Lights */}
+            <div className="absolute -top-24 -left-24 w-80 h-80 bg-[#D4A853]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-[#C4607A]/10 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Left: Bundle High-End generated Image */}
+            <div className="w-full lg:w-1/2 relative flex-shrink-0">
+              <div className="aspect-[4/3] rounded-[24px] overflow-hidden border border-white/10 shadow-2xl relative group cursor-zoom-in">
+                <img 
+                  src="/products/signature-bundle.png" 
+                  alt="Elva Ultimate Handcrafted Luxury Bundle" 
+                  className="w-full h-full object-cover transition-transform duration-[8s] group-hover:scale-105"
+                />
+                <div className="absolute top-4 left-4 bg-charcoal-950/80 backdrop-blur-md text-[#D4A853] px-3.5 py-1.5 rounded-full text-[9px] uppercase tracking-[0.25em] font-bold border border-[#D4A853]/30 flex items-center gap-2">
+                  <Sparkles size={11} /> Studio Best Seller
+                </div>
+              </div>
+            </div>
+
+            {/* Right: High-Conversion Copywriting */}
+            <div className="w-full lg:w-1/2 text-left space-y-6 relative z-10 text-white">
+              <span className="text-[10px] font-sans tracking-[0.4em] uppercase text-[#D4A853] font-bold block">
+                Signature Collection
+              </span>
+              <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl leading-tight text-white">
+                The Ultimate Handcrafted <span className="italic text-[#D4A853]">Luxury Bundle</span>
+              </h3>
+              <p className="font-sans text-sm sm:text-base leading-relaxed text-[#C8A8B8]">
+                A curated combination of our bestselling Personalized Scented Candle, hand-carved terracotta Clay Ring Dish, and organic botanical lavender mist—all elegantly arranged inside our signature keepsake dark-walnut chest with solid brass hinges.
+              </p>
+              
+              {/* Highlight Perks */}
+              <div className="grid grid-cols-2 gap-4 border-y border-white/10 py-5">
+                <div className="flex items-start gap-3">
+                  <Gift size={18} className="text-[#D4A853] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h5 className="font-sans text-xs font-bold uppercase tracking-wider text-white">Ready-to-Gift</h5>
+                    <p className="font-sans text-[10px] text-[#8A6070] mt-0.5">Complimentary wooden chest</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Truck size={18} className="text-[#D4A853] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h5 className="font-sans text-xs font-bold uppercase tracking-wider text-white">Free Express</h5>
+                    <p className="font-sans text-[10px] text-[#8A6070] mt-0.5">Ships within 24 hours</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price & Quick Checkout */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-2">
+                <div className="flex flex-col">
+                  <span className="text-[9px] uppercase tracking-widest text-[#8A6070] font-bold mb-1">Special Offer</span>
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-sans text-3xl font-black text-[#D4A853]">₹2,499</span>
+                    <span className="font-sans text-sm text-[#8A6070] line-through">₹3,198</span>
+                  </div>
+                </div>
+                <Link 
+                  to="/products"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 sm:py-4.5 text-xs sm:text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#D4A853]/20"
+                  style={{ background: '#D4A853', color: '#1E0812', boxShadow: '0 10px 30px rgba(212,168,83,0.3)' }}
+                >
+                  <ShoppingBag size={14} /> Shop Bundle Now
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ===== INSTAGRAM REELS ===== */}
+      <InstagramReels />
+
       {/* ===== FEATURED PRODUCTS ===== */}
       <section
-        className="py-14 lg:py-28"
+        className="py-10 sm:py-16"
         style={{ background: 'linear-gradient(160deg, #FDF6EE 0%, #FFF5F7 100%)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -367,7 +288,7 @@ export default function HomePage() {
             subtitle="Our most-loved, handpicked products — crafted for those who appreciate the finest things."
           />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mt-8 sm:mt-12">
-            {(featuredProducts || PLACEHOLDER_PRODUCTS).slice(0, 8).map((product: any, i: number) => (
+            {(!featuredProducts || featuredProducts.length === 0 ? PLACEHOLDER_PRODUCTS : featuredProducts).slice(0, 8).map((product: any, i: number) => (
               <ProductCard key={product.id || i} product={product} index={i} />
             ))}
           </div>
@@ -381,11 +302,11 @@ export default function HomePage() {
 
       {/* ===== STORY SECTION ===== */}
       <section
-        className="py-14 lg:py-28 overflow-hidden"
+        className="py-10 sm:py-16 overflow-hidden"
         style={{ background: 'linear-gradient(160deg, #1E0812 0%, #2E1428 55%, #1A0820 100%)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <FadeInView>
               <p
                 className="text-xs font-sans tracking-[0.4em] uppercase mb-6 font-semibold"
@@ -397,52 +318,95 @@ export default function HomePage() {
                 className="font-display leading-tight mb-8 text-white"
                 style={{ fontSize: 'clamp(34px, 4vw, 54px)' }}
               >
-                Every Gift Tells<br />a Beautiful Story
+                Every Gift Tells<br />a Beautiful <span className="italic text-[#D4A853]">Story</span>
               </h2>
               <p className="font-sans text-lg leading-relaxed mb-6" style={{ color: '#C8A8B8' }}>
                 ELVA was born from a simple belief: the most meaningful gifts are the ones
                 made by hand, with love, and personalized for the person you cherish most.
               </p>
-              <p className="font-sans leading-relaxed mb-10" style={{ color: '#8A6070' }}>
+              <p className="font-sans leading-relaxed mb-8" style={{ color: '#8A6070' }}>
                 Our artisans spend countless hours perfecting every detail — from hand-poured
                 candles to intricate clay sculptures — ensuring each ELVA piece is worthy of
                 your most precious moments.
               </p>
+
+              {/* Luxury Studio Incentive Badge */}
+              <div className="mb-10 p-5 rounded-2xl border border-[#D4A853]/20 bg-white/[0.02] backdrop-blur-md flex items-center gap-4 max-w-xl transition-colors hover:bg-white/[0.04]">
+                <span className="text-2xl select-none">✨</span>
+                <div>
+                  <p className="text-xs font-sans font-bold text-white uppercase tracking-wider mb-1">
+                    Special Studio Promotion
+                  </p>
+                  <p className="text-xs font-sans text-[#C8A8B8] leading-relaxed">
+                    Enjoy <strong className="text-[#D4A853]">Free Premium Wooden Gift Box Packaging</strong> and a custom handwritten card on all orders above ₹999.
+                  </p>
+                </div>
+              </div>
+
               <Link
-                to="/about"
-                className="inline-flex items-center gap-3 px-8 py-4 text-sm font-semibold tracking-widest uppercase font-sans transition-all duration-300 hover:gap-5"
+                to="/products"
+                className="inline-flex items-center gap-3 px-8 py-4 text-sm font-semibold tracking-widest uppercase font-sans transition-all duration-300 hover:gap-5 shadow-lg hover:shadow-[#D4A853]/15 hover:scale-102"
                 style={{ background: '#D4A853', color: '#1E0812' }}
               >
-                Our Story <ArrowRight size={15} />
+                Shop Collection <ArrowRight size={15} />
               </Link>
             </FadeInView>
 
             <FadeInView delay={0.2}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div className="aspect-[3/4] overflow-hidden rounded-sm" style={{ background: '#2E1428' }}>
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+                {/* Column 1 */}
+                <div className="space-y-4 sm:space-y-6">
+                  {/* Photo 1: Clay Sculpting */}
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
                     <img
-                      src="/story/artisan-1.svg"
-                      alt="Artisan"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                      src="/story/artisan-1.png"
+                      alt="Artisan hands sculpting clay"
+                      className="w-full h-full object-cover transition-transform duration-[8s] group-hover:scale-105"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                    {/* Floating Premium Badge */}
+                    <div className="absolute bottom-4 left-4 right-4 text-white">
+                      <span className="text-[9px] font-sans font-bold tracking-widest uppercase bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                        Pure Clay Art
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-6 rounded-sm border" style={{ borderColor: '#4A2038', background: 'rgba(212,168,83,0.07)' }}>
-                    <p className="font-display text-2xl mb-1" style={{ color: '#D4A853' }}>50,000+</p>
-                    <p className="font-sans text-xs" style={{ color: '#8A6070' }}>Gifts Delivered</p>
+                  
+                  {/* Stat Card 1 */}
+                  <div 
+                    className="p-5 sm:p-6 rounded-[24px] border transition-all duration-300 hover:scale-102 hover:shadow-[0_10px_30px_rgba(212,168,83,0.08)] cursor-default text-center sm:text-left" 
+                    style={{ borderColor: 'rgba(212,168,83,0.18)', background: 'linear-gradient(135deg, rgba(212,168,83,0.05) 0%, rgba(212,168,83,0.02) 100%)', backdropFilter: 'blur(8px)' }}
+                  >
+                    <p className="font-display text-2xl sm:text-3xl font-black mb-1.5" style={{ color: '#D4A853' }}>50,000+</p>
+                    <p className="font-sans text-[10px] sm:text-xs uppercase tracking-widest font-semibold" style={{ color: '#C8A8B8' }}>Gifts Delivered</p>
                   </div>
                 </div>
-                <div className="space-y-4 mt-8">
-                  <div className="p-6 rounded-sm border" style={{ borderColor: '#4A2038', background: 'rgba(196,96,122,0.07)' }}>
-                    <p className="font-display text-2xl mb-1" style={{ color: '#D4A853' }}>100%</p>
-                    <p className="font-sans text-xs" style={{ color: '#8A6070' }}>Handcrafted</p>
+
+                {/* Column 2 */}
+                <div className="space-y-4 sm:space-y-6 mt-6 sm:mt-10 md:mt-12">
+                  {/* Stat Card 2 */}
+                  <div 
+                    className="p-5 sm:p-6 rounded-[24px] border transition-all duration-300 hover:scale-102 hover:shadow-[0_10px_30px_rgba(196,96,122,0.08)] cursor-default text-center sm:text-left" 
+                    style={{ borderColor: 'rgba(196,96,122,0.18)', background: 'linear-gradient(135deg, rgba(196,96,122,0.05) 0%, rgba(196,96,122,0.02) 100%)', backdropFilter: 'blur(8px)' }}
+                  >
+                    <p className="font-display text-2xl sm:text-3xl font-black mb-1.5" style={{ color: '#D4A853' }}>100%</p>
+                    <p className="font-sans text-[10px] sm:text-xs uppercase tracking-widest font-semibold" style={{ color: '#C8A8B8' }}>Handcrafted</p>
                   </div>
-                  <div className="aspect-[3/4] overflow-hidden rounded-sm" style={{ background: '#2E1428' }}>
+
+                  {/* Photo 2: Luxury Scented Candles */}
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
                     <img
-                      src="/story/artisan-2.svg"
-                      alt="Craft"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                      src="/story/artisan-2.png"
+                      alt="Luxury scented soy candles"
+                      className="w-full h-full object-cover transition-transform duration-[8s] group-hover:scale-105"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                    {/* Floating Premium Badge */}
+                    <div className="absolute bottom-4 left-4 right-4 text-white">
+                      <span className="text-[9px] font-sans font-bold tracking-widest uppercase bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                        Organic Beeswax
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -452,7 +416,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== NEW ARRIVALS ===== */}
-      <section className="py-14 lg:py-28 bg-white">
+      <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             eyebrow="Just In"
@@ -460,7 +424,7 @@ export default function HomePage() {
             subtitle="Fresh from our artisans' hands — be the first to own something truly special."
           />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mt-8 sm:mt-12">
-            {(newArrivals || PLACEHOLDER_PRODUCTS).slice(0, 4).map((product: any, i: number) => (
+            {(!newArrivals || newArrivals.length === 0 ? PLACEHOLDER_PRODUCTS : newArrivals).slice(0, 4).map((product: any, i: number) => (
               <ProductCard key={product.id || i} product={product} index={i} showNewBadge />
             ))}
           </div>
@@ -469,7 +433,7 @@ export default function HomePage() {
 
       {/* ===== GIFT FINDER BANNER ===== */}
       <section
-        className="py-14 sm:py-20 overflow-hidden relative"
+        className="py-10 sm:py-14 overflow-hidden relative"
         style={{ background: 'linear-gradient(135deg, #8B2D4E 0%, #C4607A 38%, #E8806A 68%, #D4A853 100%)' }}
       >
         {/* Floating emojis */}
@@ -530,7 +494,7 @@ export default function HomePage() {
 
       {/* ===== TESTIMONIALS ===== */}
       <section
-        className="py-14 lg:py-28"
+        className="py-10 sm:py-16"
         style={{ background: 'linear-gradient(135deg, #FFF8F2 0%, #FFF0F5 50%, #F8F5FF 100%)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -547,27 +511,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== FEATURES ===== */}
-      <section className="py-10 sm:py-16 bg-white border-t border-charcoal-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-            {FEATURES.map(({ icon: Icon, title, description, color }, i) => (
-              <FeatureCard
-                key={title}
-                icon={Icon}
-                title={title}
-                description={description}
-                color={color}
-                index={i}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ===== NEWSLETTER ===== */}
       <section
-        className="py-20 relative overflow-hidden"
+        className="py-12 sm:py-16 relative overflow-hidden"
         style={{ background: 'linear-gradient(160deg, #1E0812 0%, #3A1428 55%, #1A0820 100%)' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -629,6 +575,8 @@ export default function HomePage() {
 
 /* ─────────────────────────── HELPER COMPONENTS ─────────────────────────── */
 
+
+
 const AnimatedWords = ({ words, size = 'clamp(60px, 7.5vw, 108px)', color = '#C4607A' }: { words: string[]; size?: string; color?: string }) => {
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -639,11 +587,11 @@ const AnimatedWords = ({ words, size = 'clamp(60px, 7.5vw, 108px)', color = '#C4
     <AnimatePresence mode="wait">
       <motion.span
         key={words[index]}
-        initial={{ y: 80, opacity: 0, skewY: 4 }}
+        initial={{ y: 50, opacity: 0, skewY: 4 }}
         animate={{ y: 0, opacity: 1, skewY: 0 }}
-        exit={{ y: -80, opacity: 0, skewY: -4 }}
+        exit={{ y: -50, opacity: 0, skewY: -4 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="block font-display leading-none"
+        className="absolute inset-x-0 top-0 bottom-0 flex items-center font-display leading-none"
         style={{ fontSize: size, color, letterSpacing: '-0.02em' }}
       >
         {words[index]}
@@ -652,115 +600,6 @@ const AnimatedWords = ({ words, size = 'clamp(60px, 7.5vw, 108px)', color = '#C4
   );
 };
 
-
-const ProductGallery = () => (
-  <div className="relative h-[600px] w-full select-none">
-
-    {/* Ghost ELVA text — background architectural element */}
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-      <span
-        className="font-display font-bold leading-none"
-        style={{
-          fontSize: 'clamp(140px, 18vw, 220px)',
-          color: 'transparent',
-          WebkitTextStroke: '1px rgba(212,168,83,0.07)',
-          letterSpacing: '-0.04em',
-          userSelect: 'none',
-        }}
-      >
-        ELVA
-      </span>
-    </div>
-
-    {/* Ambient glow center */}
-    <div className="absolute top-[38%] left-[42%] -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full blur-[80px] pointer-events-none"
-      style={{ background: 'radial-gradient(circle, rgba(139,45,78,0.22) 0%, transparent 70%)' }} />
-
-    {/* Vertical gold line — right edge */}
-    <div className="absolute top-12 right-12 w-px h-32 pointer-events-none"
-      style={{ background: 'linear-gradient(to bottom, rgba(212,168,83,0.45), transparent)' }} />
-    <div className="absolute top-12 right-12 h-px w-16 pointer-events-none"
-      style={{ background: 'linear-gradient(to right, rgba(212,168,83,0.45), transparent)' }} />
-
-    {/* Frame 1 — Main large (cat-1) */}
-    <motion.div
-      initial={{ opacity: 0, y: 50, rotate: -4 }}
-      animate={{ opacity: 1, y: 0, rotate: -4 }}
-      transition={{ delay: 0.4, duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute overflow-hidden"
-      style={{ top: '4%', left: '6%', width: 248, height: 326, borderRadius: 3, border: '1px solid rgba(212,168,83,0.18)', boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)' }}
-    >
-      <img src="/categories/cat-1.svg" alt="" draggable={false}
-        className="w-full h-full object-cover pointer-events-none"
-        style={{ filter: 'saturate(1.15) brightness(0.78)' }} />
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,2,15,0.82) 0%, rgba(8,2,15,0.1) 50%, transparent 100%)' }} />
-      <div className="absolute bottom-5 left-5">
-        <p className="font-sans text-[8px] tracking-[0.45em] uppercase mb-1" style={{ color: 'rgba(212,168,83,0.65)' }}>Handcrafted</p>
-        <p className="font-display text-lg leading-none" style={{ color: 'white' }}>Premium Candles</p>
-      </div>
-    </motion.div>
-
-    {/* Frame 2 — Secondary (cat-3) */}
-    <motion.div
-      initial={{ opacity: 0, y: 60, rotate: 5 }}
-      animate={{ opacity: 1, y: 0, rotate: 5 }}
-      transition={{ delay: 0.58, duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute overflow-hidden"
-      style={{ top: '28%', right: '4%', width: 196, height: 258, borderRadius: 3, border: '1px solid rgba(196,96,122,0.2)', boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03)' }}
-    >
-      <img src="/categories/cat-3.svg" alt="" draggable={false}
-        className="w-full h-full object-cover pointer-events-none"
-        style={{ filter: 'saturate(1.1) brightness(0.75)' }} />
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,2,15,0.85) 0%, transparent 55%)' }} />
-      <div className="absolute bottom-4 left-4">
-        <p className="font-sans text-[8px] tracking-[0.4em] uppercase mb-1" style={{ color: 'rgba(212,168,83,0.6)' }}>Artisan Made</p>
-        <p className="font-display text-base leading-none" style={{ color: 'white' }}>Clay Art</p>
-      </div>
-    </motion.div>
-
-    {/* Frame 3 — Accent square (cat-5) */}
-    <motion.div
-      initial={{ opacity: 0, y: 35, rotate: 2 }}
-      animate={{ opacity: 1, y: 0, rotate: 2 }}
-      transition={{ delay: 0.74, duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute overflow-hidden"
-      style={{ bottom: '6%', left: '28%', width: 172, height: 172, borderRadius: 3, border: '1px solid rgba(255,255,255,0.09)', boxShadow: '0 20px 56px rgba(0,0,0,0.5)' }}
-    >
-      <img src="/categories/cat-5.svg" alt="" draggable={false}
-        className="w-full h-full object-cover pointer-events-none"
-        style={{ filter: 'saturate(1.0) brightness(0.72)' }} />
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(8,2,15,0.88) 0%, transparent 55%)' }} />
-      <div className="absolute bottom-3 left-4">
-        <p className="font-display text-sm leading-none" style={{ color: 'white' }}>Wedding</p>
-      </div>
-    </motion.div>
-
-    {/* Floating tag — "New Collection" */}
-    <motion.div
-      className="absolute font-sans text-[10px] font-semibold tracking-[0.32em] uppercase"
-      style={{ top: '10%', right: '7%', border: '1px solid rgba(212,168,83,0.32)', color: '#D4A853', background: 'rgba(8,2,15,0.82)', padding: '6px 14px', borderRadius: 2, backdropFilter: 'blur(8px)' }}
-      animate={{ y: [0, -9, 0] }}
-      transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      New Collection
-    </motion.div>
-
-    {/* Floating stat card */}
-    <motion.div
-      className="absolute"
-      style={{ bottom: '20%', right: '6%', background: 'rgba(8,2,15,0.88)', border: '1px solid rgba(255,255,255,0.07)', padding: '14px 18px', borderRadius: 2, backdropFilter: 'blur(12px)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}
-      animate={{ y: [0, 8, 0] }}
-      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.6 }}
-    >
-      <p className="font-display text-3xl leading-none" style={{ color: '#D4A853' }}>4.9</p>
-      <p className="font-sans text-[8px] tracking-[0.36em] uppercase mt-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Star Rated</p>
-    </motion.div>
-
-    {/* Bottom horizontal gold line */}
-    <div className="absolute bottom-16 left-6 w-20 h-px pointer-events-none"
-      style={{ background: 'linear-gradient(to right, rgba(212,168,83,0.4), transparent)' }} />
-  </div>
-);
 
 const MarqueeStrip = ({ items }: { items: string[] }) => {
   const doubled = [...items, ...items];
@@ -786,8 +625,8 @@ const MarqueeStrip = ({ items }: { items: string[] }) => {
 };
 
 const N_SLIDES = CAROUSEL_SLIDES.length;
-const THUMB_W = 72;
-const GAP = 10;
+const THUMB_W = 56;
+const GAP = 8;
 
 const VisualCarousel = () => {
   const [active, setActive] = useState(0);
@@ -804,164 +643,67 @@ const VisualCarousel = () => {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden py-16"
       style={{ background: '#080208' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="w-full h-px" style={{ background: 'linear-gradient(to right,transparent,rgba(212,168,83,0.28) 30%,rgba(212,168,83,0.28) 70%,transparent)' }} />
-
-      {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-5 flex items-center justify-between">
-        <p className="font-sans text-[10px] tracking-[0.48em] uppercase font-semibold" style={{ color: 'rgba(212,168,83,0.5)' }}>Our Collections</p>
-        <div className="flex items-center gap-2">
-          {CAROUSEL_SLIDES.map((_, i) => (
-            <motion.button key={i} onClick={() => setActive(i)}
-              animate={{ width: i === active ? 28 : 6, opacity: i === active ? 1 : 0.28 }}
-              transition={{ duration: 0.35 }}
-              className="h-[2px] rounded-full" style={{ background: '#D4A853' }} />
-          ))}
-        </div>
+      <div className="text-center mb-12">
+        <p className="font-sans text-[10px] tracking-[0.48em] uppercase font-semibold" style={{ color: '#D4A853' }}>
+          Discover
+        </p>
+        <h2 className="font-display text-white text-4xl mt-3">Our Collections</h2>
       </div>
 
-      {/* ── Desktop: expanding accordion ── */}
-      <div className="hidden lg:flex max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10"
-        style={{ gap: GAP, height: 520 }}>
+      <div className="relative w-full max-w-7xl mx-auto h-[500px] flex items-center justify-center" style={{ perspective: 1200 }}>
         {CAROUSEL_SLIDES.map((s, i) => {
           const isActive = i === active;
-          const activeW = `calc(100% - ${(N_SLIDES - 1) * (THUMB_W + GAP)}px)`;
+          const isPrev = i === (active - 1 + N_SLIDES) % N_SLIDES;
+          const isNext = i === (active + 1) % N_SLIDES;
+          
+          let x = 0;
+          let z = 0;
+          let rotateY = 0;
+          let opacity = 0;
+          let scale = 1;
+          let zIndex = 10;
+
+          if (isActive) {
+            x = 0; z = 100; rotateY = 0; opacity = 1; scale = 1.05; zIndex = 40;
+          } else if (isPrev) {
+            x = -40; z = -200; rotateY = 30; opacity = 0.5; scale = 0.85; zIndex = 20;
+          } else if (isNext) {
+            x = 40; z = -200; rotateY = -30; opacity = 0.5; scale = 0.85; zIndex = 20;
+          } else {
+            // hidden in back
+            x = 0; z = -400; rotateY = 0; opacity = 0; scale = 0.6; zIndex = 0;
+          }
+
           return (
-            <motion.div key={i}
-              animate={{ width: isActive ? activeW : THUMB_W }}
-              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+            <motion.div
+              key={i}
               onClick={() => setActive(i)}
-              className="relative flex-shrink-0 overflow-hidden cursor-pointer"
-              style={{ borderRadius: 20, height: '100%' }}
+              animate={{ x: `${x}%`, z, rotateY, opacity, scale, zIndex }}
+              transition={{ duration: 0.8, type: 'spring', bounce: 0.15 }}
+              className="absolute top-0 w-full max-w-[320px] sm:max-w-md h-full cursor-pointer rounded-2xl overflow-hidden"
+              style={{ transformStyle: 'preserve-3d', boxShadow: isActive ? `0 20px 80px ${s.accent}25` : '0 10px 30px rgba(0,0,0,0.5)' }}
             >
-              {/* ── Base illustration (always visible, zoom & filter driven by active) ── */}
-              <motion.img
-                src={s.image} alt={s.title} draggable={false}
-                className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-                animate={{ scale: isActive ? 1.0 : 1.14, filter: isActive ? 'saturate(1.2) brightness(0.72)' : 'saturate(0.3) brightness(0.28)' }}
-                transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-              />
-
-              {/* Gradient vignette */}
-              <div className="absolute inset-0 pointer-events-none"
-                style={{ background: 'linear-gradient(160deg,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.72) 70%,rgba(0,0,0,0.96) 100%)' }} />
-
-              {/* Accent screen tint */}
-              <motion.div className="absolute inset-0 pointer-events-none"
-                animate={{ opacity: isActive ? 0.14 : 0 }} transition={{ duration: 0.7 }}
-                style={{ background: `radial-gradient(ellipse at 30% 20%, ${s.accent} 0%, transparent 60%)`, mixBlendMode: 'screen' }} />
-
-              {/* ── Inactive: vertical title only ── */}
-              <motion.div className="absolute inset-0 flex items-center justify-center select-none"
-                animate={{ opacity: isActive ? 0 : 1 }} transition={{ duration: 0.2 }}>
-                <p className="font-sans text-[9px] font-bold tracking-[0.4em] uppercase"
-                  style={{ color: 'rgba(255,255,255,0.4)', writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}>
-                  {s.title}
-                </p>
-              </motion.div>
-
-              {/* ── Active: split layout ── */}
-              <motion.div className="absolute inset-0 p-7 flex flex-col justify-between"
-                animate={{ opacity: isActive ? 1 : 0 }} transition={{ duration: 0.35, delay: isActive ? 0.22 : 0 }}>
-
-                {/* Top row: emoji + floating product thumbnails */}
-                <div className="flex items-start justify-between">
-                  {/* Emoji with glow */}
-                  <div className="relative">
-                    <motion.div className="absolute -inset-5 rounded-full blur-2xl pointer-events-none"
-                      animate={{ opacity: isActive ? 0.5 : 0, scale: isActive ? 1 : 0.4 }}
-                      transition={{ delay: 0.3, duration: 0.6 }}
-                      style={{ background: s.accent }} />
-                    <motion.span className="relative text-[68px] leading-none block select-none"
-                      animate={{ scale: isActive ? 1 : 0.4, opacity: isActive ? 1 : 0 }}
-                      transition={{ delay: 0.25, type: 'spring', stiffness: 220, damping: 16 }}
-                      style={{ filter: `drop-shadow(0 4px 24px ${s.accent}99)` }}>
-                      {s.emoji}
-                    </motion.span>
-                  </div>
-
-                  {/* Floating product thumbnails — right side */}
-                  <div className="flex flex-col gap-2.5 items-end">
-                    {s.floats.map((f, fi) => (
-                      <motion.div key={fi}
-                        animate={{
-                          opacity: isActive ? 1 : 0,
-                          y: isActive ? [0, -6, 0] : 0,
-                          rotate: f.rotate,
-                          scale: isActive ? 1 : 0.7,
-                        }}
-                        transition={{
-                          opacity: { delay: f.delay, duration: 0.4 },
-                          scale:   { delay: f.delay, duration: 0.4, type: 'spring' },
-                          y:       { delay: f.delay + 0.5, duration: 2.8 + fi * 0.5, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' },
-                        }}
-                        className="select-none pointer-events-none"
-                        style={{ width: 76 }}
-                      >
-                        <div style={{
-                          borderRadius: 14, overflow: 'hidden',
-                          border: `1px solid ${s.accent}33`,
-                          boxShadow: `0 8px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07)`,
-                          backdropFilter: 'blur(4px)',
-                        }}>
-                          <img src={f.img} alt="" className="w-full aspect-square object-cover"
-                            style={{ filter: 'brightness(0.85) saturate(1.15)' }} />
-                        </div>
-                        {/* Price tag */}
-                        <div className="mt-1.5 mx-1 px-2 py-0.5 rounded-full text-center"
-                          style={{ background: 'rgba(0,0,0,0.55)', border: `1px solid ${s.accent}44`, backdropFilter: 'blur(8px)' }}>
-                          <span className="font-sans text-[9px] font-semibold tracking-wide" style={{ color: s.accent }}>
-                            ₹{(899 + fi * 400).toLocaleString('en-IN')}
-                          </span>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Bottom: text block */}
-                <div>
-                  {/* Thin gold accent bar */}
-                  <motion.div className="h-[2px] rounded-full mb-4"
-                    animate={{ width: isActive ? 40 : 0 }} transition={{ delay: 0.38, duration: 0.4 }}
-                    style={{ background: `linear-gradient(to right, ${s.accent}, transparent)` }} />
-
-                  <motion.p className="font-display text-[28px] text-white leading-tight mb-1.5"
-                    animate={{ y: isActive ? 0 : 16, opacity: isActive ? 1 : 0 }}
-                    transition={{ delay: 0.32, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-                    {s.title}
-                  </motion.p>
-
-                  <motion.p className="text-[12.5px] font-sans mb-6 leading-relaxed"
-                    animate={{ y: isActive ? 0 : 12, opacity: isActive ? 1 : 0 }}
-                    transition={{ delay: 0.38, duration: 0.45 }}
-                    style={{ color: 'rgba(255,255,255,0.5)', maxWidth: 280 }}>
-                    {s.desc}
-                  </motion.p>
-
-                  <motion.div className="flex items-center justify-between"
-                    animate={{ y: isActive ? 0 : 10, opacity: isActive ? 1 : 0 }}
-                    transition={{ delay: 0.44, duration: 0.4 }}>
-                    <div>
-                      <p className="font-display text-[38px] leading-none"
-                        style={{ color: s.accent, textShadow: `0 0 40px ${s.accent}55` }}>
-                        {s.stat}
-                      </p>
-                      <p className="font-sans text-[9px] tracking-[0.4em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>
-                        {s.statLabel}
-                      </p>
-                    </div>
-                    <Link to={s.href} onClick={e => e.stopPropagation()}
-                      className="group flex items-center gap-2 font-sans text-[10px] font-bold tracking-[0.2em] uppercase px-5 py-3 rounded-full transition-all duration-200 hover:scale-105"
-                      style={{ background: s.accent, color: '#0C0408', boxShadow: `0 4px 20px ${s.accent}55` }}>
-                      Explore
-                      <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
-                  </motion.div>
+              {/* Background image */}
+              <img src={s.image} alt={s.title} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+              <div className="absolute inset-0 bg-black/40 transition-opacity duration-500" style={{ opacity: isActive ? 0.2 : 0.7 }} />
+              
+              {/* Content visible when active */}
+              <motion.div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end" animate={{ opacity: isActive ? 1 : 0 }} transition={{ duration: 0.3 }}>
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%)' }} />
+                <div className="relative z-10">
+                  <span className="inline-block px-3 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full mb-3" style={{ background: s.accent, color: '#000' }}>
+                    {s.emoji} {s.statLabel}
+                  </span>
+                  <h3 className="font-display text-3xl sm:text-4xl text-white leading-tight mb-2">{s.title}</h3>
+                  <p className="font-sans text-sm text-white/80 mb-6">{s.desc}</p>
+                  <Link to={s.href} className="inline-flex items-center gap-2 font-sans text-xs font-bold tracking-widest uppercase px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-colors border border-white/20">
+                    Explore <ArrowRight size={14} />
+                  </Link>
                 </div>
               </motion.div>
             </motion.div>
@@ -969,85 +711,13 @@ const VisualCarousel = () => {
         })}
       </div>
 
-      {/* ── Mobile ── */}
-      <div className="lg:hidden px-4 pb-8">
-        <div className="relative rounded-2xl overflow-hidden" style={{ height: 420 }}>
-          <AnimatePresence mode="wait">
-            <motion.div key={active} className="absolute inset-0"
-              initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              style={{ background: CAROUSEL_SLIDES[active].bg }}>
-              {(() => {
-                const s = CAROUSEL_SLIDES[active];
-                return (
-                  <>
-                    <img src={s.image} alt={s.title} draggable={false}
-                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                      style={{ filter: 'saturate(1.15) brightness(0.68)' }} />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.2) 58%,transparent 100%)' }} />
-                    <div className="absolute inset-0" style={{ background: s.accent, opacity: 0.1, mixBlendMode: 'screen' as any }} />
-                    <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                      {/* Top: emoji + product thumbnails */}
-                      <div className="flex items-start justify-between">
-                        <div className="relative">
-                          <div className="absolute -inset-3 rounded-full blur-xl opacity-45 pointer-events-none" style={{ background: s.accent }} />
-                          <span className="relative text-[58px] leading-none block select-none" style={{ filter: `drop-shadow(0 0 18px ${s.accent}aa)` }}>{s.emoji}</span>
-                        </div>
-                        <div className="flex gap-2.5 mt-1">
-                          {s.floats.slice(0, 2).map((f, fi) => (
-                            <div key={fi} className="flex flex-col items-center gap-1">
-                              <div style={{ width: 62, borderRadius: 12, overflow: 'hidden', border: `1px solid ${s.accent}40`, boxShadow: `0 6px 20px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)` }}>
-                                <img src={f.img} alt="" className="w-full aspect-square object-cover" style={{ filter: 'brightness(0.88) saturate(1.1)' }} />
-                              </div>
-                              <div className="px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,0,0,0.6)', border: `1px solid ${s.accent}33` }}>
-                                <span className="font-sans text-[8px] font-semibold" style={{ color: s.accent }}>₹{(899 + fi * 400).toLocaleString('en-IN')}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      {/* Bottom content */}
-                      <div>
-                        <div className="h-[2px] rounded-full mb-3" style={{ width: 32, background: s.accent }} />
-                        <p className="font-display text-[26px] text-white leading-tight mb-1.5">{s.title}</p>
-                        <p className="text-[12px] font-sans mb-4 leading-relaxed" style={{ color: 'rgba(255,255,255,0.52)' }}>{s.desc}</p>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-display text-[30px] leading-none" style={{ color: s.accent, textShadow: `0 0 24px ${s.accent}55` }}>{s.stat}</p>
-                            <p className="font-sans text-[9px] tracking-[0.38em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>{s.statLabel}</p>
-                          </div>
-                          <Link to={s.href}
-                            className="flex items-center gap-1.5 font-sans text-[10px] font-bold tracking-[0.18em] uppercase px-4 py-2.5 rounded-full"
-                            style={{ background: s.accent, color: '#080208', boxShadow: `0 4px 16px ${s.accent}55` }}>
-                            Explore <ArrowRight size={9} />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                );
-              })()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-        <div className="flex items-center justify-between mt-4">
-          <button onClick={() => setActive(a => (a - 1 + N_SLIDES) % N_SLIDES)}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white/40 transition-colors hover:text-white/70"
-            style={{ background: 'rgba(255,255,255,0.06)' }}>←</button>
-          <div className="flex gap-2">
-            {CAROUSEL_SLIDES.map((_, i) => (
-              <motion.div key={i} onClick={() => setActive(i)}
-                animate={{ width: i === active ? 22 : 6, opacity: i === active ? 1 : 0.28 }}
-                className="h-[2px] rounded-full cursor-pointer" style={{ background: '#D4A853' }} />
-            ))}
-          </div>
-          <button onClick={() => setActive(a => (a + 1) % N_SLIDES)}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white/40 transition-colors hover:text-white/70"
-            style={{ background: 'rgba(255,255,255,0.06)' }}>→</button>
-        </div>
+      <div className="flex items-center justify-center gap-3 mt-12 relative z-20">
+        {CAROUSEL_SLIDES.map((_, i) => (
+          <button key={i} onClick={() => setActive(i)} className="w-12 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+            <motion.div className="h-full" style={{ background: '#D4A853' }} animate={{ x: i === active ? '0%' : '-100%' }} transition={{ duration: 0.4 }} />
+          </button>
+        ))}
       </div>
-
-      <div className="w-full h-px" style={{ background: 'linear-gradient(to right,transparent,rgba(212,168,83,0.28) 30%,rgba(212,168,83,0.28) 70%,transparent)' }} />
     </section>
   );
 };
@@ -1186,21 +856,96 @@ const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode; delay?
   );
 };
 
-/* ───────────────────────── PLACEHOLDER DATA ───────────────────────── */
-const PLACEHOLDER_CATEGORIES = Array.from({ length: 8 }, (_, i) => ({
-  id: `cat-${i}`,
-  name: ['Premium Candles', 'Personalized Gifts', 'Clay Art', 'Home Decor', 'Couple Collections', 'Wedding', 'Festival', 'Corporate'][i],
-  slug: `cat-${i}`,
-  image: `/categories/cat-${i + 1}.svg`,
-}));
+const PLACEHOLDER_CATEGORIES = [
+  { id: 'cat-0', name: 'Premium Candles', slug: 'premium-candles', image: '/categories/cat_candles_1779782736599.png' },
+  { id: 'cat-1', name: 'Personalized Gifts', slug: 'personalized-gifts', image: '/categories/cat_personalized_1779782786385.png' },
+  { id: 'cat-2', name: 'Clay Art', slug: 'clay-art', image: '/categories/cat_clay_1779782751534.png' },
+  { id: 'cat-3', name: 'Home Decor', slug: 'home-decor', image: '/categories/cat_decor_1779787643422.png' },
+  { id: 'cat-4', name: 'Couple Collections', slug: 'couple-collections', image: '/categories/cat_anniversary_1779787678679.png' },
+  { id: 'cat-5', name: 'Wedding Collections', slug: 'wedding-collections', image: '/categories/cat_wedding_1779782802829.png' },
+  { id: 'cat-6', name: 'Festival Collections', slug: 'festival-collections', image: '/categories/cat_diwali_1779787659129.png' },
+  { id: 'cat-7', name: 'Corporate Gifting', slug: 'corporate-gifting', image: '/categories/cat_corporate_1779787626020.png' },
+];
 
-const PLACEHOLDER_PRODUCTS = Array.from({ length: 8 }, (_, i) => ({
-  id: `prod-${i}`,
-  title: `ELVA Signature Product ${i + 1}`,
-  slug: `product-${i + 1}`,
-  price: 699 + i * 200,
-  compareAtPrice: 999 + i * 300,
-  thumbnail: `/products/prod-${i + 1}.svg`,
-  rating: 4.8,
-  reviewCount: 12 + i * 5,
-}));
+const PLACEHOLDER_PRODUCTS = [
+  {
+    id: 'prod-0',
+    title: 'Serenity Soy Candle — Sandalwood & Vanilla',
+    slug: 'serenity-soy-candle-sandalwood-vanilla',
+    price: 799,
+    compareAtPrice: 999,
+    thumbnail: '/products/prod-1.png',
+    rating: 4.8,
+    reviewCount: 124,
+  },
+  {
+    id: 'prod-1',
+    title: 'Personalised Heart Locket Necklace',
+    slug: 'personalised-heart-locket-necklace',
+    price: 1499,
+    compareAtPrice: 1999,
+    thumbnail: '/products/prod-2.png',
+    rating: 4.9,
+    reviewCount: 89,
+  },
+  {
+    id: 'prod-2',
+    title: 'Terracotta Ganesha Sculpture',
+    slug: 'terracotta-ganesha-sculpture',
+    price: 2499,
+    compareAtPrice: 2999,
+    thumbnail: '/products/prod-3.png',
+    rating: 5.0,
+    reviewCount: 34,
+  },
+  {
+    id: 'prod-3',
+    title: 'Luxury New Year Hamper',
+    slug: 'luxury-new-year-hamper',
+    price: 4999,
+    compareAtPrice: 6500,
+    thumbnail: '/products/prod-4.png',
+    rating: 4.7,
+    reviewCount: 56,
+  },
+  {
+    id: 'prod-4',
+    title: 'Couple Portrait — Custom Hand-Painted',
+    slug: 'couple-portrait-custom-hand-painted',
+    price: 3999,
+    compareAtPrice: 4999,
+    thumbnail: '/products/prod-5.png',
+    rating: 5.0,
+    reviewCount: 22,
+  },
+  {
+    id: 'prod-5',
+    title: 'Sleek Handcrafted Clay Art Duo',
+    slug: 'sleek-handcrafted-clay-art-duo',
+    price: 1899,
+    compareAtPrice: 2499,
+    thumbnail: '/products/prod-6.png',
+    rating: 4.9,
+    reviewCount: 42,
+  },
+  {
+    id: 'prod-6',
+    title: 'Glowing Decorative Clay Diya',
+    slug: 'glowing-decorative-clay-diya',
+    price: 999,
+    compareAtPrice: 1299,
+    thumbnail: '/products/prod-7.png',
+    rating: 4.8,
+    reviewCount: 15,
+  },
+  {
+    id: 'prod-7',
+    title: 'Elva Premium Corporate Gift Box',
+    slug: 'elva-premium-corporate-gift-box',
+    price: 3499,
+    compareAtPrice: 4500,
+    thumbnail: '/products/prod-8.png',
+    rating: 5.0,
+    reviewCount: 28,
+  },
+];

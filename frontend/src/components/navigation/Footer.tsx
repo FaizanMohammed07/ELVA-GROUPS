@@ -109,10 +109,7 @@ export const Footer = () => (
           <Heart size={11} className="fill-current" style={{ color: '#C4607A' }} />
           in India.
         </p>
-        <div className="flex items-center gap-4 opacity-40">
-          <img src="/payments/razorpay.svg" alt="Razorpay" className="h-5" />
-          <img src="/payments/upi.svg" alt="UPI" className="h-5" />
-        </div>
+
       </div>
     </div>
   </footer>

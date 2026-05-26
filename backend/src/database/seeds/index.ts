@@ -32,11 +32,8 @@ const sampleProducts = [
     compareAtPrice: 999,
     stock: 50,
     sku: 'ELVA-CND-001',
-    thumbnail: 'https://images.unsplash.com/photo-1602178593432-6d34abd2a0e0?w=600',
-    images: [
-      'https://images.unsplash.com/photo-1602178593432-6d34abd2a0e0?w=600',
-      'https://images.unsplash.com/photo-1567361808960-dec9cb578182?w=600',
-    ],
+    thumbnail: '/products/prod-1.png',
+    images: ['/products/prod-1.png'],
     rating: 4.8,
     reviewCount: 124,
     salesCount: 340,
@@ -59,8 +56,8 @@ const sampleProducts = [
     compareAtPrice: 1999,
     stock: 30,
     sku: 'ELVA-PG-001',
-    thumbnail: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600',
-    images: ['https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600'],
+    thumbnail: '/products/prod-2.png',
+    images: ['/products/prod-2.png'],
     rating: 4.9,
     reviewCount: 89,
     salesCount: 210,
@@ -85,12 +82,12 @@ const sampleProducts = [
     compareAtPrice: 2999,
     stock: 15,
     sku: 'ELVA-CA-001',
-    thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600',
-    images: ['https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600'],
+    thumbnail: '/products/prod-3.png',
+    images: ['/products/prod-3.png'],
     rating: 5.0,
     reviewCount: 34,
     salesCount: 45,
-    isFeatured: false,
+    isFeatured: true,
     isNewArrival: true,
     isBestSeller: false,
     isLimitedEdition: false,
@@ -107,8 +104,8 @@ const sampleProducts = [
     compareAtPrice: 6500,
     stock: 20,
     sku: 'ELVA-LH-001',
-    thumbnail: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600',
-    images: ['https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600'],
+    thumbnail: '/products/prod-4.png',
+    images: ['/products/prod-4.png'],
     rating: 4.7,
     reviewCount: 56,
     salesCount: 89,
@@ -132,12 +129,12 @@ const sampleProducts = [
     compareAtPrice: null,
     stock: 10,
     sku: 'ELVA-CC-001',
-    thumbnail: 'https://images.unsplash.com/photo-1580828343064-fde4fc206bc6?w=600',
-    images: ['https://images.unsplash.com/photo-1580828343064-fde4fc206bc6?w=600'],
+    thumbnail: '/products/prod-5.png',
+    images: ['/products/prod-5.png'],
     rating: 5.0,
     reviewCount: 22,
     salesCount: 33,
-    isFeatured: false,
+    isFeatured: true,
     isNewArrival: true,
     isBestSeller: false,
     isLimitedEdition: true,
@@ -145,6 +142,75 @@ const sampleProducts = [
     personalizationFields: [
       { key: 'photoUrl', label: 'Reference Photo Description', type: 'textarea', placeholder: 'Describe or upload reference...', maxLength: 300, required: true },
       { key: 'size', label: 'Canvas Size', type: 'select', options: ['A4 (21×29cm)', 'A3 (30×42cm)', 'A2 (42×59cm)'], required: true },
+    ],
+    isActive: true,
+  },
+  {
+    title: 'Sleek Handcrafted Clay Art Duo',
+    slug: 'sleek-handcrafted-clay-art-duo',
+    shortDescription: 'Minimalist hand-molded clay vases. Perfectly balancing rustic earthy textures with clean contemporary silhouettes.',
+    category: 'clay-art',
+    tags: ['clay', 'vases', 'decor', 'minimalist', 'handcrafted'],
+    price: 1899,
+    compareAtPrice: 2499,
+    stock: 25,
+    sku: 'ELVA-CA-002',
+    thumbnail: '/products/prod-6.png',
+    images: ['/products/prod-6.png'],
+    rating: 4.9,
+    reviewCount: 42,
+    salesCount: 110,
+    isFeatured: true,
+    isNewArrival: true,
+    isBestSeller: true,
+    isLimitedEdition: false,
+    isPersonalizable: false,
+    isActive: true,
+  },
+  {
+    title: 'Glowing Decorative Clay Diya',
+    slug: 'glowing-decorative-clay-diya',
+    shortDescription: 'A premium glowing decorative clay lamp with ornate hand-carved details and a burning oil flame.',
+    category: 'clay-art',
+    tags: ['diya', 'clay', 'festival', 'glowing', 'handcrafted'],
+    price: 999,
+    compareAtPrice: 1299,
+    stock: 40,
+    sku: 'ELVA-CA-003',
+    thumbnail: '/products/prod-7.png',
+    images: ['/products/prod-7.png'],
+    rating: 4.8,
+    reviewCount: 15,
+    salesCount: 65,
+    isFeatured: true,
+    isNewArrival: true,
+    isBestSeller: false,
+    isLimitedEdition: false,
+    isPersonalizable: false,
+    isActive: true,
+  },
+  {
+    title: 'Elva Premium Corporate Gift Box',
+    slug: 'elva-premium-corporate-gift-box',
+    shortDescription: 'A luxury corporate premium gift box containing an elegant black and gold pen, custom premium black leather diary with golden embossed logo, and a solid brass cardholder.',
+    category: 'corporate-gifting',
+    tags: ['corporate', 'gift box', 'diary', 'pen', 'premium'],
+    price: 3499,
+    compareAtPrice: 4500,
+    stock: 15,
+    sku: 'ELVA-CORP-001',
+    thumbnail: '/products/prod-8.png',
+    images: ['/products/prod-8.png'],
+    rating: 5.0,
+    reviewCount: 28,
+    salesCount: 50,
+    isFeatured: true,
+    isNewArrival: true,
+    isBestSeller: true,
+    isLimitedEdition: true,
+    isPersonalizable: true,
+    personalizationFields: [
+      { key: 'logo', label: 'Company Logo Description', type: 'text', placeholder: 'Describe logo engraving...', maxLength: 100, required: false },
     ],
     isActive: true,
   },
@@ -167,9 +233,9 @@ async function seed() {
   console.log('✅ Connected to MongoDB');
 
   // Import models dynamically to avoid circular deps
-  const { default: ProductModel } = await import('../models/product.model.js' as any);
-  const { default: CategoryModel } = await import('../../modules/categories/models/category.model.js' as any);
-  const { default: UserModel } = await import('../../modules/users/models/user.model.js' as any);
+  const { ProductModel } = await import('../../modules/products/models/product.model.js' as any);
+  const { CategoryModel } = await import('../../modules/categories/models/category.model.js' as any);
+  const { UserModel } = await import('../../modules/users/models/user.model.js' as any);
 
   // Clear existing seed data
   await ProductModel.deleteMany({ sku: { $regex: /^ELVA-/ } });
@@ -178,12 +244,29 @@ async function seed() {
   console.log('🗑️  Cleared existing seed data');
 
   // Seed categories
-  await CategoryModel.insertMany(categories);
+  const seededCategories = await CategoryModel.insertMany(categories);
   console.log(`✅ Seeded ${categories.length} categories`);
 
-  // Seed products
-  await ProductModel.insertMany(sampleProducts);
-  console.log(`✅ Seeded ${sampleProducts.length} products`);
+  // Build category slug -> ObjectId mapping
+  const categoryMap: Record<string, any> = {};
+  seededCategories.forEach((cat: any) => {
+    categoryMap[cat.slug] = cat._id;
+  });
+
+  // Seed products with category mapping and required fields
+  const productsToSeed = sampleProducts.map((p) => {
+    const catId = categoryMap[p.category];
+    const categoryIds = catId ? [catId] : [];
+    return {
+      ...p,
+      description: p.shortDescription || p.title,
+      status: 'active', // Make sure status is active so API fetches it!
+      categoryIds,
+    };
+  });
+
+  await ProductModel.insertMany(productsToSeed);
+  console.log(`✅ Seeded ${productsToSeed.length} products`);
 
   // Seed admin user
   await UserModel.create(adminUser);

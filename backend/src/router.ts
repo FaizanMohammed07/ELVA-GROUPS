@@ -28,6 +28,7 @@ import { supplierRouter } from './modules/suppliers/supplier.routes';
 import { packagingItemRouter } from './modules/packaging-items/packaging-item.routes';
 import { costingRouter } from './modules/costing/costing.routes';
 import { materialTemplateRouter } from './modules/material-templates/material-template.routes';
+import intelligenceRouter from './modules/intelligence/routes/intelligence.routes';
 
 export const router = Router();
 
@@ -73,6 +74,7 @@ router.use('/suppliers', supplierRouter);
 router.use('/packaging-items', packagingItemRouter);
 router.use('/costing', costingRouter);
 router.use('/material-templates', materialTemplateRouter);
+router.use('/intelligence', intelligenceRouter);
 
 // Admin
 router.use('/admin', adminRouter);

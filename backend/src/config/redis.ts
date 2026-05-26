@@ -1,5 +1,3 @@
-import { createClient, RedisClientType } from 'redis';
-import { logger } from '../utils/logger';
 import { env } from './env';
 
 // ── In-memory fallback ────────────────────────────────────────────────────────
@@ -44,7 +42,6 @@ class MemoryStore {
   }
 
   keys(pattern: string): string[] {
-    // Convert Redis glob pattern (prefix:*) to regex
     const regex = new RegExp('^' + pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
     const now = Date.now();
     return [...this.store.entries()]
@@ -55,52 +52,15 @@ class MemoryStore {
 
 const memoryStore = new MemoryStore();
 
-// ── Redis client ──────────────────────────────────────────────────────────────
-
-let redisClient: RedisClientType | null = null;
-let redisAvailable = false;
+// ── Mock Redis connection ───────────────────────────────────────────────────────
 
 export const connectRedis = async (): Promise<void> => {
-  try {
-    const client = createClient({
-      url: env.REDIS_URL,
-      ...(env.REDIS_PASSWORD && { password: env.REDIS_PASSWORD }),
-      socket: {
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => {
-          if (retries >= 3) return false; // stop retrying on startup
-          return Math.min(retries * 200, 1000);
-        },
-      },
-    }) as RedisClientType;
-
-    client.on('error', (err) => {
-      if (redisAvailable) logger.warn({ err }, 'Redis error — using memory fallback');
-      redisAvailable = false;
-    });
-    client.on('connect', () => {
-      redisAvailable = true;
-      logger.info('✅ Redis connected');
-    });
-    client.on('reconnecting', () => logger.warn('Redis reconnecting…'));
-
-    await client.connect();
-    redisClient = client;
-    redisAvailable = true;
-  } catch (err) {
-    logger.warn({ err }, '⚠️  Redis unavailable — falling back to in-memory cache (rate limits & sessions will not persist across restarts)');
-    redisAvailable = false;
-  }
+  // no-op, now fully in-memory
 };
 
-export const isRedisAvailable = (): boolean => redisAvailable;
+export const isRedisAvailable = (): boolean => false;
 
-export const getRedis = (): RedisClientType => {
-  if (!redisClient || !redisAvailable) throw new Error('Redis not connected');
-  return redisClient;
-};
-
-// ── Unified cache (Redis when available, memory otherwise) ───────────────────
+// ── Unified cache (memory only now) ───────────────────────────────────────────
 
 export class RedisCache {
   private readonly prefix: string;
@@ -115,10 +75,6 @@ export class RedisCache {
 
   async get<T>(id: string): Promise<T | null> {
     const k = this.key(id);
-    if (redisAvailable && redisClient) {
-      const data = await redisClient.get(k);
-      return data ? (JSON.parse(data) as T) : null;
-    }
     const data = memoryStore.get(k);
     return data ? (JSON.parse(data) as T) : null;
   }
@@ -126,44 +82,26 @@ export class RedisCache {
   async set<T>(id: string, value: T, ttl?: number): Promise<void> {
     const k = this.key(id);
     const t = ttl ?? this.ttl;
-    if (redisAvailable && redisClient) {
-      await redisClient.setEx(k, t, JSON.stringify(value));
-      return;
-    }
     memoryStore.set(k, JSON.stringify(value), t);
   }
 
   async del(id: string): Promise<void> {
     const k = this.key(id);
-    if (redisAvailable && redisClient) { await redisClient.del(k); return; }
     memoryStore.del(k);
   }
 
   async invalidatePattern(pattern: string): Promise<void> {
     const p = `${this.prefix}:${pattern}*`;
-    if (redisAvailable && redisClient) {
-      const keys = await redisClient.keys(p);
-      if (keys.length) await redisClient.del(keys);
-      return;
-    }
     memoryStore.keys(p).forEach(k => memoryStore.del(k));
   }
 
   async exists(id: string): Promise<boolean> {
     const k = this.key(id);
-    if (redisAvailable && redisClient) {
-      return (await redisClient.exists(k)) === 1;
-    }
     return memoryStore.exists(k);
   }
 
   async increment(id: string, ttl?: number): Promise<number> {
     const k = this.key(id);
-    if (redisAvailable && redisClient) {
-      const count = await redisClient.incr(k);
-      if (count === 1 && ttl) await redisClient.expire(k, ttl);
-      return count;
-    }
     const count = memoryStore.incr(k);
     if (count === 1 && ttl) memoryStore.expire(k, ttl);
     return count;

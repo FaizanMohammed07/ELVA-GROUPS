@@ -88,9 +88,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        display: ['Cormorant Garamond', 'Playfair Display', 'serif'],
+        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        display: ['Syne', '"Instrument Serif"', 'serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       fontSize: {
@@ -112,6 +112,8 @@ const config: Config = {
         'scale-in': 'scaleIn 0.3s ease-out',
         'shimmer': 'shimmer 2s linear infinite',
         'float': 'float 6s ease-in-out infinite',
+        'marquee': 'marquee 35s linear infinite',
+        'marquee-reverse': 'marquee-reverse 35s linear infinite',
       },
       keyframes: {
         fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
@@ -121,6 +123,14 @@ const config: Config = {
         scaleIn: { from: { transform: 'scale(0.95)', opacity: '0' }, to: { transform: 'scale(1)', opacity: '1' } },
         shimmer: { from: { backgroundPosition: '-200% 0' }, to: { backgroundPosition: '200% 0' } },
         float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-10px)' } },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'marquee-reverse': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
       },
       boxShadow: {
         'luxury': '0 4px 40px rgba(0, 0, 0, 0.08)',

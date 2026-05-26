@@ -7,7 +7,7 @@ import {
   Shield, DollarSign, UserCheck, Settings, ClipboardList,
   Calculator, TrendingUp, FlaskConical, Truck, Gift,
   ChevronRight, Tag, Layers, Archive, AlertTriangle,
-  Banknote, Activity, Cpu,
+  Banknote, Activity, Cpu, Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@store/authStore';
 import { cn } from '@utils/cn';
@@ -50,6 +50,7 @@ const SUPER_GROUPS: NavGroup[] = [
       { label: 'Products', href: `${ADMIN_BASE}/products`, icon: Package },
       { label: 'Raw Materials', href: `${SUPER_BASE}/materials`, icon: FlaskConical },
       { label: 'Material Templates', href: `${SUPER_BASE}/material-templates`, icon: Layers },
+      { label: 'AI Product Analysis', href: `${SUPER_BASE}/product-intelligence`, icon: Sparkles },
       { label: 'Product Costing', href: `${SUPER_BASE}/costing-engine`, icon: Calculator },
       { label: 'Packaging Engine', href: `${SUPER_BASE}/packaging`, icon: Gift },
       { label: 'Profit Intelligence', href: `${SUPER_BASE}/profit-intelligence`, icon: TrendingUp },

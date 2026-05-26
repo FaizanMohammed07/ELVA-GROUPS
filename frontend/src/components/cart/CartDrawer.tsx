@@ -48,29 +48,75 @@ export const CartDrawer = () => {
             className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-charcoal-100">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-charcoal-100 relative z-20">
               <div className="flex items-center gap-2">
                 <ShoppingBag size={20} />
                 <h2 className="font-serif text-xl text-charcoal-950">Your Bag ({itemCount()})</h2>
               </div>
-              <button onClick={closeCart} className="p-2 hover:bg-charcoal-50 rounded transition-colors">
-                <X size={20} />
+              <button onClick={(e) => { e.stopPropagation(); closeCart(); }} className="p-3 hover:bg-charcoal-50 rounded-full transition-colors relative z-50 cursor-pointer flex items-center justify-center">
+                <X size={24} />
               </button>
             </div>
 
             {/* Items */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               {items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
-                  <ShoppingBag size={48} className="text-charcoal-200" />
-                  <p className="font-sans text-charcoal-500">Your bag is empty</p>
-                  <button
-                    onClick={() => { closeCart(); navigate('/products'); }}
-                    className="btn-primary text-sm px-6 py-2.5"
+                <div className="flex flex-col items-center justify-center h-full text-center relative overflow-hidden rounded-2xl p-6" 
+                  style={{ background: 'linear-gradient(160deg, #1E0812 0%, #2E1428 55%, #1A0820 100%)' }}>
+                  {/* Glowing orbs for Gen-Z aesthetic */}
+                  <div className="absolute top-[-10%] right-[-15%] w-60 h-60 rounded-full blur-3xl pointer-events-none" style={{ background: 'radial-gradient(circle,rgba(196,96,122,0.4) 0%,transparent 70%)' }} />
+                  <div className="absolute bottom-[-10%] left-[-15%] w-60 h-60 rounded-full blur-3xl pointer-events-none" style={{ background: 'radial-gradient(circle,rgba(212,168,83,0.3) 0%,transparent 70%)' }} />
+                  
+                  <motion.div
+                    initial={{ scale: 0.8, rotate: -10, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    transition={{ type: 'spring', bounce: 0.5, duration: 0.8 }}
+                    className="relative z-10 w-32 h-32 mb-6 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
                   >
-                    Start Shopping
-                  </button>
+                    <ShoppingBag size={56} style={{ color: '#D4A853' }} />
+                    <motion.div 
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                      className="absolute -top-2 -right-2 text-3xl"
+                    >
+                      ✨
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.h3 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="relative z-10 font-display text-3xl text-white mb-3"
+                  >
+                    Your bag is feeling light!
+                  </motion.h3>
+                  
+                  <motion.p 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="relative z-10 font-sans text-sm mb-8 px-4"
+                    style={{ color: '#C8A8B8' }}
+                  >
+                    Discover our handcrafted collection and find something uniquely yours.
+                  </motion.p>
+                  
+                  <motion.button
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ delay: 0.4 }}
+                    onClick={(e) => { e.stopPropagation(); closeCart(); navigate('/products'); }}
+                    className="relative z-10 w-full py-4 text-sm font-semibold tracking-widest uppercase font-sans flex items-center justify-center gap-2"
+                    style={{ background: '#D4A853', color: '#1E0812' }}
+                  >
+                    Explore Collection <Tag size={16} />
+                  </motion.button>
                 </div>
+
               ) : (
                 items.map((item) => (
                   <div key={`${item.productId}-${item.variantId}`} className="flex gap-4 py-4 border-b border-charcoal-50">

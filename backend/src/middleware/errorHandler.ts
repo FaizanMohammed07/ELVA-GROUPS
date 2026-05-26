@@ -21,6 +21,11 @@ export const errorHandler = (
     message = err.message;
     errors = err.errors;
     code = err.code ?? code;
+  } else if ((err as any).status && typeof (err as any).status === 'number') {
+    // Plain Error with a .status property (e.g. CORS rejections)
+    statusCode = (err as any).status;
+    message = err.message;
+    code = statusCode === 403 ? 'FORBIDDEN' : statusCode === 401 ? 'UNAUTHORIZED' : code;
   } else if (err instanceof ZodError) {
     statusCode = 422;
     message = 'Validation failed';

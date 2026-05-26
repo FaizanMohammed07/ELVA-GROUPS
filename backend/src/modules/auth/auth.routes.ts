@@ -29,6 +29,7 @@ authRouter.post('/forgot-password', authRateLimiter, validateBody(forgotPassword
 authRouter.post('/reset-password', authRateLimiter, validateBody(resetPasswordSchema), AuthController.resetPassword);
 authRouter.post('/verify-email', validateBody(verifyEmailSchema), AuthController.verifyEmail);
 authRouter.get('/me', authenticate, AuthController.me);
+authRouter.post('/firebase', authRateLimiter, AuthController.firebaseLogin);
 
 authRouter.post('/change-password', authenticate, async (req: Request, res: Response) => {
   const { currentPassword, newPassword } = req.body;

@@ -46,11 +46,21 @@ export const createApp = (): Application => {
   app.use(
     cors({
       origin: (origin, callback) => {
+        // No origin = same-origin or server-to-server — always allow
+        if (!origin) return callback(null, true);
+
         const allowed = env.ALLOWED_ORIGINS.split(',').map((o) => o.trim());
-        if (!origin || allowed.includes(origin)) {
+
+        // In development also allow any localhost port (dev tools, Vite preview, etc.)
+        const isLocalhostInDev =
+          env.NODE_ENV === 'development' && /^https?:\/\/localhost(:\d+)?$/.test(origin);
+
+        if (allowed.includes(origin) || isLocalhostInDev) {
           callback(null, true);
         } else {
-          callback(new Error(`CORS blocked: ${origin}`));
+          // Return 403 — do NOT throw; throwing escalates to 500 in Express
+          const err = Object.assign(new Error(`CORS blocked: ${origin}`), { status: 403 });
+          callback(err);
         }
       },
       credentials: true,
@@ -59,6 +69,10 @@ export const createApp = (): Application => {
       exposedHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'],
     }),
   );
+
+  // Absorb socket.io WebSocket upgrade probes from dev tools (VS Code Live Server, etc.)
+  // Must be BEFORE pino-http so these never enter the logging pipeline.
+  app.use('/socket.io', (_req: Request, res: Response) => res.status(200).end());
 
   // Body parsing
   app.use(express.json({ limit: '10mb' }));
@@ -74,7 +88,9 @@ export const createApp = (): Application => {
   app.use(
     pinoHttp({
       logger: logger as any,
-      autoLogging: env.NODE_ENV !== 'test',
+      autoLogging: env.NODE_ENV === 'test'
+        ? false
+        : { ignore: (req) => (req.url ?? '').startsWith('/socket.io') },
       redact: {
         paths: [
           'req.headers.authorization',

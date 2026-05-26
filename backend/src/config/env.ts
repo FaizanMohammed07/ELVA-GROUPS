@@ -56,8 +56,10 @@ const envSchema = z.object({
 
   // Firebase
   FIREBASE_PROJECT_ID: z.string().optional(),
+  FIREBASE_PRIVATE_KEY_ID: z.string().optional(),
   FIREBASE_PRIVATE_KEY: z.string().optional(),
   FIREBASE_CLIENT_EMAIL: z.string().optional(),
+  FIREBASE_CLIENT_ID: z.string().optional(),
 
   // WhatsApp
   WHATSAPP_API_URL: z.string().optional(),
@@ -106,6 +108,7 @@ const envSchema = z.object({
 
   // AI
   OPENAI_API_KEY: z.string().optional(),
+  OPENROUTER_API_KEY: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

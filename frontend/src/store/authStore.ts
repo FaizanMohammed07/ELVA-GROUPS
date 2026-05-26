@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { authApi } from '@api/auth.api';
+import { signInWithGoogle, firebaseSignOut } from '@/lib/firebase';
 
 export interface User {
   id: string;
@@ -22,6 +23,7 @@ interface AuthState {
   setUser: (user: User) => void;
   setToken: (token: string) => void;
   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
+  loginWithGoogle: () => Promise<{ isNew: boolean }>;
   register: (data: { name: string; email: string; password: string; phone?: string; referralCode?: string }) => Promise<void>;
   logout: () => Promise<void>;
   initializeAuth: () => Promise<void>;
@@ -44,6 +46,13 @@ export const useAuthStore = create<AuthState>()(
         set({ user: data.data.user, accessToken: data.data.tokens.accessToken, isAuthenticated: true });
       },
 
+      loginWithGoogle: async () => {
+        const idToken = await signInWithGoogle();
+        const { data } = await authApi.firebaseLogin(idToken);
+        set({ user: data.data.user, accessToken: data.data.tokens.accessToken, isAuthenticated: true });
+        return { isNew: data.data.isNew };
+      },
+
       register: async (payload) => {
         const { data } = await authApi.register(payload);
         set({ user: data.data.user, accessToken: data.data.tokens.accessToken, isAuthenticated: true });
@@ -51,6 +60,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try { await authApi.logout(); } catch {}
+        try { await firebaseSignOut(); } catch {}
         set({ user: null, accessToken: null, isAuthenticated: false });
       },
 

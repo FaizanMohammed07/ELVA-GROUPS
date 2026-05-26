@@ -97,13 +97,13 @@ export const ProductCard = ({ product, index = 0, showNewBadge }: ProductCardPro
       onMouseMove={onMove}
       onMouseLeave={onLeave}
     >
-      <Link to={`/products/${product.slug}`} className="product-card block group">
+      <Link to={`/products/${product.slug}`} className="product-card block group bg-white/40 backdrop-blur-md p-3.5 rounded-[32px] border border-charcoal-100/35 hover:border-[#D4A853]/40 shadow-sm hover:shadow-[0_20px_50px_rgba(212,168,83,0.06)] transition-all duration-500 hover:scale-102">
         {/* Image container */}
-        <div className="relative overflow-hidden bg-cream-50 aspect-[3/4]">
+        <div className="relative overflow-hidden bg-[#FAF7F2] aspect-[3/4] rounded-[24px]">
           <img
             src={product.thumbnail || product.images?.[0] || '/placeholder.svg'}
             alt={product.title}
-            className="product-card-image"
+            className="product-card-image w-full h-full object-cover transition-transform duration-[8s] group-hover:scale-105"
             loading="lazy"
           />
 
@@ -123,28 +123,28 @@ export const ProductCard = ({ product, index = 0, showNewBadge }: ProductCardPro
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
             {discountPct > 0 && (
-              <span className="badge bg-red-500 text-white px-2 py-0.5 text-[10px] font-bold tracking-wide">
-                -{discountPct}%
+              <span className="badge bg-rose-500/90 text-white px-2.5 py-1 text-[8px] font-extrabold tracking-widest uppercase rounded-full border border-white/20 shadow-sm backdrop-blur-md">
+                -{discountPct}% OFF
               </span>
             )}
             {(showNewBadge || product.isNewArrival) && (
-              <span className="badge text-white text-[10px] tracking-widest uppercase px-2 py-0.5" style={{ background: '#1A0812' }}>
-                New
+              <span className="badge text-white text-[8px] tracking-widest uppercase px-2.5 py-1 rounded-full border border-white/10 shadow-sm backdrop-blur-md" style={{ background: 'rgba(26,8,18,0.92)' }}>
+                New In
               </span>
             )}
             {product.isBestSeller && (
-              <span className="badge text-white text-[10px] tracking-widest uppercase px-2 py-0.5" style={{ background: '#D4A853' }}>
-                Bestseller
+              <span className="badge text-white text-[8px] tracking-widest uppercase px-2.5 py-1 rounded-full border border-[#D4A853]/30 shadow-sm backdrop-blur-md" style={{ background: 'rgba(212,168,83,0.92)' }}>
+                Best Seller
               </span>
             )}
             {product.isLimitedEdition && (
-              <span className="badge bg-red-600 text-white text-[10px] tracking-widest uppercase px-2 py-0.5">
+              <span className="badge bg-red-600/95 text-white text-[8px] tracking-widest uppercase px-2.5 py-1 rounded-full border border-white/10 shadow-sm backdrop-blur-md">
                 Limited
               </span>
             )}
             {product.isPersonalizable && (
-              <span className="badge text-white text-[10px] uppercase px-2 py-0.5" style={{ background: '#C4607A' }}>
-                Personalizable
+              <span className="badge text-white text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/10 shadow-sm backdrop-blur-md animate-pulse" style={{ background: 'rgba(196,96,122,0.92)' }}>
+                Personalize ✨
               </span>
             )}
           </div>
@@ -153,10 +153,10 @@ export const ProductCard = ({ product, index = 0, showNewBadge }: ProductCardPro
           <div className="absolute bottom-0 left-0 right-0 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
-              className="w-full py-3 text-xs tracking-widest uppercase font-semibold font-sans flex items-center justify-center gap-2 transition-colors duration-200"
+              className="w-full py-3.5 text-xs tracking-[0.2em] uppercase font-bold font-sans flex items-center justify-center gap-2 transition-colors duration-300"
               style={{ background: '#1A0812', color: '#FDF6EE' }}
             >
-              <ShoppingBag size={13} /> Add to Bag
+              <ShoppingBag size={12} className="animate-bounce" /> Add to Bag
             </button>
           </div>
 
@@ -164,40 +164,56 @@ export const ProductCard = ({ product, index = 0, showNewBadge }: ProductCardPro
           <button
             onClick={handleWishlist}
             className={cn(
-              'absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 flex items-center justify-center shadow-sm transition-all duration-200',
-              'opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100',
+              'absolute top-3 right-3 z-10 w-9 h-9 bg-white/80 backdrop-blur-md flex items-center justify-center rounded-full shadow-sm transition-all duration-300 border border-white/85',
+              'md:opacity-0 md:group-hover:opacity-100 scale-90 md:scale-95 group-hover:scale-100 hover:bg-white',
             )}
           >
             <Heart
-              size={15}
-              className={cn(isWishlisted ? 'fill-red-500 text-red-500' : 'text-charcoal-700')}
+              size={14}
+              className={cn(isWishlisted ? 'fill-red-500 text-red-500' : 'text-charcoal-700 hover:text-red-500')}
             />
           </button>
         </div>
 
         {/* Info */}
-        <div className="pt-4 pb-2 space-y-1.5">
-          <h3 className="font-sans text-sm font-medium text-charcoal-900 line-clamp-2 leading-snug group-hover:text-charcoal-700 transition-colors">
+        <div className="pt-4 pb-2 px-2 space-y-2">
+          {/* Handcrafted Hook Tag */}
+          <span className="text-[9px] font-sans font-bold tracking-[0.25em] uppercase text-[#D4A853] block">
+            ✨ Studio Original
+          </span>
+          
+          <h3 className="font-sans text-sm font-bold text-charcoal-950 line-clamp-1 leading-snug group-hover:text-charcoal-700 transition-colors">
             {product.title}
           </h3>
 
-          {product.rating !== undefined && (
-            <div className="flex items-center gap-1.5">
-              <Star size={11} className="fill-gold-400 text-gold-400" />
-              <span className="text-[11px] text-charcoal-500 font-sans">
-                {product.rating.toFixed(1)} ({product.reviewCount || 0})
+          <div className="flex items-center justify-between gap-2 pt-0.5">
+            {/* Price */}
+            <div className="flex items-center gap-2">
+              <span className="font-sans font-extrabold text-sm text-charcoal-950">
+                ₹{product.price.toLocaleString('en-IN')}
               </span>
+              {product.compareAtPrice && (
+                <span className="font-sans text-charcoal-400 text-xs line-through">
+                  ₹{product.compareAtPrice.toLocaleString('en-IN')}
+                </span>
+              )}
             </div>
-          )}
 
-          <div className="flex items-center gap-2">
-            <span className="font-sans font-semibold text-sm" style={{ color: '#1A0812' }}>
-              ₹{product.price.toLocaleString('en-IN')}
-            </span>
-            {product.compareAtPrice && (
-              <span className="font-sans text-charcoal-400 text-xs line-through">
-                ₹{product.compareAtPrice.toLocaleString('en-IN')}
-              </span>
+            {/* Rating Stars Badge */}
+            {product.rating !== undefined ? (
+              <div className="flex items-center gap-1 bg-[#FAF7F2] border border-[#D4A853]/20 px-2 py-0.5 rounded-full">
+                <Star size={10} className="fill-[#D4A853] text-[#D4A853]" />
+                <span className="text-[10px] text-charcoal-700 font-bold font-sans">
+                  {product.rating.toFixed(1)}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 bg-[#FAF7F2] px-2 py-0.5 rounded-full">
+                <Star size={10} className="fill-[#D4A853] text-[#D4A853]" />
+                <span className="text-[10px] text-charcoal-700 font-bold font-sans">
+                  4.8
+                </span>
+              </div>
             )}
           </div>
         </div>

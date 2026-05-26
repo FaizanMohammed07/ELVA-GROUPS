@@ -242,7 +242,7 @@ export const Navbar = () => {
 
         {/* Nav strip */}
         <motion.div
-          animate={scrolled
+          animate={(scrolled || location.pathname !== '/')
             ? { backgroundColor: 'rgba(14,3,11,0.90)', boxShadow: '0 1px 0 rgba(212,168,83,0.12), 0 8px 32px rgba(0,0,0,0.45)' }
             : { backgroundColor: 'rgba(14,3,11,0.18)', boxShadow: 'none' }
           }

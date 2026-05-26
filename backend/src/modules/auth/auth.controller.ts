@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { AuthService } from './services/auth.service';
 import { sendSuccess, sendCreated } from '../../utils/apiResponse';
 import { env } from '../../config/env';
+import { verifyFirebaseToken } from '../../config/firebase';
+import { AppError } from '../../utils/appError';
 
 const authService = new AuthService();
 
@@ -75,5 +77,33 @@ export const AuthController = {
 
   async me(req: Request, res: Response): Promise<void> {
     sendSuccess(res, req.user, 'User profile fetched');
+  },
+
+  async firebaseLogin(req: Request, res: Response): Promise<void> {
+    const { idToken } = req.body;
+    if (!idToken || typeof idToken !== 'string') throw AppError.badRequest('idToken is required');
+
+    let decoded;
+    try {
+      decoded = await verifyFirebaseToken(idToken);
+    } catch {
+      throw AppError.unauthorized('Invalid or expired Firebase token');
+    }
+
+    const profile = {
+      provider: 'google' as const,
+      providerId: decoded.uid,
+      email: decoded.email ?? '',
+      name: decoded.name ?? decoded.email?.split('@')[0] ?? 'User',
+      avatar: decoded.picture,
+    };
+
+    if (!profile.email) throw AppError.badRequest('Firebase token missing email');
+
+    const { user, tokens, isNew } = await authService.oauthLogin(profile, req);
+    res
+      .cookie('accessToken', tokens.accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
+      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 });
+    sendSuccess(res, { user, tokens, isNew }, isNew ? 'Account created successfully' : 'Login successful');
   },
 };

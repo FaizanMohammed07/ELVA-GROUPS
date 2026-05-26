@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +9,7 @@ import { useWishlistStore } from '@store/wishlistStore';
 import { useUIStore } from '@store/uiStore';
 import { useAuthStore } from '@store/authStore';
 import { ProductCard } from '@components/products/ProductCard';
-import { Heart, ShoppingBag, Star, Truck, Shield, RefreshCw, ChevronRight, Send } from 'lucide-react';
+import { Heart, ShoppingBag, Star, Truck, Shield, RefreshCw, ChevronRight, ChevronLeft, Send, Leaf, Sparkles, Recycle } from 'lucide-react';
 import { cn } from '@utils/cn';
 import toast from 'react-hot-toast';
 
@@ -27,6 +27,47 @@ export default function ProductDetailPage() {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
+
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let isDown = false;
+
+    const playCarousel = () => {
+      if (carouselRef.current && !isDown) {
+        carouselRef.current.scrollLeft += 1;
+        if (carouselRef.current.scrollLeft >= carouselRef.current.scrollWidth - carouselRef.current.clientWidth) {
+           carouselRef.current.scrollLeft = 0;
+        }
+      }
+      animationFrameId = requestAnimationFrame(playCarousel);
+    };
+    
+    animationFrameId = requestAnimationFrame(playCarousel);
+
+    const handleMouseUp = () => { isDown = false; };
+    const handleMouseDown = () => { isDown = true; };
+
+    if (carouselRef.current) {
+      carouselRef.current.addEventListener('mousedown', handleMouseDown);
+      carouselRef.current.addEventListener('mouseup', handleMouseUp);
+      carouselRef.current.addEventListener('mouseleave', handleMouseUp);
+      carouselRef.current.addEventListener('touchstart', handleMouseDown, { passive: true });
+      carouselRef.current.addEventListener('touchend', handleMouseUp, { passive: true });
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      if (carouselRef.current) {
+        carouselRef.current.removeEventListener('mousedown', handleMouseDown);
+        carouselRef.current.removeEventListener('mouseup', handleMouseUp);
+        carouselRef.current.removeEventListener('mouseleave', handleMouseUp);
+        carouselRef.current.removeEventListener('touchstart', handleMouseDown);
+        carouselRef.current.removeEventListener('touchend', handleMouseUp);
+      }
+    };
+  }, []);
 
   const { addItem } = useCartStore();
   const { toggle, has } = useWishlistStore();
@@ -121,6 +162,17 @@ export default function ProductDetailPage() {
     reviewMutation.mutate({ productId: product.id, rating: reviewRating, body: reviewText });
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    e.currentTarget.style.transformOrigin = `${x}% ${y}%`;
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.currentTarget.style.transformOrigin = 'center center';
+  };
+
   return (
     <div className="min-h-screen pt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -140,37 +192,133 @@ export default function ProductDetailPage() {
           <span className="text-charcoal-600 line-clamp-1">{product.title}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Images */}
-          <div className="space-y-4">
-            <div className="aspect-[3/4] overflow-hidden bg-cream-50">
-              <motion.img
-                key={selectedImage}
-                src={images[selectedImage]}
-                alt={product.title}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="w-full h-full object-cover"
-              />
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          
+          {/* ── IMAGES GALLERY ── */}
+          <div className="lg:col-span-6 w-full">
+            {/* Mobile Swipeable Gallery */}
+            <div className="lg:hidden flex overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 px-4 gap-4">
+              {images.map((img: string, i: number) => (
+                <div key={i} className="flex-shrink-0 w-[85vw] snap-center aspect-[4/5] bg-cream-50 rounded-2xl overflow-hidden relative">
+                  <img src={img} alt={`${product.title} - ${i + 1}`} className="w-full h-full object-cover" />
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full">
+                    {images.map((_: string, idx: number) => (
+                      <div key={idx} className={cn("w-1.5 h-1.5 rounded-full transition-colors", idx === i ? "bg-white" : "bg-white/40")} />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-            {images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                {images.map((img: string, i: number) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedImage(i)}
-                    className={cn('flex-shrink-0 w-20 h-24 overflow-hidden border-2 transition-colors', selectedImage === i ? 'border-charcoal-950' : 'border-transparent hover:border-charcoal-300')}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+
+            {/* Desktop Stacked Gallery */}
+            <div className="hidden lg:grid gap-4 sm:gap-6">
+              {images.length === 1 ? (
+                <div className="aspect-square bg-[#FAF7F2] overflow-hidden rounded-[2rem] relative group cursor-zoom-in">
+                  
+                  {/* Crazy Idea 1 & 2: Floating Badges & Hotspots */}
+                  <div className="absolute top-6 left-6 z-10 flex flex-col gap-2">
+                    <div className="bg-charcoal-950 text-white px-3 py-1.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-bold shadow-lg">
+                      Bestseller
+                    </div>
+                    {product.stock <= 5 && (
+                      <div className="bg-red-500 text-white px-3 py-1.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-bold shadow-lg animate-pulse">
+                        Low Stock
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Hotspots */}
+                  <div className="absolute top-[35%] left-[25%] z-20 group/hotspot">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse border-2 border-[#D4A853]" />
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-max bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] uppercase tracking-widest font-bold text-charcoal-800 opacity-0 group-hover/hotspot:opacity-100 transition-opacity pointer-events-none shadow-xl border border-[#D4A853]/20 flex items-center gap-2">
+                      <Sparkles size={12} className="text-[#D4A853]"/> 100% Hand-Poured
+                    </div>
+                  </div>
+                  <div className="absolute top-[65%] right-[25%] z-20 group/hotspot">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse border-2 border-[#D4A853]" />
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-max bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] uppercase tracking-widest font-bold text-charcoal-800 opacity-0 group-hover/hotspot:opacity-100 transition-opacity pointer-events-none shadow-xl border border-[#D4A853]/20 flex items-center gap-2">
+                      <Leaf size={12} className="text-[#D4A853]"/> Organic Ingredients
+                    </div>
+                  </div>
+
+                  <div className="absolute top-6 right-6 z-10 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold text-charcoal-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 shadow-sm pointer-events-none">
+                    <Sparkles size={12} className="text-[#D4A853]" /> Hover to Explore
+                  </div>
+                  <img 
+                    src={images[0]} 
+                    alt={product.title} 
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.35]" 
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 aspect-square bg-[#FAF7F2] overflow-hidden rounded-[2rem] relative group cursor-zoom-in">
+                  
+                    {/* Floating Badges & Hotspots */}
+                    <div className="absolute top-6 left-6 z-10 flex flex-col gap-2">
+                      <div className="bg-charcoal-950 text-white px-3 py-1.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-bold shadow-lg">
+                        Bestseller
+                      </div>
+                      {product.stock <= 5 && (
+                        <div className="bg-red-500 text-white px-3 py-1.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-bold shadow-lg animate-pulse">
+                          Low Stock
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="absolute top-[35%] left-[25%] z-20 group/hotspot">
+                      <div className="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse border-2 border-[#D4A853]" />
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-max bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] uppercase tracking-widest font-bold text-charcoal-800 opacity-0 group-hover/hotspot:opacity-100 transition-opacity pointer-events-none shadow-xl border border-[#D4A853]/20 flex items-center gap-2">
+                        <Sparkles size={12} className="text-[#D4A853]"/> 100% Hand-Poured
+                      </div>
+                    </div>
+                    <div className="absolute top-[65%] right-[25%] z-20 group/hotspot">
+                      <div className="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse border-2 border-[#D4A853]" />
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-max bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] uppercase tracking-widest font-bold text-charcoal-800 opacity-0 group-hover/hotspot:opacity-100 transition-opacity pointer-events-none shadow-xl border border-[#D4A853]/20 flex items-center gap-2">
+                        <Leaf size={12} className="text-[#D4A853]"/> Organic Ingredients
+                      </div>
+                    </div>
+
+                    <div className="absolute top-6 right-6 z-10 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold text-charcoal-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 shadow-sm pointer-events-none">
+                      <Sparkles size={12} className="text-[#D4A853]" /> Hover to Explore
+                    </div>
+                    <img 
+                      src={images[0]} 
+                      alt={product.title} 
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.35]" 
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseLeave}
+                    />
+                  </div>
+                  {images.slice(1).map((img: string, i: number) => (
+                    <div key={i} className="aspect-[4/5] bg-[#FAF7F2] overflow-hidden rounded-[1.5rem] relative group cursor-zoom-in">
+                      <img 
+                        src={img} 
+                        alt="" 
+                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.35]" 
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* ── PRODUCT DETAILS (Sticky) ── */}
+          <div className="lg:col-span-6 w-full space-y-8 lg:sticky lg:top-32 lg:pb-12 lg:pl-4">
 
           {/* Product Info */}
           <div className="space-y-6">
             <div>
+              {/* Crazy Idea 3: Urgency Banner */}
+              <div className="flex items-center gap-2 mb-4 bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full w-max border border-orange-200 shadow-sm">
+                <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                <span className="text-[9px] sm:text-[10px] font-sans tracking-widest uppercase font-bold">14 people are viewing this right now</span>
+              </div>
               <p className="text-gold-600 text-xs tracking-[0.3em] uppercase font-sans mb-2">ELVA Collection</p>
               <h1 className="font-serif text-4xl text-charcoal-950 leading-tight">{product.title}</h1>
             </div>
@@ -206,36 +354,53 @@ export default function ProductDetailPage() {
               {product.stock > 0 ? (product.stock <= 5 ? `Only ${product.stock} left!` : 'In Stock') : 'Out of Stock'}
             </div>
 
+            {/* Crazy Idea 4: Delivery Estimate Widget */}
+            <div className="flex items-center gap-3 p-4 bg-[#FAF7F2] rounded-xl border border-[#D4A853]/20 shadow-inner">
+              <Truck size={20} className="text-[#D4A853]" />
+              <div className="flex-1">
+                <p className="text-xs font-sans text-charcoal-900 font-semibold mb-0.5">Order within <span className="text-[#D4A853]">2 hrs 14 mins</span></p>
+                <p className="text-[10px] font-sans text-charcoal-500 uppercase tracking-wider">For delivery by <span className="font-bold">Thursday</span></p>
+              </div>
+            </div>
+
             {/* Short description */}
             {product.shortDescription && (
-              <p className="font-sans text-charcoal-600 leading-relaxed">{product.shortDescription}</p>
+              <p className="font-sans text-charcoal-600 leading-relaxed pt-2">{product.shortDescription}</p>
             )}
 
             {/* Personalization fields */}
             {product.isPersonalizable && product.personalizationFields?.length > 0 && (
-              <div className="border border-elva-200 bg-elva-50 p-5 space-y-4">
-                <p className="font-sans font-semibold text-charcoal-800 text-sm">✏️ Personalize Your Gift</p>
+              <div className="border border-[#D4A853]/30 bg-gradient-to-b from-[#FAF7F2] to-white p-6 rounded-2xl shadow-sm space-y-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="text-[#D4A853]" size={18} strokeWidth={1.5} />
+                  <p className="font-serif text-lg text-charcoal-900">Personalize Your Gift</p>
+                </div>
                 {product.personalizationFields.map((field: any) => (
-                  <div key={field.key}>
-                    <label className="block text-xs font-sans text-charcoal-600 mb-1.5 uppercase tracking-wide">
-                      {field.label} {field.required && <span className="text-red-500">*</span>}
+                  <div key={field.key} className="space-y-2">
+                    <label className="block text-[11px] font-sans text-charcoal-500 uppercase tracking-widest font-semibold">
+                      {field.label} {field.required && <span className="text-red-400">*</span>}
                     </label>
                     {field.type === 'textarea' ? (
                       <textarea
                         placeholder={field.placeholder}
                         maxLength={field.maxLength}
                         onChange={(e) => setPersonalization(p => ({ ...p, [field.key]: e.target.value }))}
-                        className="input-luxury w-full resize-none h-20"
+                        className="w-full bg-white border border-charcoal-200 rounded-xl px-4 py-3 text-sm font-sans focus:outline-none focus:border-[#D4A853] focus:ring-1 focus:ring-[#D4A853] transition-shadow resize-none h-24 placeholder:text-charcoal-300"
                       />
                     ) : field.type === 'select' ? (
-                      <select onChange={(e) => setPersonalization(p => ({ ...p, [field.key]: e.target.value }))} className="input-luxury w-full">
-                        <option value="">Select {field.label}</option>
-                        {field.options?.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
-                      </select>
+                      <div className="relative">
+                        <select onChange={(e) => setPersonalization(p => ({ ...p, [field.key]: e.target.value }))} className="w-full bg-white border border-charcoal-200 rounded-xl px-4 py-3.5 text-sm font-sans focus:outline-none focus:border-[#D4A853] focus:ring-1 focus:ring-[#D4A853] transition-shadow appearance-none cursor-pointer">
+                          <option value="" disabled selected>Select {field.label}</option>
+                          {field.options?.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                          <ChevronRight size={14} className="text-charcoal-400 rotate-90" />
+                        </div>
+                      </div>
                     ) : (
                       <input type="text" placeholder={field.placeholder} maxLength={field.maxLength}
                         onChange={(e) => setPersonalization(p => ({ ...p, [field.key]: e.target.value }))}
-                        className="input-luxury"
+                        className="w-full bg-white border border-charcoal-200 rounded-xl px-4 py-3.5 text-sm font-sans focus:outline-none focus:border-[#D4A853] focus:ring-1 focus:ring-[#D4A853] transition-shadow placeholder:text-charcoal-300"
                       />
                     )}
                   </div>
@@ -293,54 +458,90 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+        </div>
 
-        {/* Tabs Section */}
-        <div className="mt-16">
-          <div className="flex border-b border-charcoal-200">
-            {TABS.map(t => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={cn(
-                  'px-8 py-4 text-sm font-sans font-medium tracking-wide transition-colors relative',
-                  tab === t ? 'text-charcoal-950' : 'text-charcoal-400 hover:text-charcoal-700',
-                )}
-              >
-                {t}
-                {t === 'Reviews' && product.reviewCount > 0 && (
-                  <span className="ml-1.5 text-xs bg-charcoal-100 text-charcoal-600 px-1.5 py-0.5 rounded-full">{product.reviewCount}</span>
-                )}
-                {tab === t && (
-                  <motion.div layoutId="tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-charcoal-950" />
-                )}
-              </button>
-            ))}
+        {/* ── Tabs Section ── */}
+        <div className="mt-24 lg:mt-32 max-w-5xl mx-auto px-4 sm:px-6">
+          
+          {/* Segmented Pill Control */}
+          <div className="flex justify-center mb-10 sm:mb-16">
+            <div className="inline-flex items-center p-1.5 bg-[#FAF7F2] rounded-full border border-[#D4A853]/20 shadow-inner overflow-x-auto no-scrollbar max-w-full">
+              {TABS.map(t => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={cn(
+                    'relative px-6 sm:px-10 py-3 text-[11px] sm:text-xs font-sans tracking-[0.2em] uppercase rounded-full transition-colors duration-300 whitespace-nowrap',
+                    tab === t ? 'text-charcoal-950 font-bold' : 'text-charcoal-400 hover:text-charcoal-600 font-medium',
+                  )}
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    {t}
+                    {t === 'Reviews' && product.reviewCount > 0 && (
+                      <span className="text-[9px] bg-white text-charcoal-600 px-1.5 py-0.5 rounded-full shadow-sm border border-charcoal-100">{product.reviewCount}</span>
+                    )}
+                  </span>
+                  {tab === t && (
+                    <motion.div layoutId="tab-pill" className="absolute inset-0 bg-white rounded-full shadow-[0_2px_12px_rgba(0,0,0,0.04)]" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           <AnimatePresence mode="wait">
             <motion.div
               key={tab}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="py-10"
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="pb-12 sm:pb-16"
             >
               {tab === 'Description' && (
-                <div className="max-w-2xl prose prose-charcoal font-sans text-charcoal-700 leading-relaxed">
-                  {product.description ? (
-                    <div dangerouslySetInnerHTML={{ __html: product.description }} />
-                  ) : product.shortDescription ? (
-                    <p>{product.shortDescription}</p>
-                  ) : (
-                    <p className="text-charcoal-400 italic">No description provided.</p>
-                  )}
+                <div className="max-w-3xl mx-auto">
+                  <div className="text-center font-serif text-2xl sm:text-[28px] text-charcoal-800 leading-relaxed sm:leading-[1.8]">
+                    <span className="text-[#D4A853] text-4xl sm:text-5xl mr-2 font-serif align-top leading-none">"</span>
+                    {product.description ? (
+                      <span dangerouslySetInnerHTML={{ __html: product.description.replace(/<[^>]+>/g, '') }} />
+                    ) : product.shortDescription ? (
+                      <span>{product.shortDescription}</span>
+                    ) : (
+                      <span className="italic text-charcoal-400">No description provided.</span>
+                    )}
+                    <span className="text-[#D4A853] text-4xl sm:text-5xl ml-2 font-serif align-bottom leading-none">"</span>
+                  </div>
+                  
+                  {/* Editorial Badges */}
+                  <div className="mt-16 grid grid-cols-3 gap-4 sm:gap-8 text-center border-t border-[#D4A853]/20 pt-12">
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-[#FAF7F2] flex items-center justify-center mb-4 text-[#D4A853]">
+                        <Leaf size={20} strokeWidth={1.5} />
+                      </div>
+                      <h4 className="font-sans text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal-900 font-bold mb-1.5">100% Natural</h4>
+                      <p className="font-sans text-[10px] sm:text-[11px] text-charcoal-400 hidden sm:block">Pure & organic</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-[#FAF7F2] flex items-center justify-center mb-4 text-[#D4A853]">
+                        <Sparkles size={20} strokeWidth={1.5} />
+                      </div>
+                      <h4 className="font-sans text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal-900 font-bold mb-1.5">Handcrafted</h4>
+                      <p className="font-sans text-[10px] sm:text-[11px] text-charcoal-400 hidden sm:block">Made with love</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-[#FAF7F2] flex items-center justify-center mb-4 text-[#D4A853]">
+                        <Recycle size={20} strokeWidth={1.5} />
+                      </div>
+                      <h4 className="font-sans text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal-900 font-bold mb-1.5">Eco-Friendly</h4>
+                      <p className="font-sans text-[10px] sm:text-[11px] text-charcoal-400 hidden sm:block">Sustainable</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
               {tab === 'Details' && (
-                <div className="max-w-2xl">
-                  <div className="grid sm:grid-cols-2 gap-4">
+                <div className="max-w-3xl mx-auto">
+                  <div className="grid sm:grid-cols-2 gap-x-12 gap-y-6">
                     {[
                       { label: 'SKU', value: product.sku },
                       { label: 'Category', value: product.category?.replace(/-/g, ' ') },
@@ -464,17 +665,86 @@ export default function ProductDetailPage() {
           </AnimatePresence>
         </div>
 
-        {/* Related products */}
+        {/* ── Related Products Carousel ── */}
         {related?.length > 0 && (
-          <div className="mt-16 border-t border-charcoal-100 pt-16">
-            <h2 className="font-serif text-3xl text-charcoal-950 mb-8 text-center">You May Also Love</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {related.slice(0, 4).map((p: any, i: number) => (
-                <ProductCard key={p.id} product={p} index={i} />
+          <div className="mt-20 border-t border-charcoal-100 pt-16 mb-20 lg:mb-0">
+            <h2 className="font-serif text-3xl text-charcoal-950 mb-8 text-center sm:text-left">You May Also Love</h2>
+            <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-6 no-scrollbar pb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+              {related.map((p: any, i: number) => (
+                <div key={p.id} className="snap-start flex-shrink-0 w-[280px] sm:w-[320px]">
+                  <ProductCard product={p} index={i} />
+                </div>
               ))}
             </div>
           </div>
         )}
+      </div>
+
+      {/* ── Editorial Advertisement Carousel ── */}
+      <div className="w-full overflow-hidden border-t border-charcoal-100 pt-16 sm:pt-24 pb-24 lg:pb-16 bg-[#FAF7F2]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12 flex justify-between items-end">
+          <h2 className="font-serif text-[32px] sm:text-[44px] text-charcoal-950 leading-[1.1]">
+            Curated For <br className="sm:hidden" />
+            <span className="italic text-charcoal-500 font-light text-[36px] sm:text-[50px]">You</span>
+          </h2>
+          <p className="hidden sm:block text-xs font-sans tracking-[0.25em] uppercase text-charcoal-400 font-semibold mb-2">
+            Elva Lookbook
+          </p>
+        </div>
+        <div className="relative group">
+          {/* Scroll Buttons */}
+          <button 
+            className="hidden lg:flex absolute left-4 xl:left-12 top-1/2 -translate-y-1/2 z-10 w-14 h-14 bg-white/90 backdrop-blur-md items-center justify-center rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-charcoal-900 hover:scale-105" 
+            onClick={() => document.getElementById('ad-carousel')?.scrollBy({ left: -450, behavior: 'smooth' })}
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button 
+            className="hidden lg:flex absolute right-4 xl:right-12 top-1/2 -translate-y-1/2 z-10 w-14 h-14 bg-white/90 backdrop-blur-md items-center justify-center rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-charcoal-900 hover:scale-105" 
+            onClick={() => document.getElementById('ad-carousel')?.scrollBy({ left: 450, behavior: 'smooth' })}
+          >
+            <ChevronRight size={24} />
+          </button>
+
+          <div 
+            id="ad-carousel" 
+            ref={carouselRef}
+            className="flex overflow-x-auto gap-4 sm:gap-8 pb-8 px-4 sm:px-8 lg:px-12 no-scrollbar"
+          >
+            {[
+              { img: '/categories/elva_ad_candle_1779794926967.png', title: 'Signature Candles' },
+              { img: '/categories/elva_ad_clay_1779794959182.png', title: 'Artisan Clay' },
+              { img: '/categories/elva_ad_gift_1779794942965.png', title: 'Luxury Hampers' },
+              { img: '/categories/cat_personalized_1779782786385.png', title: 'Bespoke Gifts' },
+              { img: '/categories/cat_wedding_1779782802829.png', title: 'Wedding Edit' }
+            ].map((item, i) => (
+              <div key={i} className="flex-shrink-0 w-[85vw] sm:w-[400px] lg:w-[480px] aspect-[4/3] overflow-hidden rounded-[24px] group/card relative shadow-sm">
+                <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[1.5s] ease-[0.22,1,0.36,1]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/20 to-transparent opacity-60 group-hover/card:opacity-80 transition-opacity duration-500" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 transform translate-y-2 group-hover/card:translate-y-0 transition-transform duration-500">
+                  <p className="text-[#D4A853] font-sans text-[10px] sm:text-xs tracking-[0.3em] uppercase font-bold mb-2">Advertisement</p>
+                  <h3 className="text-white font-serif text-2xl sm:text-3xl">{item.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* ── Mobile Floating Buy Bar ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-charcoal-100 p-4 lg:hidden shadow-[0_-10px_40px_rgba(0,0,0,0.05)] transform transition-transform duration-300">
+        <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
+          <div className="flex flex-col flex-shrink-0">
+            <span className="text-[10px] uppercase tracking-widest text-charcoal-500 font-semibold mb-0.5">Total</span>
+            <span className="font-sans font-bold text-lg text-charcoal-950 leading-none">₹{product.price?.toLocaleString('en-IN')}</span>
+          </div>
+          <button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            className="flex-1 btn-primary py-3.5 text-sm shadow-[0_10px_20px_rgba(212,168,83,0.3)] disabled:opacity-50 disabled:shadow-none"
+          >
+            {product.stock === 0 ? 'Out of Stock' : 'Add to Bag'}
+          </button>
+        </div>
       </div>
     </div>
   );
