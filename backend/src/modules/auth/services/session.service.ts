@@ -1,4 +1,4 @@
-import { RedisCache } from '../../../config/redis';
+import { RedisCache } from '../../../config/cache';
 import { Request } from 'express';
 import { generateDeviceFingerprint } from '../../../utils/crypto';
 

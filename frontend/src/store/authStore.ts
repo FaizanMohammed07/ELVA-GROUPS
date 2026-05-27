@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { authApi } from '@api/auth.api';
 import { signInWithGoogle, firebaseSignOut } from '@/lib/firebase';
+import { useCartStore } from '@store/cartStore';
+import { useWishlistStore } from '@store/wishlistStore';
 
 export interface User {
   id: string;
@@ -62,31 +64,31 @@ export const useAuthStore = create<AuthState>()(
         try { await authApi.logout(); } catch {}
         try { await firebaseSignOut(); } catch {}
         set({ user: null, accessToken: null, isAuthenticated: false });
+        useCartStore.getState().clearCart();
+        useWishlistStore.getState().clear();
       },
 
       initializeAuth: async () => {
         set({ isLoading: true });
         const { accessToken } = get();
         try {
-          // If we have a stored token, validate it first
           if (accessToken) {
             const { data } = await authApi.me();
-            set({ user: data.data, isAuthenticated: true, isLoading: false });
+            set({ user: data.data, isAuthenticated: true });
             return;
           }
-          // No stored token — still try refresh cookie (user may have a valid session from another tab)
           throw new Error('no_token');
         } catch {
-          // Token expired or missing — attempt silent refresh via httpOnly cookie
           try {
             const { data } = await authApi.refresh();
             set({ accessToken: data.data.tokens.accessToken });
             const { data: meData } = await authApi.me();
-            set({ user: meData.data, isAuthenticated: true, isLoading: false });
+            set({ user: meData.data, isAuthenticated: true });
           } catch {
-            // Refresh token also invalid/expired — clear everything, force re-login
-            set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
+            set({ user: null, accessToken: null, isAuthenticated: false });
           }
+        } finally {
+          set({ isLoading: false });
         }
       },
 
@@ -95,7 +97,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'elva-auth',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ accessToken: state.accessToken, user: state.user, isAuthenticated: state.isAuthenticated }),
+      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
     },
   ),
 );

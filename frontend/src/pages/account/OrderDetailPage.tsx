@@ -4,13 +4,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ordersApi } from '@api/orders.api';
 import { apiClient } from '@api/client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle, Package, Truck, MapPin, X, ExternalLink, Download, RefreshCw, AlertCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Package, Truck, MapPin, X, ExternalLink, Download, RefreshCw, AlertCircle, AlertTriangle } from 'lucide-react';
 import { cn } from '@utils/cn';
 import toast from 'react-hot-toast';
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [returnReason, setReturnReason] = useState('');
 
@@ -21,12 +23,14 @@ export default function OrderDetailPage() {
   });
 
   const { mutate: cancelOrder, isPending: isCancelling } = useMutation({
-    mutationFn: () => ordersApi.cancel(id!),
+    mutationFn: () => ordersApi.cancel(id!, cancelReason || 'Customer requested cancellation'),
     onSuccess: () => {
-      toast.success('Order cancelled');
+      toast.success('Your order has been cancelled.');
+      setShowCancelModal(false);
       queryClient.invalidateQueries({ queryKey: ['order-detail', id] });
+      queryClient.invalidateQueries({ queryKey: ['my-orders'] });
     },
-    onError: () => toast.error('Cannot cancel this order'),
+    onError: () => toast.error('Unable to cancel this order. Please contact support.'),
   });
 
   const { mutate: requestReturn, isPending: isReturning } = useMutation({
@@ -96,7 +100,7 @@ export default function OrderDetailPage() {
               <Download size={13} /> Invoice
             </button>
             {canCancel && (
-              <button onClick={() => cancelOrder()} disabled={isCancelling} className="flex items-center gap-1.5 border border-red-300 text-red-600 px-3 py-2 text-xs hover:bg-red-50 transition-colors disabled:opacity-50">
+              <button onClick={() => setShowCancelModal(true)} className="flex items-center gap-1.5 border border-red-300 text-red-600 px-3 py-2 text-xs hover:bg-red-50 transition-colors">
                 <X size={13} /> Cancel Order
               </button>
             )}
@@ -214,6 +218,103 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      <AnimatePresence>
+        {showCancelModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={(e) => { if (e.target === e.currentTarget) setShowCancelModal(false); }}
+          >
+            <motion.div
+              initial={{ scale: 0.94, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 16 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="bg-white max-w-md w-full overflow-hidden shadow-2xl"
+            >
+              {/* Red top bar */}
+              <div className="h-1.5 bg-gradient-to-r from-red-400 to-red-600" />
+
+              <div className="p-6">
+                {/* Icon + heading */}
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="w-11 h-11 rounded-full bg-red-50 border border-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <AlertTriangle size={20} className="text-red-500" />
+                  </div>
+                  <div>
+                    <h2 className="font-serif text-xl text-charcoal-950 leading-tight">Cancel this order?</h2>
+                    <p className="font-sans text-xs text-charcoal-400 mt-0.5">Order #{order.orderNumber}</p>
+                  </div>
+                  <button onClick={() => setShowCancelModal(false)} className="ml-auto text-charcoal-300 hover:text-charcoal-600 transition-colors">
+                    <X size={18} />
+                  </button>
+                </div>
+
+                {/* Warning message */}
+                <div className="bg-red-50 border border-red-100 rounded px-4 py-3 mb-5">
+                  <p className="font-sans text-sm text-red-700 leading-relaxed">
+                    This action <span className="font-semibold">cannot be undone.</span> Your order will be permanently cancelled and any payment will be refunded within 5–7 business days.
+                  </p>
+                </div>
+
+                {/* Items summary */}
+                <div className="mb-5">
+                  <p className="font-sans text-xs text-charcoal-400 uppercase tracking-wider mb-3">Items in this order</p>
+                  <div className="space-y-2.5 max-h-36 overflow-y-auto pr-1">
+                    {order.items?.map((item: any) => (
+                      <div key={item.productId} className="flex items-center gap-3">
+                        <img src={item.thumbnail || '/placeholder.svg'} alt={item.title} className="w-10 h-12 object-cover bg-cream-50 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-sans text-sm text-charcoal-800 truncate">{item.title}</p>
+                          <p className="font-sans text-xs text-charcoal-400">Qty {item.quantity} · ₹{(item.unitPrice * item.quantity).toLocaleString('en-IN')}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Optional reason */}
+                <div className="mb-6">
+                  <label className="block font-sans text-xs text-charcoal-500 mb-1.5">Reason for cancellation <span className="text-charcoal-300">(optional)</span></label>
+                  <select
+                    value={cancelReason}
+                    onChange={e => setCancelReason(e.target.value)}
+                    className="w-full border border-charcoal-200 px-3 py-2.5 text-sm font-sans text-charcoal-700 focus:outline-none focus:border-charcoal-500 bg-white"
+                  >
+                    <option value="">Select a reason…</option>
+                    <option value="Changed my mind">Changed my mind</option>
+                    <option value="Ordered by mistake">Ordered by mistake</option>
+                    <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                    <option value="Shipping time is too long">Shipping time is too long</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowCancelModal(false)}
+                    className="flex-1 border border-charcoal-200 py-3 text-sm font-sans text-charcoal-700 hover:bg-cream-50 transition-colors"
+                  >
+                    Keep My Order
+                  </button>
+                  <button
+                    onClick={() => cancelOrder()}
+                    disabled={isCancelling}
+                    className="flex-1 bg-red-600 text-white py-3 text-sm font-sans hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {isCancelling ? 'Cancelling…' : 'Yes, Cancel Order'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Return Modal */}
       <AnimatePresence>

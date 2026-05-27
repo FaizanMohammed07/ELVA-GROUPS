@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { authenticate } from '../../../middleware/authenticate';
 import { requireSuperAdmin } from '../../../middleware/authorize';
+import { aiAnalysisRateLimiter } from '../../../middleware/rateLimiter';
 import { sendSuccess } from '../../../utils/apiResponse';
 import { AppError } from '../../../utils/appError';
 import { ensureGlobalConfig, GlobalConfigModel } from '../models/global-config.model';
@@ -9,14 +10,34 @@ import { MoldModel } from '../models/mold.model';
 import { analyzeProduct, getAnalysisHistory, getAnalysisById, deleteAnalysis } from '../services/intelligence.service';
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024, files: 5 } });
+
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 5 },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`Invalid file type: ${file.mimetype}. Only JPEG, PNG, WebP allowed.`));
+    }
+  },
+});
 
 const isSuperAdmin = requireSuperAdmin;
 
 // ─── Global Config ────────────────────────────────────────────────────────
+// Strip sensitive fields before sending config to client
+function sanitizeConfig(cfg: any) {
+  const obj = cfg.toObject ? cfg.toObject() : { ...cfg };
+  delete obj.openRouterApiKey; // never expose API key in response
+  obj.hasApiKey = !!(cfg.openRouterApiKey);
+  return obj;
+}
+
 router.get('/config', authenticate, isSuperAdmin, async (_req: Request, res: Response) => {
   const cfg = await ensureGlobalConfig();
-  sendSuccess(res, cfg);
+  sendSuccess(res, sanitizeConfig(cfg));
 });
 
 router.patch('/config', authenticate, isSuperAdmin, async (req: Request, res: Response) => {
@@ -35,7 +56,7 @@ router.patch('/config', authenticate, isSuperAdmin, async (req: Request, res: Re
     { $set: updates },
     { new: true, upsert: true },
   );
-  sendSuccess(res, cfg, 'Config updated');
+  sendSuccess(res, sanitizeConfig(cfg), 'Config updated');
 });
 
 // ─── Molds ────────────────────────────────────────────────────────────────
@@ -76,6 +97,7 @@ router.post(
   '/analyze',
   authenticate,
   isSuperAdmin,
+  aiAnalysisRateLimiter,
   upload.array('images', 5),
   async (req: Request, res: Response) => {
     const files = req.files as Express.Multer.File[] | undefined;

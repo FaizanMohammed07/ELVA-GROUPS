@@ -42,7 +42,8 @@ apiClient.interceptors.response.use(
     // Skip refresh loop for auth endpoints themselves
     const isAuthEndpoint = original.url?.includes('/auth/refresh') ||
                            original.url?.includes('/auth/login') ||
-                           original.url?.includes('/auth/register');
+                           original.url?.includes('/auth/register') ||
+                           original.url?.includes('/auth/me');
 
     if (error.response?.status === 401 && !original._retry && !isAuthEndpoint) {
       if (isRefreshing) {
@@ -59,7 +60,7 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await apiClient.post('/auth/refresh');
+        const { data } = await apiClient.post('/auth/refresh', {});
         const newToken = data.data.tokens.accessToken;
         useAuthStore.getState().setToken(newToken);
         processQueue(null, newToken);
@@ -68,6 +69,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError);
         clearAuthLocally();
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,6 +32,7 @@ export default function CheckoutPage() {
   const { items, subtotal, shippingCost, total, clearCart } = useCartStore();
   const { user } = useAuthStore();
   const [isProcessing, setIsProcessing] = useState(false);
+  const orderSubmittedRef = useRef(false);
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
@@ -43,6 +44,10 @@ export default function CheckoutPage() {
   });
 
   const paymentMethod = watch('paymentMethod');
+
+  useEffect(() => {
+    if (items.length === 0 && !orderSubmittedRef.current) navigate('/cart', { replace: true });
+  }, [items.length, navigate]);
 
   const onSubmit = async (data: CheckoutForm) => {
     if (items.length === 0) return;
@@ -69,6 +74,7 @@ export default function CheckoutPage() {
       const order = orderRes.data.data;
 
       if (data.paymentMethod === 'cod') {
+        orderSubmittedRef.current = true;
         clearCart();
         navigate(`/order-confirmation/${order.orderNumber}`);
         return;
@@ -77,7 +83,12 @@ export default function CheckoutPage() {
       const razorpayRes = await paymentsApi.createRazorpayOrder(order.id);
       const rzpOrder = razorpayRes.data.data;
 
-      const rzp = new Razorpay({
+      if (typeof (window as any).Razorpay === 'undefined') {
+        toast.error('Payment gateway failed to load. Please refresh and try again.');
+        return;
+      }
+
+      const rzp = new (window as any).Razorpay({
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: rzpOrder.amount,
         currency: rzpOrder.currency,
@@ -87,14 +98,19 @@ export default function CheckoutPage() {
         prefill: { name: data.fullName, contact: data.phone, email: user?.email },
         theme: { color: '#1a1a1a' },
         handler: async (response: any) => {
-          await paymentsApi.verify({
-            orderId: order.id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
-          clearCart();
-          navigate(`/order-confirmation/${order.orderNumber}`);
+          try {
+            await paymentsApi.verify({
+              orderId: order.id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            orderSubmittedRef.current = true;
+            clearCart();
+            navigate(`/order-confirmation/${order.orderNumber}`);
+          } catch {
+            toast.error('Payment verification failed. Contact support with your order number.');
+          }
         },
       });
       rzp.open();
@@ -105,10 +121,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (items.length === 0) {
-    navigate('/cart');
-    return null;
-  }
+  if (items.length === 0) return null;
 
   return (
     <div className="min-h-screen pt-32 pb-20">

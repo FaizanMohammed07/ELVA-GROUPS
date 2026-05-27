@@ -20,27 +20,30 @@ export const AuthController = {
     const { user, tokens } = await authService.register(req.body, req);
     res
       .cookie('accessToken', tokens.accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
-      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 });
-    sendCreated(res, { user, tokens }, 'Registration successful');
+      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 30 * 24 * 3600 * 1000 });
+    // Return accessToken for Bearer auth (SPA in-memory usage); never return refreshToken in body
+    sendCreated(res, { user, tokens: { accessToken: tokens.accessToken } }, 'Registration successful');
   },
 
   async login(req: Request, res: Response): Promise<void> {
     const { user, tokens } = await authService.login(req.body, req);
-    const maxAge = req.body.rememberMe ? 30 * 24 * 3600 * 1000 : 7 * 24 * 3600 * 1000;
     res
       .cookie('accessToken', tokens.accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
-      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge });
-    sendSuccess(res, { user, tokens }, 'Login successful');
+      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 30 * 24 * 3600 * 1000 });
+    // Never return refreshToken in body — it only lives in the httpOnly cookie
+    sendSuccess(res, { user, tokens: { accessToken: tokens.accessToken } }, 'Login successful');
   },
 
   async refresh(req: Request, res: Response): Promise<void> {
-    const refreshToken = req.signedCookies?.refreshToken || req.body?.refreshToken;
-    if (!refreshToken) throw new Error('Refresh token required');
+    // Refresh token MUST come from the httpOnly cookie — not from the request body.
+    // Accepting it from the body would allow XSS-exfiltrated tokens to be reused.
+    const refreshToken = req.signedCookies?.refreshToken;
+    if (!refreshToken) throw AppError.unauthorized('Refresh token required');
     const tokens = await authService.refresh(refreshToken, req);
     res
       .cookie('accessToken', tokens.accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
-      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 });
-    sendSuccess(res, { tokens }, 'Token refreshed');
+      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 30 * 24 * 3600 * 1000 });
+    sendSuccess(res, { tokens: { accessToken: tokens.accessToken } }, 'Token refreshed');
   },
 
   async logout(req: Request, res: Response): Promise<void> {
@@ -103,7 +106,7 @@ export const AuthController = {
     const { user, tokens, isNew } = await authService.oauthLogin(profile, req);
     res
       .cookie('accessToken', tokens.accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
-      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000 });
-    sendSuccess(res, { user, tokens, isNew }, isNew ? 'Account created successfully' : 'Login successful');
+      .cookie('refreshToken', tokens.refreshToken, { ...cookieOptions, maxAge: 30 * 24 * 3600 * 1000 });
+    sendSuccess(res, { user, tokens: { accessToken: tokens.accessToken }, isNew }, isNew ? 'Account created successfully' : 'Login successful');
   },
 };

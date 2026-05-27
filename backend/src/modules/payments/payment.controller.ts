@@ -9,13 +9,13 @@ export const PaymentController = {
   async createOrder(req: Request, res: Response): Promise<void> {
     const { orderId } = req.body;
     if (!orderId) throw AppError.badRequest('orderId is required');
-    const data = await paymentService.createRazorpayOrder(orderId);
+    const data = await paymentService.createRazorpayOrder(orderId, req.user!.id);
     sendSuccess(res, data, 'Payment order created');
   },
 
   async verifyPayment(req: Request, res: Response): Promise<void> {
     const { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    await paymentService.confirmPayment(orderId, razorpay_payment_id, razorpay_order_id, razorpay_signature);
+    await paymentService.confirmPayment(orderId, req.user!.id, razorpay_payment_id, razorpay_order_id, razorpay_signature);
     sendSuccess(res, null, 'Payment confirmed');
   },
 

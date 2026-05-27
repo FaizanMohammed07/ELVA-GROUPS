@@ -1,12 +1,32 @@
 import { Router } from 'express';
+import { z } from 'zod';
 import { authenticate } from '../../middleware/authenticate';
 import { requireAdmin, requireSuperAdmin } from '../../middleware/authorize';
+import { validateBody } from '../../middleware/validate';
+import { validateMongoId } from '../../middleware/mongoId';
 import { sendSuccess, sendCreated } from '../../utils/apiResponse';
 import { AppError } from '../../utils/appError';
 import { UserModel } from '../users/models/user.model';
 import { OrderModel } from '../orders/models/order.model';
 import { ProductModel } from '../products/models/product.model';
 import { hashPassword } from '../../utils/crypto';
+
+const createStaffSchema = z.object({
+  name: z.string().min(2).max(100).trim(),
+  email: z.string().email().toLowerCase().trim(),
+  password: z
+    .string()
+    .min(10)
+    .regex(/[A-Z]/, 'Must contain uppercase')
+    .regex(/[0-9]/, 'Must contain number')
+    .regex(/[^A-Za-z0-9]/, 'Must contain special character'),
+  role: z.enum(['admin', 'support', 'marketing', 'inventory']),
+});
+
+const updateRoleSchema = z.object({
+  role: z.enum(['admin', 'support', 'marketing', 'inventory']),
+  permissions: z.array(z.string().max(100).regex(/^[a-z_:]+$/)).optional(),
+});
 
 export const adminRouter = Router();
 
@@ -19,19 +39,16 @@ adminRouter.get('/staff', requireSuperAdmin, async (_req, res) => {
   sendSuccess(res, staff, 'Staff list');
 });
 
-adminRouter.post('/staff/create', requireSuperAdmin, async (req, res) => {
+adminRouter.post('/staff/create', requireSuperAdmin, validateBody(createStaffSchema), async (req, res) => {
   const { name, email, password, role } = req.body;
-  const validRoles = ['admin', 'support', 'marketing', 'inventory'];
-  if (!name || !email || !password) throw AppError.badRequest('name, email and password are required');
-  if (!validRoles.includes(role)) throw AppError.badRequest(`role must be one of: ${validRoles.join(', ')}`);
 
-  const existing = await UserModel.findOne({ email: email.toLowerCase() });
+  const existing = await UserModel.findOne({ email });
   if (existing) throw AppError.conflict('Email already registered');
 
   const passwordHash = await hashPassword(password);
   const user = await UserModel.create({
     name,
-    email: email.toLowerCase(),
+    email,
     passwordHash,
     role,
     isEmailVerified: true,
@@ -46,12 +63,14 @@ adminRouter.post('/staff/invite', requireSuperAdmin, async (req, res) => {
   sendSuccess(res, null, 'Invitation sent');
 });
 
-adminRouter.patch('/staff/:id/role', requireSuperAdmin, async (req, res) => {
-  await UserModel.findByIdAndUpdate(req.params["id"] as string, { $set: { role: req.body.role, permissions: req.body.permissions || [] } });
+adminRouter.patch('/staff/:id/role', requireSuperAdmin, validateMongoId(), validateBody(updateRoleSchema), async (req, res) => {
+  const { role, permissions } = req.body;
+  const safePermissions = (permissions ?? []).filter((p: string) => p !== '*');
+  await UserModel.findByIdAndUpdate(req.params["id"] as string, { $set: { role, permissions: safePermissions } });
   sendSuccess(res, null, 'Role updated');
 });
 
-adminRouter.patch('/staff/:id/deactivate', requireSuperAdmin, async (req, res) => {
+adminRouter.patch('/staff/:id/deactivate', requireSuperAdmin, validateMongoId(), async (req, res) => {
   await UserModel.findByIdAndUpdate(req.params["id"] as string, { $set: { isActive: false } });
   sendSuccess(res, null, 'Staff deactivated');
 });

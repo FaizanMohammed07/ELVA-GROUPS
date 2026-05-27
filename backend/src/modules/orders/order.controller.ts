@@ -37,8 +37,11 @@ export const OrderController = {
   },
 
   async requestReturn(req: Request, res: Response): Promise<void> {
-    const order = await orderService.updateStatus(req.params["id"] as string, 'return_requested', `Return requested: ${req.body.reason}`);
-    await OrderModel.findByIdAndUpdate(req.params["id"] as string, { returnReason: req.body.reason });
+    const orderId = req.params["id"] as string;
+    const owned = await OrderModel.findOne({ _id: orderId, userId: req.user!.id });
+    if (!owned) throw AppError.notFound('Order not found');
+    const order = await orderService.updateStatus(orderId, 'return_requested', `Return requested: ${req.body.reason}`);
+    await OrderModel.findByIdAndUpdate(orderId, { returnReason: req.body.reason });
     sendSuccess(res, order, 'Return request submitted');
   },
 

@@ -122,10 +122,7 @@ export class ProductRepository {
   }
 
   async incrementStock(id: string, quantity: number): Promise<void> {
-    await ProductModel.findByIdAndUpdate(id, {
-      $inc: { stock: quantity },
-      $set: { status: 'active' },
-    });
+    await ProductModel.findByIdAndUpdate(id, { $inc: { stock: quantity } });
   }
 
   async searchText(searchTerm: string, limit = 20): Promise<IProduct[]> {

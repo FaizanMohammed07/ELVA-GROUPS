@@ -44,5 +44,6 @@ const CategorySchema = new Schema<ICategory>(
 );
 
 CategorySchema.virtual('id').get(function () { return this._id.toHexString(); });
+CategorySchema.index({ parentId: 1, isActive: 1 });
 
 export const CategoryModel: Model<ICategory> = mongoose.model<ICategory>('Category', CategorySchema);

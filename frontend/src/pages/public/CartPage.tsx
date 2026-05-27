@@ -48,7 +48,7 @@ export default function CartPage() {
           <div className="lg:col-span-2 space-y-6">
             {items.map((item) => (
               <motion.div
-                key={item.productId}
+                key={`${item.productId}-${item.variantId ?? ''}`}
                 layout
                 exit={{ opacity: 0, x: -20 }}
                 className="flex gap-4 border-b border-charcoal-100 pb-6"
@@ -70,15 +70,15 @@ export default function CartPage() {
                   <p className="font-sans font-semibold text-charcoal-950 mt-2">₹{item.price.toLocaleString('en-IN')}</p>
                   <div className="flex items-center gap-4 mt-3">
                     <div className="flex items-center border border-charcoal-200">
-                      <button onClick={() => updateQuantity(item.productId, item.quantity - 1)} className="w-8 h-8 flex items-center justify-center hover:bg-charcoal-50 transition-colors">
+                      <button onClick={() => updateQuantity(item.productId, item.quantity - 1, item.variantId)} className="w-8 h-8 flex items-center justify-center hover:bg-charcoal-50 transition-colors">
                         <Minus size={12} />
                       </button>
                       <span className="w-8 text-center font-sans text-sm">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.productId, item.quantity + 1)} disabled={item.quantity >= item.stock} className="w-8 h-8 flex items-center justify-center hover:bg-charcoal-50 transition-colors disabled:opacity-40">
+                      <button onClick={() => updateQuantity(item.productId, item.quantity + 1, item.variantId)} disabled={item.quantity >= item.stock} className="w-8 h-8 flex items-center justify-center hover:bg-charcoal-50 transition-colors disabled:opacity-40">
                         <Plus size={12} />
                       </button>
                     </div>
-                    <button onClick={() => removeItem(item.productId)} className="text-charcoal-400 hover:text-red-500 transition-colors">
+                    <button onClick={() => removeItem(item.productId, item.variantId)} className="text-charcoal-400 hover:text-red-500 transition-colors">
                       <Trash2 size={16} />
                     </button>
                   </div>

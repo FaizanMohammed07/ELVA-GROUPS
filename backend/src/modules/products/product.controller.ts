@@ -4,7 +4,7 @@ import { ProductRepository } from './repositories/product.repository';
 import { sendSuccess, sendCreated, buildPaginationMeta } from '../../utils/apiResponse';
 import { parsePagination } from '../../utils/pagination';
 import { AppError } from '../../utils/appError';
-import { RedisCache } from '../../config/redis';
+import { RedisCache } from '../../config/cache';
 
 const productRepo = new ProductRepository();
 const cache = new RedisCache('products', 600);
@@ -91,15 +91,16 @@ export const ProductController = {
 
   async create(req: Request, res: Response): Promise<void> {
     const slug = slugify(req.body.title, { lower: true, strict: true });
+    const existing = await productRepo.findBySlug(slug);
+    if (existing) throw AppError.conflict(`A product with slug "${slug}" already exists`);
     const product = await productRepo.create({ ...req.body, slug });
     await cache.invalidatePattern('featured');
     sendCreated(res, product, 'Product created');
   },
 
   async update(req: Request, res: Response): Promise<void> {
-    if (req.body.title) {
-      req.body.slug = slugify(req.body.title, { lower: true, strict: true });
-    }
+    // Never regenerate slug from title — that would break existing URLs and SEO links
+    delete req.body.slug;
     const product = await productRepo.update(req.params["id"] as string, req.body);
     await cache.invalidatePattern('');
     sendSuccess(res, product, 'Product updated');

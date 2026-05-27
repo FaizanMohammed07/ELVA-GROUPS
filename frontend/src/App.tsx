@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense, useState } from 'react';
+import { useEffect, useRef, lazy, Suspense, useState, Component, ReactNode } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import { useAuthStore } from '@store/authStore';
@@ -68,6 +68,24 @@ const AdminCategories = lazy(() => import('@pages/admin/CategoriesPage'));
 const AdminLoginPage = lazy(() => import('@pages/auth/AdminLoginPage'));
 const SuperAdminLoginPage = lazy(() => import('@pages/auth/SuperAdminLoginPage'));
 
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center text-center p-8">
+          <div>
+            <h1 className="text-2xl font-serif text-charcoal-950 mb-4">Something went wrong</h1>
+            <button className="btn-primary" onClick={() => window.location.reload()}>Reload Page</button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const SPLASH_SEEN_KEY = 'elva-splash-seen';
 
 export default function App() {
@@ -112,6 +130,7 @@ export default function App() {
   return (
     <CartAnimationProvider>
       {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
+      <ErrorBoundary>
 <Suspense fallback={<PageLoader />}>
         <Routes>
           {/* Public routes */}
@@ -157,6 +176,7 @@ export default function App() {
               </AdminProtectedRoute>
             }
           >
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
@@ -182,6 +202,7 @@ export default function App() {
               </AdminProtectedRoute>
             }
           >
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<SuperAdminDashboard />} />
             <Route path="staff" element={<SuperAdminStaff />} />
             <Route path="financials" element={<SuperAdminFinancials />} />
@@ -203,6 +224,7 @@ export default function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
     </CartAnimationProvider>
   );
 }

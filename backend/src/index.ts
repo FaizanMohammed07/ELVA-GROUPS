@@ -1,9 +1,10 @@
 import 'express-async-errors';
 import { createApp } from './app';
 import { connectDatabase } from './database/connection';
-import { connectRedis } from './config/redis';
+import { connectRedis } from './config/cache';
 import { seedMaterialTemplates } from './modules/material-templates/material-template.routes';
 import { seedIntelligenceData } from './modules/intelligence/seed/intelligence.seed';
+import { ensureAdminAccounts } from './database/seeds/super-admin';
 import { logger } from './utils/logger';
 import { env } from './config/env';
 
@@ -11,6 +12,7 @@ const bootstrap = async () => {
   try {
     await connectDatabase();
     await connectRedis(); // non-fatal — falls back to in-memory cache if Redis is down
+    await ensureAdminAccounts(); // idempotent — creates admin/super-admin if not yet in DB
     await seedMaterialTemplates();
     await seedIntelligenceData();
 

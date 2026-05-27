@@ -20,7 +20,7 @@ import {
   generateDeviceFingerprint,
 } from '../../../utils/crypto';
 import { logger } from '../../../utils/logger';
-import { RedisCache } from '../../../config/redis';
+import { RedisCache } from '../../../config/cache';
 import { Request } from 'express';
 
 const otpCache = new RedisCache('otp', 600);

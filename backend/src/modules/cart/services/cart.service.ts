@@ -1,4 +1,4 @@
-import { RedisCache } from '../../../config/redis';
+import { RedisCache } from '../../../config/cache';
 import { ProductRepository } from '../../products/repositories/product.repository';
 import { AppError } from '../../../utils/appError';
 
@@ -35,10 +35,11 @@ export class CartService {
       (i) => i.productId === item.productId && i.variantId === item.variantId,
     );
 
+    const MAX_QTY = 99;
     if (existingIdx >= 0) {
-      cart.items[existingIdx].quantity += item.quantity;
+      cart.items[existingIdx].quantity = Math.min(cart.items[existingIdx].quantity + item.quantity, MAX_QTY);
     } else {
-      cart.items.push({ ...item, addedAt: new Date().toISOString() });
+      cart.items.push({ ...item, quantity: Math.min(item.quantity, MAX_QTY), addedAt: new Date().toISOString() });
     }
 
     cart.updatedAt = new Date().toISOString();
@@ -48,6 +49,7 @@ export class CartService {
 
   async updateItem(userId: string, productId: string, quantity: number, variantId?: string): Promise<Cart> {
     if (quantity <= 0) return this.removeItem(userId, productId, variantId);
+    if (quantity > 99) throw AppError.badRequest('Quantity cannot exceed 99');
     const cart = await this.getCart(userId);
     const idx = cart.items.findIndex(
       (i) => i.productId === productId && i.variantId === variantId,

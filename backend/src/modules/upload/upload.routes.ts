@@ -70,10 +70,16 @@ uploadRouter.post(
   asyncHandler(async (req: Request, res: Response) => {
     if (!req.file) throw AppError.badRequest('No file uploaded. Send the file in the "image" field.');
 
-    const optimized = await sharp(req.file.buffer)
-      .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 85 })
-      .toBuffer();
+    // Validate actual image content via sharp (rejects non-image binaries regardless of MIME header)
+    let optimized: Buffer;
+    try {
+      optimized = await sharp(req.file.buffer)
+        .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 85 })
+        .toBuffer();
+    } catch {
+      throw AppError.badRequest('Uploaded file is not a valid image');
+    }
 
     const key = `products/${uuidv4()}.webp`;
     const url = await uploadToS3(optimized, key);
@@ -92,10 +98,15 @@ uploadRouter.post(
 
     const urls = await Promise.all(
       files.map(async (file) => {
-        const optimized = await sharp(file.buffer)
-          .resize({ width: 1200, fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 85 })
-          .toBuffer();
+        let optimized: Buffer;
+        try {
+          optimized = await sharp(file.buffer)
+            .resize({ width: 1200, fit: 'inside', withoutEnlargement: true })
+            .webp({ quality: 85 })
+            .toBuffer();
+        } catch {
+          throw AppError.badRequest(`File "${file.originalname}" is not a valid image`);
+        }
 
         const key = `products/${uuidv4()}.webp`;
         return uploadToS3(optimized, key);

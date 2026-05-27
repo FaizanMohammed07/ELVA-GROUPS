@@ -29,10 +29,18 @@ export const ReviewController = {
   },
 
   async createReview(req: Request, res: Response): Promise<void> {
-    const existing = await ReviewModel.findOne({ productId: req.body.productId, userId: req.user!.id });
+    const { productId, rating, title, body, images, orderId } = req.body;
+    if (!productId || !rating) throw AppError.badRequest('productId and rating are required');
+    if (rating < 1 || rating > 5) throw AppError.badRequest('Rating must be between 1 and 5');
+    const existing = await ReviewModel.findOne({ productId, userId: req.user!.id });
     if (existing) throw AppError.conflict('You have already reviewed this product');
-    const review = await ReviewModel.create({ ...req.body, userId: req.user!.id, isApproved: true });
-    sendCreated(res, review, 'Review submitted successfully!');
+    // isApproved=false by default — requires admin approval before display
+    const review = await ReviewModel.create({
+      productId, rating, title, body, images, orderId,
+      userId: req.user!.id,
+      isApproved: false,
+    });
+    sendCreated(res, review, 'Review submitted — pending moderation');
   },
 
   async updateReview(req: Request, res: Response): Promise<void> {

@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { authenticate } from '../../middleware/authenticate';
 import { requireAdmin } from '../../middleware/authorize';
+import { validateMongoId } from '../../middleware/mongoId';
 import { sendSuccess, buildPaginationMeta } from '../../utils/apiResponse';
+import { AppError } from '../../utils/appError';
 import { ProductModel } from '../products/models/product.model';
 
 export const inventoryRouter = Router();
@@ -20,7 +22,8 @@ inventoryRouter.get('/summary', async (_req, res) => {
 
 inventoryRouter.get('/products', async (req, res) => {
   const tab = String(req.query.tab || 'all');
-  const search = req.query.search ? String(req.query.search) : null;
+  const rawSearch = req.query.search ? String(req.query.search).slice(0, 200) : null;
+  const search = rawSearch ? rawSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : null;
   const page = Math.max(1, Number(req.query.page) || 1);
   const limit = Math.min(100, Number(req.query.limit) || 20);
   const skip = (page - 1) * limit;
@@ -53,10 +56,15 @@ inventoryRouter.get('/products', async (req, res) => {
   sendSuccess(res, products, 'Inventory products', 200, meta);
 });
 
-inventoryRouter.patch('/:id/adjust', async (req, res) => {
-  const { quantity, note: _note } = req.body;
-  await ProductModel.findByIdAndUpdate(req.params["id"], { $set: { stock: Number(quantity) } });
-  sendSuccess(res, null, 'Stock adjusted');
+inventoryRouter.patch('/:id/adjust', validateMongoId(), async (req, res) => {
+  const { quantity, note } = req.body;
+  const qty = Number(quantity);
+  if (isNaN(qty) || qty < 0 || !Number.isInteger(qty)) {
+    throw AppError.badRequest('quantity must be a non-negative integer');
+  }
+  if (qty > 100000) throw AppError.badRequest('quantity exceeds maximum allowed value');
+  await ProductModel.findByIdAndUpdate(req.params["id"], { $set: { stock: qty } });
+  sendSuccess(res, null, `Stock adjusted to ${qty}${note ? ` — ${note}` : ''}`);
 });
 
 inventoryRouter.get('/low-stock', async (_req, res) => {
@@ -74,10 +82,31 @@ inventoryRouter.get('/out-of-stock', async (_req, res) => {
   sendSuccess(res, products, 'Out of stock products');
 });
 
-inventoryRouter.patch('/:id/stock', async (req, res) => {
+inventoryRouter.patch('/:id/stock', validateMongoId(), async (req, res) => {
   const { quantity, operation } = req.body;
-  const inc = operation === 'set' ? undefined : (operation === 'decrement' ? -quantity : quantity);
-  const update = operation === 'set' ? { $set: { stock: quantity } } : { $inc: { stock: inc } };
+  const qty = Number(quantity);
+  if (isNaN(qty) || qty < 0 || !Number.isInteger(qty)) {
+    throw AppError.badRequest('quantity must be a non-negative integer');
+  }
+  const ALLOWED_OPS = ['increment', 'decrement', 'set'];
+  if (!ALLOWED_OPS.includes(operation)) {
+    throw AppError.badRequest(`operation must be one of: ${ALLOWED_OPS.join(', ')}`);
+  }
+  let update: any;
+  if (operation === 'set') {
+    update = { $set: { stock: qty } };
+  } else if (operation === 'increment') {
+    update = { $inc: { stock: qty } };
+  } else {
+    // Decrement: use conditional to prevent negative stock
+    const result = await ProductModel.findOneAndUpdate(
+      { _id: req.params["id"] as string, stock: { $gte: qty } },
+      { $inc: { stock: -qty } },
+      { new: true },
+    );
+    if (!result) throw AppError.conflict('Insufficient stock for this decrement');
+    return sendSuccess(res, null, 'Stock decremented');
+  }
   await ProductModel.findByIdAndUpdate(req.params["id"] as string, update);
-  sendSuccess(res, null, 'Stock updated');
+  return sendSuccess(res, null, 'Stock updated');
 });

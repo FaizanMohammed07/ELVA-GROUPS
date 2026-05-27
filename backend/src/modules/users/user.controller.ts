@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserRepository } from './repositories/user.repository';
-import { UserModel } from './models/user.model';
+import { UserModel, IUserPreferences } from './models/user.model';
 import { sendSuccess } from '../../utils/apiResponse';
 import { parsePagination } from '../../utils/pagination';
 import { buildPaginationMeta } from '../../utils/apiResponse';
@@ -17,7 +17,24 @@ export const UserController = {
 
   async updateMe(req: Request, res: Response): Promise<void> {
     const { name, phone, avatar } = req.body;
-    const user = await userRepo.update(req.user!.id, { name, phone, avatar });
+    // Validate avatar is a safe HTTPS URL (prevent javascript:/data: XSS vectors)
+    if (avatar !== undefined && avatar !== null) {
+      try {
+        const u = new URL(avatar);
+        if (u.protocol !== 'https:') throw new Error();
+      } catch {
+        throw AppError.badRequest('avatar must be a valid HTTPS URL');
+      }
+    }
+    // Validate phone format for Indian numbers
+    if (phone !== undefined && phone !== null && !/^[6-9]\d{9}$/.test(String(phone))) {
+      throw AppError.badRequest('phone must be a valid 10-digit Indian mobile number');
+    }
+    const user = await userRepo.update(req.user!.id, {
+      ...(name !== undefined && { name }),
+      ...(phone !== undefined && { phone }),
+      ...(avatar !== undefined && { avatar }),
+    });
     sendSuccess(res, user, 'Profile updated');
   },
 
@@ -61,7 +78,17 @@ export const UserController = {
   },
 
   async updatePreferences(req: Request, res: Response): Promise<void> {
-    const user = await userRepo.update(req.user!.id, { preferences: req.body });
+    const { newsletter, smsNotifications, whatsappNotifications, pushNotifications, language, currency } = req.body;
+    const existing = (await userRepo.findById(req.user!.id))?.preferences ?? {} as IUserPreferences;
+    const preferences: IUserPreferences = {
+      newsletter: newsletter !== undefined ? Boolean(newsletter) : existing.newsletter,
+      smsNotifications: smsNotifications !== undefined ? Boolean(smsNotifications) : existing.smsNotifications,
+      whatsappNotifications: whatsappNotifications !== undefined ? Boolean(whatsappNotifications) : existing.whatsappNotifications,
+      pushNotifications: pushNotifications !== undefined ? Boolean(pushNotifications) : existing.pushNotifications,
+      language: language !== undefined ? String(language).slice(0, 10) : existing.language,
+      currency: currency !== undefined ? String(currency).slice(0, 5) : existing.currency,
+    };
+    const user = await userRepo.update(req.user!.id, { preferences });
     sendSuccess(res, user.preferences, 'Preferences updated');
   },
 

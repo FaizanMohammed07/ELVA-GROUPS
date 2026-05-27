@@ -5,7 +5,8 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('development'),
+  NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('production'),
+  DISABLE_RATE_LIMIT: z.string().optional(), // set to 'true' to explicitly disable — do NOT rely on NODE_ENV
   PORT: z.coerce.number().default(5000),
   APP_NAME: z.string().default('ELVA'),
   APP_URL: z.string().url().default('http://localhost:5000'),
@@ -15,11 +16,6 @@ const envSchema = z.object({
   // Database
   MONGODB_URI: z.string().min(1, 'MONGODB_URI is required'),
   MONGODB_DB_NAME: z.string().default('elva'),
-
-  // Redis
-  REDIS_URL: z.string().default('redis://localhost:6379'),
-  REDIS_PASSWORD: z.string().optional(),
-  REDIS_TTL: z.coerce.number().default(3600),
 
   // JWT
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 chars'),
@@ -78,14 +74,14 @@ const envSchema = z.object({
   SUPER_ADMIN_FIRST_NAME: z.string().default('Super'),
   SUPER_ADMIN_LAST_NAME: z.string().default('Admin'),
   SUPER_ADMIN_EMAIL: z.string().email().default('superadmin@elva.in'),
-  SUPER_ADMIN_PASSWORD: z.string().min(8).default('Elva@SuperAdmin2024!'),
+  SUPER_ADMIN_PASSWORD: z.string().min(12, 'SUPER_ADMIN_PASSWORD must be at least 12 chars'),
   SUPER_ADMIN_PHONE: z.string().optional(),
 
   // Default admin account
   ADMIN_FIRST_NAME: z.string().default('Admin'),
   ADMIN_LAST_NAME: z.string().default('ELVA'),
   ADMIN_EMAIL: z.string().email().default('admin@elva.in'),
-  ADMIN_PASSWORD: z.string().min(8).default('Elva@Admin2024!'),
+  ADMIN_PASSWORD: z.string().min(12, 'ADMIN_PASSWORD must be at least 12 chars'),
   ADMIN_PHONE: z.string().optional(),
 
   // Admin portal slug & paths

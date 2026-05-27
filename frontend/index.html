@@ -11,6 +11,13 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
 
+    <!-- Security headers via meta — backend Helmet headers are authoritative, these are a fallback -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <!-- Permissions policy — lock down browser APIs not used by the storefront -->
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
+
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,6 +27,8 @@
   </head>
   <body class="antialiased">
     <div id="root"></div>
+    <!-- Razorpay Checkout SDK — loaded here so it's available before checkout interaction -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

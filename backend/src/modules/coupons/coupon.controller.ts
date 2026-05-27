@@ -5,9 +5,10 @@ import { sendSuccess, sendCreated } from '../../utils/apiResponse';
 const couponService = new CouponService();
 
 export const CouponController = {
+  // Preview-only: validates without consuming the coupon
   async validate(req: Request, res: Response): Promise<void> {
-    const { code, orderValue } = req.body;
-    const result = await couponService.applyCoupon(code, req.user!.id, orderValue);
+    const { code, orderValue, shippingCost } = req.body;
+    const result = await couponService.validateOnly(code, req.user!.id, orderValue, shippingCost);
     sendSuccess(res, result, 'Coupon valid');
   },
   async list(_req: Request, res: Response): Promise<void> {

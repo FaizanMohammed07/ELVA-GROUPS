@@ -199,19 +199,12 @@ export const ProductCard = ({ product, index = 0, showNewBadge }: ProductCardPro
               )}
             </div>
 
-            {/* Rating Stars Badge */}
-            {product.rating !== undefined ? (
+            {/* Rating Stars Badge — only shown when actual reviews exist */}
+            {product.rating !== undefined && (product.reviewCount ?? 0) > 0 && (
               <div className="flex items-center gap-1 bg-[#FAF7F2] border border-[#D4A853]/20 px-2 py-0.5 rounded-full">
                 <Star size={10} className="fill-[#D4A853] text-[#D4A853]" />
                 <span className="text-[10px] text-charcoal-700 font-bold font-sans">
                   {product.rating.toFixed(1)}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1 bg-[#FAF7F2] px-2 py-0.5 rounded-full">
-                <Star size={10} className="fill-[#D4A853] text-[#D4A853]" />
-                <span className="text-[10px] text-charcoal-700 font-bold font-sans">
-                  4.8
                 </span>
               </div>
             )}

@@ -1,32 +1,32 @@
 import { v4 as uuidv4 } from 'uuid';
 import { OrderModel, IOrder, OrderStatus } from '../models/order.model';
 import { ProductRepository } from '../../products/repositories/product.repository';
-import { CartService } from '../../cart/services/cart.service';
 import { CouponService } from '../../coupons/services/coupon.service';
 import { LoyaltyService } from '../../loyalty/services/loyalty.service';
 import { NotificationService } from '../../notifications/services/notification.service';
+import { PaymentService } from '../../payments/services/payment.service';
 import { AppError } from '../../../utils/appError';
 import { logger } from '../../../utils/logger';
 
 const productRepo = new ProductRepository();
-const cartService = new CartService();
 const couponService = new CouponService();
 const loyaltyService = new LoyaltyService();
 const notificationService = new NotificationService();
+const paymentService = new PaymentService();
 
 export class OrderService {
   async createOrder(userId: string, payload: any): Promise<IOrder> {
-    const cart = await cartService.getCart(userId);
-    if (!cart.items.length) throw AppError.badRequest('Cart is empty');
+    const requestItems: Array<{ productId: string; quantity: number; variantId?: string; personalization?: Record<string, string> }> = payload.items;
+    if (!requestItems?.length) throw AppError.badRequest('No items in order');
 
     let subtotal = 0;
     const orderItems = [];
 
-    for (const item of cart.items) {
+    for (const item of requestItems) {
       const product = await productRepo.findById(item.productId);
       if (!product) throw AppError.badRequest(`Product not found: ${item.productId}`);
-      if (product.stock < item.quantity && !product.allowBackorder) {
-        throw AppError.conflict(`Insufficient stock for: ${product.title}`);
+      if (product.status !== 'active' && !product.allowBackorder) {
+        throw AppError.badRequest(`Product is not available: ${product.title}`);
       }
       const unitPrice = item.variantId
         ? (product.variants.find((v) => v._id?.toString() === item.variantId)?.price ?? product.price)
@@ -48,12 +48,18 @@ export class OrderService {
       });
     }
 
+    const shippingCost = subtotal >= 999 ? 0 : 79;
+
     let couponDiscount = 0;
+    let shippingDiscount = 0;
     let couponCode: string | undefined;
+    let couponId: string | undefined;
     if (payload.couponCode) {
-      const coupon = await couponService.applyCoupon(payload.couponCode, userId, subtotal);
+      const coupon = await couponService.applyCoupon(payload.couponCode, userId, subtotal, shippingCost);
       couponDiscount = coupon.discount;
+      shippingDiscount = coupon.shippingDiscount;
       couponCode = payload.couponCode;
+      couponId = coupon.couponId;
     }
 
     let loyaltyDiscount = 0;
@@ -62,39 +68,53 @@ export class OrderService {
       loyaltyDiscount = Math.min(points * 0.1, subtotal * 0.1);
     }
 
-    const shippingCost = subtotal >= 999 ? 0 : 79;
     const discount = couponDiscount + loyaltyDiscount;
+    const effectiveShipping = Math.max(0, shippingCost - shippingDiscount);
     const tax = Math.round((subtotal - discount) * 0.18);
-    const total = Math.max(0, subtotal - discount + shippingCost + tax);
+    const total = Math.max(0, subtotal - discount + effectiveShipping + tax);
+    const pointsEarned = Math.floor(total / 10);
 
-    const order = await OrderModel.create({
-      orderNumber: this.generateOrderNumber(),
-      userId,
-      items: orderItems,
-      paymentMethod: payload.paymentMethod,
-      shippingAddress: payload.shippingAddress,
-      subtotal,
-      discount,
-      couponCode,
-      couponDiscount,
-      shippingCost,
-      tax,
-      total,
-      loyaltyPointsUsed: payload.usePoints ? Math.floor(loyaltyDiscount / 0.1) : 0,
-      timeline: [{ status: 'pending', message: 'Order placed', timestamp: new Date() }],
-    });
-
-    // Deduct stock
-    for (const item of orderItems) {
-      await productRepo.decrementStock(item.productId.toString(), item.quantity);
+    // Create order with all data in one atomic write (no separate update needed)
+    let order: IOrder;
+    try {
+      order = await OrderModel.create({
+        orderNumber: this.generateOrderNumber(),
+        userId,
+        items: orderItems,
+        paymentMethod: payload.paymentMethod,
+        shippingAddress: payload.shippingAddress,
+        subtotal,
+        discount,
+        couponCode,
+        couponDiscount,
+        shippingCost: effectiveShipping,
+        tax,
+        total,
+        loyaltyPointsUsed: payload.usePoints ? Math.floor(loyaltyDiscount / 0.1) : 0,
+        loyaltyPointsEarned: pointsEarned,
+        timeline: [{ status: 'pending', message: 'Order placed', timestamp: new Date() }],
+      });
+    } catch (err) {
+      // Roll back coupon if order creation failed
+      if (couponId && couponCode) {
+        await couponService.releaseCoupon(couponId, userId).catch(() => {});
+      }
+      throw err;
     }
 
-    // Clear cart
-    await cartService.clearCart(userId);
-
-    // Loyalty points earned (1 point per ₹10)
-    const pointsEarned = Math.floor(total / 10);
-    await OrderModel.findByIdAndUpdate(order.id, { loyaltyPointsEarned: pointsEarned });
+    // Deduct stock — rely on atomic decrementStock (has $gte guard, will throw if stock insufficient)
+    for (const item of orderItems) {
+      try {
+        await productRepo.decrementStock(item.productId.toString(), item.quantity);
+      } catch (stockErr) {
+        // Roll back: delete the order and release coupon on stock failure
+        await OrderModel.findByIdAndDelete(order.id).catch(() => {});
+        if (couponId && couponCode) {
+          await couponService.releaseCoupon(couponId, userId).catch(() => {});
+        }
+        throw stockErr;
+      }
+    }
 
     await notificationService.sendOrderConfirmation(userId, order.orderNumber, total);
 
@@ -129,6 +149,11 @@ export class OrderService {
     if (!order) throw AppError.notFound('Order not found');
     if (!['pending', 'confirmed'].includes(order.status)) {
       throw AppError.badRequest('Order cannot be cancelled at this stage');
+    }
+
+    // If already paid, initiate refund before cancelling
+    if (order.paymentStatus === 'paid') {
+      await paymentService.initiateRefund(orderId);
     }
 
     const updated = await this.updateStatus(orderId, 'cancelled', `Cancelled: ${reason}`);
@@ -171,9 +196,9 @@ export class OrderService {
   }
 
   private generateOrderNumber(): string {
-    const prefix = 'ELVA';
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const random = Math.random().toString(36).slice(2, 6).toUpperCase();
-    return `${prefix}-${timestamp}-${random}`;
+    // UUID-based to guarantee uniqueness under concurrent load
+    const uid = uuidv4().replace(/-/g, '').slice(0, 8).toUpperCase();
+    const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+    return `ELVA-${timestamp}-${uid}`;
   }
 }

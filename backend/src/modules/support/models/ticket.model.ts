@@ -34,5 +34,7 @@ const ticketSchema = new Schema<ISupportTicket>(
 );
 
 ticketSchema.virtual('id').get(function () { return this._id.toHexString(); });
+ticketSchema.index({ user: 1, createdAt: -1 });
+ticketSchema.index({ status: 1, createdAt: -1 });
 
 export const SupportTicketModel = mongoose.model<ISupportTicket>('SupportTicket', ticketSchema);

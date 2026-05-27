@@ -9,11 +9,12 @@ import { pinoHttp } from 'pino-http';
 
 import { env } from './config/env';
 import { logger } from './utils/logger';
-import { rateLimiter, authRateLimiter } from './middleware/rateLimiter';
+import { rateLimiter, authRateLimiter, passwordResetLimiter } from './middleware/rateLimiter';
 import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestId } from './middleware/requestId';
 import { securityHeaders } from './middleware/securityHeaders';
+import { requireJson } from './middleware/requireJson';
 import { router } from './router';
 
 export const createApp = (): Application => {
@@ -74,9 +75,9 @@ export const createApp = (): Application => {
   // Must be BEFORE pino-http so these never enter the logging pipeline.
   app.use('/socket.io', (_req: Request, res: Response) => res.status(200).end());
 
-  // Body parsing
-  app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  // Body parsing — keep limits tight; uploads use multipart (multer) not JSON
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
   app.use(cookieParser(env.COOKIE_SECRET));
 
   // Compression
@@ -120,21 +121,26 @@ export const createApp = (): Application => {
   );
 
   // Security middleware
-  app.use(mongoSanitize());
+  app.use(mongoSanitize({ replaceWith: '_' }));
   app.use(hpp());
   app.use(securityHeaders);
   app.use(requestId);
 
+  // Enforce Content-Type on all state-changing API requests
+  app.use(`/api/${env.API_VERSION}`, requireJson);
+
   // Rate limiting
   app.use(`/api/${env.API_VERSION}`, rateLimiter);
   app.use(`/api/${env.API_VERSION}/auth`, authRateLimiter);
+  app.use(`/api/${env.API_VERSION}/auth/forgot-password`, passwordResetLimiter);
+  app.use(`/api/${env.API_VERSION}/auth/reset-password`, passwordResetLimiter);
 
   // Routes
   app.use(`/api/${env.API_VERSION}`, router);
 
-  // Health check (bypasses rate limiter)
+  // Health check — minimal info to avoid leaking server state
   app.get('/health', (_req: Request, res: Response) => {
-    res.json({ status: 'ok', service: 'ELVA API', timestamp: new Date().toISOString() });
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
   // Error handlers

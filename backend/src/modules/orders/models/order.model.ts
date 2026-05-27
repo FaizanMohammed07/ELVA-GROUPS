@@ -174,6 +174,7 @@ const OrderSchema = new Schema<IOrder>(
 OrderSchema.index({ userId: 1, createdAt: -1 });
 OrderSchema.index({ status: 1, createdAt: -1 });
 OrderSchema.index({ paymentStatus: 1 });
+OrderSchema.index({ couponCode: 1 }, { sparse: true });
 
 OrderSchema.virtual('id').get(function () { return this._id.toHexString(); });
 
