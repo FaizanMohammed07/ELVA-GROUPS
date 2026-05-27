@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+﻿import { v4 as uuidv4 } from 'uuid';
 import { OrderModel, IOrder, OrderStatus } from '../models/order.model';
 import { ProductRepository } from '../../products/repositories/product.repository';
 import { CouponService } from '../../coupons/services/coupon.service';
@@ -199,6 +199,6 @@ export class OrderService {
     // UUID-based to guarantee uniqueness under concurrent load
     const uid = uuidv4().replace(/-/g, '').slice(0, 8).toUpperCase();
     const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
-    return `ELVA-${timestamp}-${uid}`;
+    return `ELUNORA-${timestamp}-${uid}`;
   }
 }

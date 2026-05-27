@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -92,7 +92,7 @@ export default function CheckoutPage() {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: rzpOrder.amount,
         currency: rzpOrder.currency,
-        name: 'ELVA',
+        name: 'ELUNORA',
         description: `Order #${order.orderNumber}`,
         order_id: rzpOrder.razorpayOrderId,
         prefill: { name: data.fullName, contact: data.phone, email: user?.email },

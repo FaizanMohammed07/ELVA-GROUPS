@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+﻿import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
 import { env } from '../../../config/env';
 import { logger } from '../../../utils/logger';
@@ -27,8 +27,8 @@ export class EmailService {
 
   async sendVerificationEmail(email: string, name: string, token: string): Promise<void> {
     const url = `${env.FRONTEND_URL}/verify-email?token=${token}`;
-    await this.send(email, 'Verify your ELVA account', `
-      <h2>Welcome to ELVA, ${name}!</h2>
+    await this.send(email, 'Verify your ELUNORA account', `
+      <h2>Welcome to ELUNORA, ${name}!</h2>
       <p>Please verify your email address to get started.</p>
       <a href="${url}" style="background:#1a1a1a;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">Verify Email</a>
       <p>This link expires in 24 hours.</p>
@@ -37,8 +37,8 @@ export class EmailService {
 
   async sendPasswordResetEmail(email: string, name: string, token: string): Promise<void> {
     const url = `${env.FRONTEND_URL}/reset-password?token=${token}`;
-    await this.send(email, 'Reset your ELVA password', `
-      <h2>Password Reset — ELVA</h2>
+    await this.send(email, 'Reset your ELUNORA password', `
+      <h2>Password Reset — ELUNORA</h2>
       <p>Hi ${name}, you requested a password reset.</p>
       <a href="${url}" style="background:#1a1a1a;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">Reset Password</a>
       <p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>
@@ -48,7 +48,7 @@ export class EmailService {
   async sendPasswordChangedEmail(email: string, name: string): Promise<void> {
     await this.send(email, 'Your ELVA password has been changed', `
       <h2>Password Changed</h2>
-      <p>Hi ${name}, your ELVA password was changed successfully.</p>
+      <p>Hi ${name}, your ELUNORA password was changed successfully.</p>
       <p>If you didn't make this change, contact support immediately at support@elva.in</p>
     `);
   }

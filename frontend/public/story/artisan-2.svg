@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
   <defs>
     <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#1C1410"/>
@@ -67,7 +67,7 @@
   <!-- Soft shadow on surface -->
   <ellipse cx="300" cy="548" rx="240" ry="20" fill="#000" opacity="0.4"/>
 
-  <!-- ELVA label -->
+  <!-- ELUNORA label -->
   <rect x="0" y="760" width="600" height="40" fill="#000" opacity="0.6"/>
   <text x="300" y="785" font-family="Georgia, serif" font-size="13" fill="#C9A96E" text-anchor="middle" letter-spacing="6">HANDCRAFTED WITH LOVE</text>
 </svg>

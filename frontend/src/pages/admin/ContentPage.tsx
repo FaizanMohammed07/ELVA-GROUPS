@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Image, Bell, Globe } from 'lucide-react';
@@ -129,8 +129,8 @@ export default function AdminContentPage() {
       {/* SEO Tab */}
       {tab === 'seo' && (
         <div className="max-w-2xl space-y-4 bg-white border border-charcoal-100 p-6">
-          <p className="text-sm text-charcoal-600">Configure global SEO defaults for the ELVA store. These are applied as fallbacks when specific page metadata is not set.</p>
-          <div><label className="label-xs">Site Title</label><input defaultValue="ELVA — India's Finest Handcrafted Gifts" className="input-field" /></div>
+          <p className="text-sm text-charcoal-600">Configure global SEO defaults for the ELUNORA store. These are applied as fallbacks when specific page metadata is not set.</p>
+          <div><label className="label-xs">Site Title</label><input defaultValue="ELUNORA — India's Finest Handcrafted Gifts" className="input-field" /></div>
           <div><label className="label-xs">Meta Description</label><textarea rows={3} defaultValue="Discover premium handcrafted gifts, personalized candles, clay art, and luxury hampers. Made with love by Indian artisans." className="input-field resize-none" /></div>
           <div><label className="label-xs">OG Image URL</label><input placeholder="https://..." className="input-field" /></div>
           <button className="btn-primary py-2.5 px-6 text-xs">Save SEO Settings</button>

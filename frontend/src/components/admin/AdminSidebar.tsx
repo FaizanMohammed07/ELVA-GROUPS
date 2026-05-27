@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -227,7 +227,7 @@ export const AdminSidebar = ({ isSuperAdmin = false }: AdminSidebarProps) => {
             <Shield size={14} className="text-gold-400" />
           </div>
           <div>
-            <span className="font-display text-lg tracking-[0.25em] text-white">ELVA</span>
+            <span className="font-display text-lg tracking-[0.25em] text-white">ELUNORA</span>
             <span className="ml-2 text-[9px] bg-gold-500/20 text-gold-400 px-1.5 py-0.5 rounded font-sans tracking-widest uppercase">
               {isSuperAdmin ? 'Super' : 'Admin'}
             </span>

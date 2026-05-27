@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Youtube, MessageCircle, Heart } from 'lucide-react';
 
 const FOOTER_LINKS = {
@@ -18,7 +18,7 @@ const FOOTER_LINKS = {
     { label: 'FAQ', href: '/help/faq' },
   ],
   Company: [
-    { label: 'About ELVA', href: '/about' },
+    { label: 'About ELUNORA', href: '/about' },
     { label: 'Our Artisans', href: '/about#artisans' },
     { label: 'Sustainability', href: '/about#sustainability' },
     { label: 'Privacy Policy', href: '/privacy' },
@@ -42,7 +42,7 @@ export const Footer = () => (
         {/* Brand */}
         <div className="col-span-2 md:col-span-1">
           <Link to="/">
-            <span className="font-display text-3xl tracking-[0.4em] text-white">ELVA</span>
+            <span className="font-display text-3xl tracking-[0.4em] text-white">ELUNORA</span>
           </Link>
           <p
             className="font-sans text-sm mt-4 leading-relaxed"
@@ -105,7 +105,7 @@ export const Footer = () => (
         style={{ borderColor: 'rgba(196,96,122,0.15)' }}
       >
         <p className="font-sans text-xs flex items-center gap-1.5" style={{ color: '#5A3040' }}>
-          © {new Date().getFullYear()} ELVA. All rights reserved. Made with
+          © {new Date().getFullYear()} ELUNORA. All rights reserved. Made with
           <Heart size={11} className="fill-current" style={{ color: '#C4607A' }} />
           in India.
         </p>

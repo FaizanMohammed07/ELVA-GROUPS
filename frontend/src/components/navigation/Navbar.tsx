@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -17,7 +17,7 @@ const MARQUEE_MSGS = [
   '✦  Free Shipping on Orders Above ₹999',
   '✦  Handcrafted with Love in India',
   '✦  New Arrivals Every Friday',
-  '✦  Use ELVA10 for 10% Off Your First Order',
+  '✦  Use ELUNORA10 for 10% Off Your First Order',
   '✦  Premium Gifting · Ethically Made',
 ];
 
@@ -279,7 +279,7 @@ export const Navbar = () => {
                   className="font-display font-light text-[27px] tracking-[0.44em] inline-block"
                   style={{ color: 'white' }}
                 >
-                  ELVA
+                  ELUNORA
                 </motion.span>
               </Link>
 

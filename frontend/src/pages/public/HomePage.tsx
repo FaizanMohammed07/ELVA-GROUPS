@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+﻿import { useRef, useEffect, useState } from 'react';
 import {
   motion, useScroll, useTransform, useInView, AnimatePresence,
 } from 'framer-motion';
@@ -66,7 +66,7 @@ const TESTIMONIALS = [
   },
   {
     name: 'Arjun Mehta', city: 'Bangalore', rating: 5,
-    review: "ELVA's corporate gifting service is unmatched. Our clients were blown away by the premium packaging and quality.",
+    review: "ELUNORA's corporate gifting service is unmatched. Our clients were blown away by the premium packaging and quality.",
     product: 'Corporate Gift Hamper', color: '#FFF8F0',
   },
   {
@@ -140,7 +140,7 @@ export default function HomePage() {
 
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.8 }}
               className="font-sans text-base sm:text-xl leading-relaxed text-white/70 max-w-lg mb-12">
-              Every ELVA piece is a labour of love — crafted by skilled artisans, personalized for your most precious moments, and delivered with unparalleled luxury.
+              Every ELUNORA piece is a labour of love — crafted by skilled artisans, personalized for your most precious moments, and delivered with unparalleled luxury.
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -212,7 +212,7 @@ export default function HomePage() {
               <div className="aspect-[4/3] rounded-[24px] overflow-hidden border border-white/10 shadow-2xl relative group cursor-zoom-in">
                 <img 
                   src="/products/signature-bundle.png" 
-                  alt="Elva Ultimate Handcrafted Luxury Bundle" 
+                  alt="Elunora Ultimate Handcrafted Luxury Bundle" 
                   className="w-full h-full object-cover transition-transform duration-[8s] group-hover:scale-105"
                 />
                 <div className="absolute top-4 left-4 bg-charcoal-950/80 backdrop-blur-md text-[#D4A853] px-3.5 py-1.5 rounded-full text-[9px] uppercase tracking-[0.25em] font-bold border border-[#D4A853]/30 flex items-center gap-2">
@@ -321,12 +321,12 @@ export default function HomePage() {
                 Every Gift Tells<br />a Beautiful <span className="italic text-[#D4A853]">Story</span>
               </h2>
               <p className="font-sans text-lg leading-relaxed mb-6" style={{ color: '#C8A8B8' }}>
-                ELVA was born from a simple belief: the most meaningful gifts are the ones
+                ELUNORA was born from a simple belief: the most meaningful gifts are the ones
                 made by hand, with love, and personalized for the person you cherish most.
               </p>
               <p className="font-sans leading-relaxed mb-8" style={{ color: '#8A6070' }}>
                 Our artisans spend countless hours perfecting every detail — from hand-poured
-                candles to intricate clay sculptures — ensuring each ELVA piece is worthy of
+                candles to intricate clay sculptures — ensuring each ELUNORA piece is worthy of
                 your most precious moments.
               </p>
 
@@ -477,7 +477,7 @@ export default function HomePage() {
             </h2>
             <p className="font-sans text-lg mb-10 max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.78)' }}>
               Tell us about the person and occasion — our AI-powered Gift Finder will
-              recommend the perfect ELVA piece.
+              recommend the perfect ELUNORA piece.
             </p>
             <Link
               to="/gift-finder"
@@ -530,7 +530,7 @@ export default function HomePage() {
         <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeInView>
             <p className="text-xs font-sans tracking-[0.4em] uppercase mb-4 font-semibold" style={{ color: '#D4A853' }}>
-              Join the ELVA Circle
+              Join the ELUNORA Circle
             </p>
             <h2
               className="font-display text-white mb-4"
@@ -940,8 +940,8 @@ const PLACEHOLDER_PRODUCTS = [
   },
   {
     id: 'prod-7',
-    title: 'Elva Premium Corporate Gift Box',
-    slug: 'elva-premium-corporate-gift-box',
+    title: 'Elunora Premium Corporate Gift Box',
+    slug: 'elunora-premium-corporate-gift-box',
     price: 3499,
     compareAtPrice: 4500,
     thumbnail: '/products/prod-8.png',

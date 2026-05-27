@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+﻿import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Search, Edit2, Trash2, Eye, Package, X, Upload, ImagePlus, Loader2 } from 'lucide-react';
@@ -400,7 +400,7 @@ export default function AdminProductsPage() {
                     </div>
                     <div>
                       <label className="label-xs">SKU</label>
-                      <input required value={form.sku} onChange={(e) => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="ELVA-001" className="input-field" />
+                      <input required value={form.sku} onChange={(e) => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="ELUNORA-001" className="input-field" />
                     </div>
                     <div>
                       <label className="label-xs">Price (₹) *</label>

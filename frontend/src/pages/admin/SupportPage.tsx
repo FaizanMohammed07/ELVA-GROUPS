@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Clock, CheckCircle, AlertCircle } from 'lucide-react';
@@ -125,7 +125,7 @@ export default function AdminSupportPage() {
                 {/* Replies */}
                 {(selected.replies || []).map((r: any, i: number) => (
                   <div key={i} className={`p-4 ${r.isAdmin ? 'bg-charcoal-950 text-white ml-6' : 'bg-cream-50 mr-6'}`}>
-                    <p className={`text-xs font-medium mb-1 ${r.isAdmin ? 'text-gold-400' : 'text-charcoal-500'}`}>{r.isAdmin ? 'ELVA Support' : selected.user?.name}</p>
+                    <p className={`text-xs font-medium mb-1 ${r.isAdmin ? 'text-gold-400' : 'text-charcoal-500'}`}>{r.isAdmin ? 'ELUNORA Support' : selected.user?.name}</p>
                     <p className={`text-sm ${r.isAdmin ? 'text-charcoal-100' : 'text-charcoal-700'}`}>{r.message}</p>
                     <p className={`text-xs mt-1 ${r.isAdmin ? 'text-charcoal-400' : 'text-charcoal-400'}`}>{new Date(r.createdAt).toLocaleString('en-IN')}</p>
                   </div>

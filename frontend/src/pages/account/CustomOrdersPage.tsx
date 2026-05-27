@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+﻿import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Plus, Clock, CheckCircle, XCircle, AlertCircle, Wrench, Package } from 'lucide-react';
@@ -90,7 +90,7 @@ export default function CustomOrdersPage() {
                     {/* Admin note */}
                     {order.adminNote && (
                       <div className="mt-3 bg-cream-50 border-l-2 border-gold-400 pl-3 py-2">
-                        <p className="text-xs text-charcoal-400 font-medium uppercase tracking-wide mb-0.5">Note from ELVA Team</p>
+                        <p className="text-xs text-charcoal-400 font-medium uppercase tracking-wide mb-0.5">Note from ELUNORA Team</p>
                         <p className="text-sm text-charcoal-700">{order.adminNote}</p>
                       </div>
                     )}

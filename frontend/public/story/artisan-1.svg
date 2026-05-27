@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#2C2C2C"/>
@@ -60,7 +60,7 @@
   <!-- Warm ambient light overlay -->
   <rect x="0" y="500" width="600" height="300" fill="#C9A96E" opacity="0.05"/>
 
-  <!-- ELVA label bottom -->
+  <!-- ELUNORA label bottom -->
   <rect x="0" y="760" width="600" height="40" fill="#000" opacity="0.5"/>
   <text x="300" y="785" font-family="Georgia, serif" font-size="13" fill="#C9A96E" text-anchor="middle" letter-spacing="6">ARTISAN CRAFT</text>
 </svg>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -70,7 +70,7 @@ export default function RegisterPage() {
     try {
       const { isNew } = await loginWithGoogle();
       navigate('/');
-      toast.success(isNew ? 'Welcome to ELVA! Your account is ready.' : 'Welcome back to ELVA');
+      toast.success(isNew ? 'Welcome to ELUNORA! Your account is ready.' : 'Welcome back to ELUNORA');
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Google sign-in failed';
       if (msg !== 'popup-closed-by-user') toast.error(msg);
@@ -130,7 +130,7 @@ export default function RegisterPage() {
         <motion.div className="text-center mb-7"
           initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <Link to="/" className="inline-block">
-            <span className="font-serif text-4xl text-white tracking-[0.15em]">ELVA</span>
+            <span className="font-serif text-4xl text-white tracking-[0.15em]">ELUNORA</span>
             <div className="h-px w-12 mx-auto mt-1" style={{ background: 'linear-gradient(90deg, transparent, #D4A853, transparent)' }} />
           </Link>
           <p className="text-xs tracking-[0.4em] uppercase mt-3 font-sans"
@@ -167,7 +167,7 @@ export default function RegisterPage() {
                   >
                     <Check size={28} style={{ color: '#D4A853' }} />
                   </motion.div>
-                  <h3 className="font-serif text-2xl text-white mb-2">Welcome to ELVA</h3>
+                  <h3 className="font-serif text-2xl text-white mb-2">Welcome to ELUNORA</h3>
                   <p className="font-sans text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
                     Your account is ready. Redirecting you home...
                   </p>
@@ -310,7 +310,7 @@ export default function RegisterPage() {
                     {/* Referral */}
                     <div>
                       <label className="block font-sans text-xs mb-2 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>Referral Code <span style={{ color: 'rgba(255,255,255,0.20)' }}>(Optional)</span></label>
-                      <input {...register('referralCode')} placeholder="ELVA-XXXX"
+                      <input {...register('referralCode')} placeholder="ELUNORA-XXXX"
                         className="w-full py-3 px-4 rounded-xl font-sans text-sm outline-none transition-all"
                         style={inputStyle(false)} {...focusHandlers(false)} />
                     </div>

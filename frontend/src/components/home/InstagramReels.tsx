@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+﻿import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Instagram, Heart, MessageCircle, Send, Bookmark, ShoppingBag, Volume2, VolumeX } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -119,7 +119,7 @@ const ReelCard = ({ post }: { post: typeof POSTS[0] }) => {
         <p className="font-sans text-xs font-bold text-charcoal-900 mb-1">{post.likes} likes</p>
         <p className="font-sans text-xs text-charcoal-600 line-clamp-2">
           <span className="font-bold text-charcoal-900 mr-1">elvahandmade_28</span>
-          {post.type === 'video' ? 'Handcrafting magic in the studio today ✨ Watch the process behind our bestselling pieces. #ElvaGifts #Handcrafted #LuxuryGifts' : 'New arrivals are here! Discover the perfect curated pieces for your loved ones. 🎁✨'}
+          {post.type === 'video' ? 'Handcrafting magic in the studio today ✨ Watch the process behind our bestselling pieces. #ElunoraGifts #Handcrafted #LuxuryGifts' : 'New arrivals are here! Discover the perfect curated pieces for your loved ones. 🎁✨'}
         </p>
         
         {/* Shop CTA Button */}
@@ -150,7 +150,7 @@ export const InstagramReels = () => {
       {/* Background Decorative Text */}
       <motion.div style={{ y }} className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] overflow-hidden">
         <h2 className="font-display text-[15vw] leading-none whitespace-nowrap text-charcoal-900">
-          @ELVAHANDMADE_28
+          @ELUNORAHANDMADE_28
         </h2>
       </motion.div>
 

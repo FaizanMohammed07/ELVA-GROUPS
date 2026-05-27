@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import { LoyaltyService } from '../../loyalty/services/loyalty.service';
 
 const ReferralSchema = new mongoose.Schema({
@@ -18,7 +18,7 @@ export class ReferralService {
   async generateCode(userId: string): Promise<string> {
     const existing = await ReferralModel.findOne({ referrerId: userId, referredId: { $exists: false } });
     if (existing) return existing.code;
-    const code = `ELVA${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    const code = `ELUNORA${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     await ReferralModel.create({ referrerId: userId, code });
     return code;
   }

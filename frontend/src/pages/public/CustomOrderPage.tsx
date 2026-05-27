@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+﻿import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const CATEGORIES = [
 ];
 
 const INTRO_SLIDES = [
-  { title: 'Something Truly Yours', sub: 'Every ELVA custom piece begins with your story.' },
+  { title: 'Something Truly Yours', sub: 'Every ELUNORA custom piece begins with your story.' },
   { title: 'Handcrafted by Artisans', sub: 'Skilled hands bring your vision to life.' },
   { title: 'Made with Pure Love', sub: 'No machine can replicate what a craftsperson gives.' },
   { title: "Let's Create Together", sub: 'Tell us what you have in mind.' },

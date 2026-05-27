@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import { config } from 'dotenv';
 import path from 'path';
 
@@ -31,7 +31,7 @@ const sampleProducts = [
     price: 799,
     compareAtPrice: 999,
     stock: 50,
-    sku: 'ELVA-CND-001',
+    sku: 'ELUNORA-CND-001',
     thumbnail: '/products/prod-1.png',
     images: ['/products/prod-1.png'],
     rating: 4.8,
@@ -55,7 +55,7 @@ const sampleProducts = [
     price: 1499,
     compareAtPrice: 1999,
     stock: 30,
-    sku: 'ELVA-PG-001',
+    sku: 'ELUNORA-PG-001',
     thumbnail: '/products/prod-2.png',
     images: ['/products/prod-2.png'],
     rating: 4.9,
@@ -81,7 +81,7 @@ const sampleProducts = [
     price: 2499,
     compareAtPrice: 2999,
     stock: 15,
-    sku: 'ELVA-CA-001',
+    sku: 'ELUNORA-CA-001',
     thumbnail: '/products/prod-3.png',
     images: ['/products/prod-3.png'],
     rating: 5.0,
@@ -103,7 +103,7 @@ const sampleProducts = [
     price: 4999,
     compareAtPrice: 6500,
     stock: 20,
-    sku: 'ELVA-LH-001',
+    sku: 'ELUNORA-LH-001',
     thumbnail: '/products/prod-4.png',
     images: ['/products/prod-4.png'],
     rating: 4.7,
@@ -128,7 +128,7 @@ const sampleProducts = [
     price: 3999,
     compareAtPrice: null,
     stock: 10,
-    sku: 'ELVA-CC-001',
+    sku: 'ELUNORA-CC-001',
     thumbnail: '/products/prod-5.png',
     images: ['/products/prod-5.png'],
     rating: 5.0,
@@ -154,7 +154,7 @@ const sampleProducts = [
     price: 1899,
     compareAtPrice: 2499,
     stock: 25,
-    sku: 'ELVA-CA-002',
+    sku: 'ELUNORA-CA-002',
     thumbnail: '/products/prod-6.png',
     images: ['/products/prod-6.png'],
     rating: 4.9,
@@ -176,7 +176,7 @@ const sampleProducts = [
     price: 999,
     compareAtPrice: 1299,
     stock: 40,
-    sku: 'ELVA-CA-003',
+    sku: 'ELUNORA-CA-003',
     thumbnail: '/products/prod-7.png',
     images: ['/products/prod-7.png'],
     rating: 4.8,
@@ -190,7 +190,7 @@ const sampleProducts = [
     isActive: true,
   },
   {
-    title: 'Elva Premium Corporate Gift Box',
+    title: 'Elunora Premium Corporate Gift Box',
     slug: 'elva-premium-corporate-gift-box',
     shortDescription: 'A luxury corporate premium gift box containing an elegant black and gold pen, custom premium black leather diary with golden embossed logo, and a solid brass cardholder.',
     category: 'corporate-gifting',
@@ -198,7 +198,7 @@ const sampleProducts = [
     price: 3499,
     compareAtPrice: 4500,
     stock: 15,
-    sku: 'ELVA-CORP-001',
+    sku: 'ELUNORA-CORP-001',
     thumbnail: '/products/prod-8.png',
     images: ['/products/prod-8.png'],
     rating: 5.0,
@@ -217,7 +217,7 @@ const sampleProducts = [
 ];
 
 const adminUser = {
-  name: 'ELVA Admin',
+  name: 'ELUNORA Admin',
   email: 'admin@elvagroup.in',
   password: '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGniQf8VDJHQ2LcKv2WxF8KDDIS', // Admin@1234
   role: 'super_admin',
@@ -227,7 +227,7 @@ const adminUser = {
 };
 
 async function seed() {
-  console.log('🌱 Starting ELVA database seed...');
+  console.log('🌱 Starting ELUNORA database seed...');
 
   await mongoose.connect(MONGODB_URI);
   console.log('✅ Connected to MongoDB');
@@ -238,7 +238,7 @@ async function seed() {
   const { UserModel } = await import('../../modules/users/models/user.model.js' as any);
 
   // Clear existing seed data
-  await ProductModel.deleteMany({ sku: { $regex: /^ELVA-/ } });
+  await ProductModel.deleteMany({ sku: { $regex: /^ELUNORA-/ } });
   await CategoryModel.deleteMany({});
   await UserModel.deleteMany({ email: adminUser.email });
   console.log('🗑️  Cleared existing seed data');

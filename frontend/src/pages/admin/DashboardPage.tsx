@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+﻿import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@api/client';
 import {
   TrendingUp, ShoppingCart, Users, Package, AlertTriangle,
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-gray-900 font-sans">Dashboard</h1>
-        <p className="text-gray-500 text-sm font-sans mt-1">Welcome back! Here's what's happening with ELVA today.</p>
+        <p className="text-gray-500 text-sm font-sans mt-1">Welcome back! Here's what's happening with ELUNORA today.</p>
       </div>
 
       {/* Stats Grid */}

@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 
 const BASE = 'https://openrouter.ai/api/v1';
 
@@ -82,7 +82,7 @@ export async function analyzeWithOpenRouter(
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://elva.in',
-        'X-Title': 'ELVA Product Intelligence',
+        'X-Title': 'ELUNORA Product Intelligence',
       },
       timeout: 60000,
     },

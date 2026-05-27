@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Tag, Copy, Trash2, Edit2, X, Check } from 'lucide-react';
@@ -83,7 +83,7 @@ export default function AdminMarketingPage() {
 
   const generateCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const code = 'ELVA' + Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    const code = 'ELUNORA' + Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
     setForm(f => ({ ...f, code }));
   };
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -44,7 +44,7 @@ export default function LoginPage() {
     try {
       await login(data.email, data.password, data.rememberMe);
       navigate(from, { replace: true });
-      toast.success('Welcome back to ELVA');
+      toast.success('Welcome back to ELUNORA');
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Login failed. Please try again.');
     } finally {
@@ -57,7 +57,7 @@ export default function LoginPage() {
     try {
       const { isNew } = await loginWithGoogle();
       navigate(from, { replace: true });
-      toast.success(isNew ? 'Welcome to ELVA!' : 'Welcome back to ELVA');
+      toast.success(isNew ? 'Welcome to ELUNORA!' : 'Welcome back to ELUNORA');
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Google sign-in failed';
       if (msg !== 'popup-closed-by-user') toast.error(msg);
@@ -111,7 +111,7 @@ export default function LoginPage() {
           transition={{ duration: 0.6 }}
         >
           <Link to="/" className="inline-block">
-            <span className="font-serif text-4xl text-white tracking-[0.15em]">ELVA</span>
+            <span className="font-serif text-4xl text-white tracking-[0.15em]">ELUNORA</span>
             <div className="h-px w-12 mx-auto mt-1" style={{ background: 'linear-gradient(90deg, transparent, #D4A853, transparent)' }} />
           </Link>
           <p className="text-xs tracking-[0.4em] uppercase mt-3 font-sans"
@@ -138,7 +138,7 @@ export default function LoginPage() {
             <div className="mb-7">
               <h2 className="font-serif text-2xl text-white mb-1">Welcome back</h2>
               <p className="font-sans text-sm" style={{ color: 'rgba(255,255,255,0.40)' }}>
-                Sign in to your ELVA account
+                Sign in to your ELUNORA account
               </p>
             </div>
 

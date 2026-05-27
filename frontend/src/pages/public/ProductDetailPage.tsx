@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
                 <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                 <span className="text-[9px] sm:text-[10px] font-sans tracking-widest uppercase font-bold">14 people are viewing this right now</span>
               </div>
-              <p className="text-gold-600 text-xs tracking-[0.3em] uppercase font-sans mb-2">ELVA Collection</p>
+              <p className="text-gold-600 text-xs tracking-[0.3em] uppercase font-sans mb-2">ELUNORA Collection</p>
               <h1 className="font-serif text-4xl text-charcoal-950 leading-tight">{product.title}</h1>
             </div>
 
@@ -688,7 +688,7 @@ export default function ProductDetailPage() {
             <span className="italic text-charcoal-500 font-light text-[36px] sm:text-[50px]">You</span>
           </h2>
           <p className="hidden sm:block text-xs font-sans tracking-[0.25em] uppercase text-charcoal-400 font-semibold mb-2">
-            Elva Lookbook
+            Elunora Lookbook
           </p>
         </div>
         <div className="relative group">

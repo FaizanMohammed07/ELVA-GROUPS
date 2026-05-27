@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@store/authStore';
 import { ADMIN_BASE, SUPER_BASE } from '@config/admin';
@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-charcoal-950 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <p className="font-display text-4xl tracking-[0.4em] text-white mb-2">ELVA</p>
+          <p className="font-display text-4xl tracking-[0.4em] text-white mb-2">ELUNORA</p>
           <p className="text-charcoal-500 text-[10px] tracking-[0.4em] uppercase font-sans">Admin Portal</p>
         </div>
 

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#F5EFE6"/>
@@ -15,6 +15,6 @@
   <!-- Bow -->
   <path d="M 200 160 Q 168 130 148 148 Q 165 165 200 160" fill="none" stroke="#C9A96E" stroke-width="1.5" opacity="0.4"/>
   <path d="M 200 160 Q 232 130 252 148 Q 235 165 200 160" fill="none" stroke="#C9A96E" stroke-width="1.5" opacity="0.4"/>
-  <!-- ELVA monogram -->
-  <text x="200" y="380" font-family="Georgia, serif" font-size="16" fill="#C9A96E" text-anchor="middle" letter-spacing="6" opacity="0.4">ELVA</text>
+  <!-- ELUNORA monogram -->
+  <text x="200" y="380" font-family="Georgia, serif" font-size="16" fill="#C9A96E" text-anchor="middle" letter-spacing="6" opacity="0.4">ELUNORA</text>
 </svg>

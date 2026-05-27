@@ -1,4 +1,4 @@
-import 'express-async-errors';
+﻿import 'express-async-errors';
 import { createApp } from './app';
 import { connectDatabase } from './database/connection';
 import { connectRedis } from './config/cache';
@@ -19,7 +19,7 @@ const bootstrap = async () => {
     const app = createApp();
 
     const server = app.listen(env.PORT, () => {
-      logger.info(`🚀 ELVA API running on port ${env.PORT} [${env.NODE_ENV}]`);
+      logger.info(`🚀 ELUNORA API running on port ${env.PORT} [${env.NODE_ENV}]`);
       logger.info(`📍 Health: http://localhost:${env.PORT}/api/${env.API_VERSION}/health`);
     });
 

@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+﻿import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Store, Truck, CreditCard, Share2, AlertTriangle, Save } from 'lucide-react';
@@ -38,7 +38,7 @@ export default function StoreSettingsPage() {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="font-display text-2xl text-charcoal-950">Store Settings</h1>
-        <p className="text-sm text-charcoal-400 mt-0.5">Global configuration for ELVA store</p>
+        <p className="text-sm text-charcoal-400 mt-0.5">Global configuration for ELUNORA store</p>
       </div>
 
       <div className="flex gap-0 border border-charcoal-100 bg-white overflow-x-auto">
@@ -54,7 +54,7 @@ export default function StoreSettingsPage() {
 
           {tab === 'general' && (
             <>
-              <div><label className="label-xs">Store Name</label><input {...register('storeName')} defaultValue="ELVA" className="input-field" /></div>
+              <div><label className="label-xs">Store Name</label><input {...register('storeName')} defaultValue="ELUNORA" className="input-field" /></div>
               <div><label className="label-xs">Store Email</label><input type="email" {...register('storeEmail')} placeholder="hello@elvagroup.in" className="input-field" /></div>
               <div><label className="label-xs">Store Phone</label><input {...register('storePhone')} placeholder="+91 99999 99999" className="input-field" /></div>
               <div><label className="label-xs">Store Address</label><textarea rows={3} {...register('storeAddress')} placeholder="123 Artisan Lane, Mumbai, Maharashtra 400001" className="input-field resize-none" /></div>

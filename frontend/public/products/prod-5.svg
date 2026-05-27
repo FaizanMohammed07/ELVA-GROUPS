@@ -13,5 +13,5 @@
   <path d="M 200 160 Q 168 130 148 148 Q 165 165 200 160" fill="none" stroke="#A0B8C8" stroke-width="1.5" opacity="0.4"/>
   <path d="M 200 160 Q 232 130 252 148 Q 235 165 200 160" fill="none" stroke="#A0B8C8" stroke-width="1.5" opacity="0.4"/>
   <circle cx="200" cy="200" r="130" fill="none" stroke="#A0B8C8" stroke-width="0.5" opacity="0.12"/>
-  <text x="200" y="380" font-family="Georgia, serif" font-size="16" fill="#5A7A9A" text-anchor="middle" letter-spacing="6" opacity="0.35">ELVA</text>
+  <text x="200" y="380" font-family="Georgia, serif" font-size="16" fill="#5A7A9A" text-anchor="middle" letter-spacing="6" opacity="0.35">ELUNORA</text>
 </svg>

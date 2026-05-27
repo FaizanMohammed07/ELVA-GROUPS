@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 export default function AboutPage() {
@@ -27,7 +27,7 @@ export default function AboutPage() {
           transition={{ delay: 0.2 }}
           className="font-sans text-charcoal-300 max-w-xl mx-auto leading-relaxed"
         >
-          ELVA was born from a simple belief — every gift should tell a story. We are India's home for handcrafted,
+          ELUNORA was born from a simple belief — every gift should tell a story. We are India's home for handcrafted,
           personalised gifts that carry emotion, artistry, and meaning.
         </motion.p>
       </section>
@@ -39,13 +39,13 @@ export default function AboutPage() {
             <p className="text-gold-600 text-xs tracking-[0.4em] uppercase font-sans mb-4">Our Mission</p>
             <h2 className="font-serif text-4xl text-charcoal-950 mb-6">Redefining the Art of Gifting</h2>
             <p className="font-sans text-charcoal-600 leading-relaxed mb-4">
-              In a world of mass production, ELVA champions the handcrafted. We collaborate with skilled artisans
+              In a world of mass production, ELUNORA champions the handcrafted. We collaborate with skilled artisans
               across India — from clay sculptors in Jaipur to candle makers in Bangalore — to bring you pieces
               that are truly one of a kind.
             </p>
             <p className="font-sans text-charcoal-600 leading-relaxed">
               Every product is made with care, packaged with intention, and delivered with the promise that
-              when you give ELVA, you give something that matters.
+              when you give ELUNORA, you give something that matters.
             </p>
           </div>
           <div className="aspect-[4/3] bg-cream-100" />

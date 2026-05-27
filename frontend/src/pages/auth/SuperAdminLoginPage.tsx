@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@store/authStore';
 import { SUPER_BASE, SUPER_ADMIN_LOGIN_SLUG } from '@config/admin';
@@ -48,7 +48,7 @@ export default function SuperAdminLoginPage() {
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
           </div>
-          <p className="font-display text-3xl tracking-[0.4em] text-white mb-1">ELVA</p>
+          <p className="font-display text-3xl tracking-[0.4em] text-white mb-1">ELUNORA</p>
           <p className="text-[10px] tracking-[0.5em] uppercase font-sans" style={{ color: '#d97706' }}>
             Super Admin Portal
           </p>

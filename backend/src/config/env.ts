@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -8,7 +8,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('production'),
   DISABLE_RATE_LIMIT: z.string().optional(), // set to 'true' to explicitly disable — do NOT rely on NODE_ENV
   PORT: z.coerce.number().default(5000),
-  APP_NAME: z.string().default('ELVA'),
+  APP_NAME: z.string().default('ELUNORA'),
   APP_URL: z.string().url().default('http://localhost:5000'),
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
   API_VERSION: z.string().default('v1'),
@@ -42,7 +42,7 @@ const envSchema = z.object({
   // Email
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM_EMAIL: z.string().default('hello@elva.in'),
-  RESEND_FROM_NAME: z.string().default('ELVA'),
+  RESEND_FROM_NAME: z.string().default('ELUNORA'),
 
   // SMTP
   SMTP_HOST: z.string().optional(),
@@ -79,7 +79,7 @@ const envSchema = z.object({
 
   // Default admin account
   ADMIN_FIRST_NAME: z.string().default('Admin'),
-  ADMIN_LAST_NAME: z.string().default('ELVA'),
+  ADMIN_LAST_NAME: z.string().default('ELUNORA'),
   ADMIN_EMAIL: z.string().email().default('admin@elva.in'),
   ADMIN_PASSWORD: z.string().min(12, 'ADMIN_PASSWORD must be at least 12 chars'),
   ADMIN_PHONE: z.string().optional(),
