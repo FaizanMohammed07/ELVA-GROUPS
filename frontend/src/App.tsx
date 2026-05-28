@@ -36,6 +36,13 @@ const ContactPage = lazy(() => import('@pages/public/ContactPage'));
 const SearchPage = lazy(() => import('@pages/public/SearchPage'));
 const GiftFinderPage = lazy(() => import('@pages/public/GiftFinderPage'));
 const NotFoundPage = lazy(() => import('@pages/public/NotFoundPage'));
+const OurCraftPage = lazy(() => import('@pages/public/OurCraftPage'));
+const GiftingGuidePage = lazy(() => import('@pages/public/GiftingGuidePage'));
+const PrivacyPage = lazy(() => import('@pages/public/PrivacyPage'));
+const TermsPage = lazy(() => import('@pages/public/TermsPage'));
+const FAQPage = lazy(() => import('@pages/public/help/FAQPage'));
+const ShippingPage = lazy(() => import('@pages/public/help/ShippingPage'));
+const ReturnsPage = lazy(() => import('@pages/public/help/ReturnsPage'));
 
 // Admin pages
 const AdminDashboard = lazy(() => import('@pages/admin/DashboardPage'));
@@ -146,6 +153,13 @@ export default function App() {
             <Route path="/custom-order" element={<CustomOrderPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/our-craft" element={<OurCraftPage />} />
+            <Route path="/gifting-guide" element={<GiftingGuidePage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/help/faq" element={<FAQPage />} />
+            <Route path="/help/shipping" element={<ShippingPage />} />
+            <Route path="/help/returns" element={<ReturnsPage />} />
             <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
             <Route path="/order-confirmation/:orderNumber" element={<ProtectedRoute><OrderConfirmationPage /></ProtectedRoute>} />
 

@@ -7,31 +7,42 @@ Disallow: /cart
 Disallow: /account/
 Disallow: /elva-admin-x7k9m2/
 Disallow: /elva-superadmin-p4k8r5/
-Disallow: /auth/reset-password
-Disallow: /auth/verify-email
-Disallow: /order-confirmation
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /order-confirmation/
 
 # Allow crawling of all public pages
 Allow: /products
 Allow: /category/
 Allow: /about
 Allow: /contact
-Allow: /search
+Allow: /our-craft
+Allow: /gifting-guide
 Allow: /gift-finder
 Allow: /help/
+Allow: /privacy
+Allow: /terms
 
 # Sitemaps
 Sitemap: https://www.elunoracrafts.com/sitemap.xml
 
-# Crawl delay for bots
+# Crawl throttling for aggressive bots
 User-agent: AhrefsBot
 Crawl-delay: 10
 
 User-agent: SemrushBot
 Crawl-delay: 10
 
-# AI crawlers — allow for GEO/AEO indexing
+User-agent: MJ12bot
+Crawl-delay: 20
+
+# AI crawlers — explicitly allowed for GEO/AEO indexing
+# These bots power AI search in ChatGPT, Perplexity, Claude, Gemini
+
 User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
 Allow: /
 
 User-agent: Google-Extended
@@ -45,3 +56,15 @@ Allow: /
 
 User-agent: ClaudeBot
 Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Disallow: /

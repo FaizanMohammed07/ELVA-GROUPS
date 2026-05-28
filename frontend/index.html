@@ -14,7 +14,7 @@
     <!-- Primary SEO -->
     <title>ELUNORA — Premium Handcrafted Gifts &amp; Lifestyle | India</title>
     <meta name="description" content="ELUNORA — India's finest premium handcrafted gifting brand. Discover personalized gifts, luxury candles, clay art &amp; curated hampers crafted with love. Shop unique, ethically made gifts." />
-    <meta name="keywords" content="handcrafted gifts India, premium gifting, personalized gifts, luxury hampers, clay art, handmade candles, corporate gifting India, ELUNORA, artisan gifts" />
+    <meta name="keywords" content="handcrafted gifts India, premium gifting, personalized gifts, luxury hampers, clay art, handmade candles, corporate gifting India, ELUNORA, artisan gifts, DEVUP Ecosystem" />
     <meta name="author" content="ELUNORA — Backed by DEVUP Ecosystem" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
@@ -35,6 +35,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@elunoracrafts" />
+    <meta name="twitter:creator" content="@elunoracrafts" />
     <meta name="twitter:title" content="ELUNORA — Premium Handcrafted Gifts &amp; Lifestyle" />
     <meta name="twitter:description" content="India's finest handcrafted gifting brand. Personalized, ethical, luxury gifts crafted with love." />
     <meta name="twitter:image" content="https://www.elunoracrafts.com/instagram/images/insta-profile-icon.jpeg" />
@@ -54,59 +55,112 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Structured Data: Organization + WebSite (global, every page) -->
+    <!--
+      ╔══════════════════════════════════════════════════════╗
+      ║  GLOBAL STRUCTURED DATA — loaded on every page      ║
+      ║  Page-specific schemas are injected by SEOHead.tsx  ║
+      ╚══════════════════════════════════════════════════════╝
+    -->
+
+    <!-- Organization + WebSite + LocalBusiness -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
-          "@type": "Organization",
+          "@type": ["Organization", "Brand"],
           "@id": "https://www.elunoracrafts.com/#organization",
           "name": "ELUNORA",
-          "alternateName": ["ELUNORA Crafts", "Elunora", "ELUNORA Gifts"],
+          "legalName": "ELUNORA",
+          "alternateName": ["ELUNORA Crafts", "Elunora", "ELUNORA Gifts", "ELUNORA India"],
           "url": "https://www.elunoracrafts.com",
           "logo": {
             "@type": "ImageObject",
             "@id": "https://www.elunoracrafts.com/#logo",
             "url": "https://www.elunoracrafts.com/instagram/images/insta-profile-icon.jpeg",
             "contentUrl": "https://www.elunoracrafts.com/instagram/images/insta-profile-icon.jpeg",
-            "caption": "ELUNORA"
+            "caption": "ELUNORA — Premium Handcrafted Gifts"
           },
           "image": "https://www.elunoracrafts.com/instagram/images/insta-profile-icon.jpeg",
-          "description": "India's premium handcrafted gifting and artisan lifestyle brand. Ethically crafted, personalized, luxury gifts made by skilled artisans.",
+          "description": "ELUNORA is India's premium handcrafted gifting and artisan lifestyle brand. Ethically crafted, deeply personalised, luxury gifts made by skilled artisans across India. Backed and incubated by DEVUP Ecosystem at VJIT.",
           "foundingDate": "2024",
-          "foundingLocation": "India",
-          "areaServed": "IN",
+          "foundingLocation": {
+            "@type": "Place",
+            "name": "Mumbai, India"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "India"
+          },
+          "numberOfEmployees": {
+            "@type": "QuantitativeValue",
+            "minValue": 1,
+            "maxValue": 50
+          },
           "sameAs": [
             "https://www.instagram.com/elunoracrafts",
             "https://youtube.com/@elunoracrafts",
-            "https://www.facebook.com/share/1B5ciQNTAX/"
+            "https://www.facebook.com/share/1B5ciQNTAX/",
+            "https://x.com/elunoracrafts",
+            "https://www.linkedin.com/company/elunoracrafts",
+            "https://www.pinterest.com/elunoracrafts"
           ],
           "parentOrganization": {
             "@type": "Organization",
+            "@id": "https://www.devupecosystem.com/#organization",
             "name": "DEVUP Ecosystem",
-            "alternateName": "DEVUP Society VJIT",
-            "url": "https://www.devupecosystem.com"
+            "alternateName": ["DEVUP Society VJIT", "DEVUP Society"],
+            "url": "https://www.devupecosystem.com",
+            "description": "DEVUP Ecosystem is a developer society and startup incubator at VJIT (Vivekanand Institute of Technology), Mumbai — nurturing technology-driven ventures.",
+            "sameAs": ["https://www.devupvjit.in"]
           },
           "address": {
             "@type": "PostalAddress",
             "addressCountry": "IN",
-            "addressRegion": "India"
+            "addressRegion": "Maharashtra",
+            "addressLocality": "Mumbai"
           },
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "customer service",
-            "email": "hello@elunoracrafts.com",
-            "availableLanguage": ["English", "Hindi"]
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "contactType": "customer service",
+              "email": "hello@elunoracrafts.com",
+              "availableLanguage": ["English", "Hindi"],
+              "contactOption": "TollFree"
+            },
+            {
+              "@type": "ContactPoint",
+              "contactType": "sales",
+              "email": "hello@elunoracrafts.com",
+              "availableLanguage": ["English", "Hindi"]
+            }
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "ELUNORA Handcrafted Gift Collection",
+            "itemListElement": [
+              { "@type": "OfferCatalog", "name": "Premium Candles" },
+              { "@type": "OfferCatalog", "name": "Personalized Gifts" },
+              { "@type": "OfferCatalog", "name": "Clay Art" },
+              { "@type": "OfferCatalog", "name": "Luxury Hampers" },
+              { "@type": "OfferCatalog", "name": "Corporate Gifting" },
+              { "@type": "OfferCatalog", "name": "Wedding Collections" },
+              { "@type": "OfferCatalog", "name": "Festival Collections" },
+              { "@type": "OfferCatalog", "name": "Home Decor" }
+            ]
           },
           "knowsAbout": [
             "Handcrafted gifts",
-            "Personalized gifting",
+            "Personalised gifting",
             "Luxury hampers",
             "Corporate gifting",
             "Artisan candles",
             "Clay art",
-            "Premium lifestyle products"
+            "Premium lifestyle products",
+            "Sustainable gifting",
+            "Indian artisanship",
+            "Festival gifting India",
+            "Wedding gifts India"
           ]
         },
         {
@@ -125,6 +179,28 @@
             },
             "query-input": "required name=search_term_string"
           }
+        },
+        {
+          "@type": "OnlineStore",
+          "@id": "https://www.elunoracrafts.com/#store",
+          "name": "ELUNORA",
+          "url": "https://www.elunoracrafts.com",
+          "image": "https://www.elunoracrafts.com/instagram/images/insta-profile-icon.jpeg",
+          "description": "India's premium handcrafted gifting platform. Personalised gifts, luxury candles, clay art, and curated hampers. Free shipping on orders ₹999+.",
+          "priceRange": "₹₹",
+          "currenciesAccepted": "INR",
+          "paymentAccepted": "Credit Card, Debit Card, UPI, Net Banking, EMI",
+          "openingHours": "Mo-Su 00:00-24:00",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "IN",
+            "addressRegion": "Maharashtra",
+            "addressLocality": "Mumbai"
+          },
+          "hasMap": "https://www.elunoracrafts.com/contact",
+          "servesCuisine": null,
+          "telephone": "+91-9999999999",
+          "email": "hello@elunoracrafts.com"
         }
       ]
     }
