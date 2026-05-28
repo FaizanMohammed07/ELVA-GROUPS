@@ -1,8 +1,27 @@
 ﻿import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { SEOHead } from '@components/seo/SEOHead';
+
+const ABOUT_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  '@id': 'https://www.elunoracrafts.com/about#webpage',
+  'url': 'https://www.elunoracrafts.com/about',
+  'name': 'About ELUNORA — Our Story & Artisans',
+  'description': "ELUNORA was born from a simple belief — every gift should tell a story. India's home for handcrafted, personalized gifting by skilled artisans.",
+  'isPartOf': { '@id': 'https://www.elunoracrafts.com/#website' },
+  'about': { '@id': 'https://www.elunoracrafts.com/#organization' },
+};
 
 export default function AboutPage() {
   return (
+    <>
+      <SEOHead
+        title="About ELUNORA — Our Story, Mission & Artisans"
+        description="ELUNORA was born from a simple belief — every gift should tell a story. Meet the artisans behind India's finest handcrafted gifting brand. Ethical, premium, made with love."
+        keywords="about ELUNORA, handcrafted gifting brand India, artisan story, ethical gifting, ELUNORA artisans"
+        schema={ABOUT_SCHEMA}
+      />
     <div className="min-h-screen pt-20">
       {/* Hero */}
       <section className="bg-charcoal-950 py-32 px-4 text-center">
@@ -105,5 +124,6 @@ export default function AboutPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

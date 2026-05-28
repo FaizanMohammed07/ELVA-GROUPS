@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { productsApi } from '@api/products.api';
 import { ProductCard } from '@components/products/ProductCard';
 import { SlidersHorizontal } from 'lucide-react';
+import { SEOHead } from '@components/seo/SEOHead';
 
 const CATEGORY_META: Record<string, { title: string; description: string; hero: string }> = {
   'premium-candles': { title: 'Premium Candles', description: 'Hand-poured luxury candles crafted with natural waxes and exotic fragrances.', hero: '/categories/candles.jpg' },
@@ -40,6 +41,12 @@ export default function CategoryPage() {
   const pagination = data?.meta;
 
   return (
+    <>
+      <SEOHead
+        title={`${meta.title} — Handcrafted Gifts | ELUNORA`}
+        description={`${meta.description} Shop premium handcrafted ${meta.title.toLowerCase()} at ELUNORA. Free shipping on orders ₹999+.`}
+        keywords={`${meta.title.toLowerCase()}, handcrafted ${meta.title.toLowerCase()}, ELUNORA ${meta.title.toLowerCase()}, buy ${meta.title.toLowerCase()} India`}
+      />
     <div className="min-h-screen pt-20">
       {/* Hero */}
       <div className="relative h-64 md:h-80 bg-charcoal-950 overflow-hidden">
@@ -110,5 +117,6 @@ export default function CategoryPage() {
         )}
       </div>
     </div>
+    </>
   );
 }

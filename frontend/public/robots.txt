@@ -1,0 +1,47 @@
+User-agent: *
+Allow: /
+
+# Private routes — no indexing
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account/
+Disallow: /elva-admin-x7k9m2/
+Disallow: /elva-superadmin-p4k8r5/
+Disallow: /auth/reset-password
+Disallow: /auth/verify-email
+Disallow: /order-confirmation
+
+# Allow crawling of all public pages
+Allow: /products
+Allow: /category/
+Allow: /about
+Allow: /contact
+Allow: /search
+Allow: /gift-finder
+Allow: /help/
+
+# Sitemaps
+Sitemap: https://www.elunoracrafts.com/sitemap.xml
+
+# Crawl delay for bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# AI crawlers — allow for GEO/AEO indexing
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /

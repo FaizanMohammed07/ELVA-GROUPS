@@ -9,6 +9,22 @@ import { productsApi, categoriesApi } from '@api/products.api';
 import { ProductCard } from '@components/products/ProductCard';
 import { CategoryCard } from '@components/categories/CategoryCard';
 import { InstagramReels } from '@components/home/InstagramReels';
+import { SEOHead } from '@components/seo/SEOHead';
+
+const HOME_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': 'https://www.elunoracrafts.com/#webpage',
+  'url': 'https://www.elunoracrafts.com/',
+  'name': 'ELUNORA — Premium Handcrafted Gifts & Lifestyle',
+  'description': "India's finest premium handcrafted gifting brand. Personalized gifts, luxury candles, clay art & curated hampers crafted with love.",
+  'isPartOf': { '@id': 'https://www.elunoracrafts.com/#website' },
+  'about': { '@id': 'https://www.elunoracrafts.com/#organization' },
+  'breadcrumb': {
+    '@type': 'BreadcrumbList',
+    'itemListElement': [{ '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://www.elunoracrafts.com/' }],
+  },
+};
 
 const HERO_WORDS = ['Cherish', 'Celebrate', 'Personalise', 'Gift'];
 
@@ -103,6 +119,13 @@ export default function HomePage() {
   });
 
   return (
+    <>
+      <SEOHead
+        title="ELUNORA — Premium Handcrafted Gifts & Lifestyle | India"
+        description="India's finest premium handcrafted gifting brand. Discover personalized gifts, luxury candles, clay art & curated hampers crafted with love by skilled artisans. Free shipping ₹999+."
+        keywords="handcrafted gifts India, premium gifting, personalized gifts, luxury hampers, clay art, handmade candles, corporate gifting India, artisan gifts, ELUNORA"
+        schema={HOME_SCHEMA}
+      />
     <div className="overflow-x-hidden">
 
       {/* ===== HERO ===== */}
@@ -570,6 +593,7 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+    </>
   );
 }
 

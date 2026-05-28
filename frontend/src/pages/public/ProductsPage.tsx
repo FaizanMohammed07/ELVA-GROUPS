@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { productsApi } from '@api/products.api';
 import { ProductCard } from '@components/products/ProductCard';
 import { SlidersHorizontal, X } from 'lucide-react';
+import { SEOHead } from '@components/seo/SEOHead';
 
 const CATEGORIES = [
   { slug: 'premium-candles', label: 'Premium Candles' },
@@ -82,6 +83,12 @@ export default function ProductsPage() {
   const hasFilters = !!selectedCategory || !!priceRange;
 
   return (
+    <>
+      <SEOHead
+        title="All Products — Handcrafted Gifts & Lifestyle | ELUNORA"
+        description="Browse ELUNORA's full collection of premium handcrafted gifts. Personalized gifts, luxury candles, clay art, hampers & more. Free shipping on orders ₹999+."
+        keywords="handcrafted gifts India, all products ELUNORA, buy handmade gifts, premium gifting India"
+      />
     <div className="min-h-screen pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -230,5 +237,6 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

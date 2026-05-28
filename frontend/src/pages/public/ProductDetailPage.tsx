@@ -12,6 +12,7 @@ import { ProductCard } from '@components/products/ProductCard';
 import { Heart, ShoppingBag, Star, Truck, Shield, RefreshCw, ChevronRight, ChevronLeft, Send, Leaf, Sparkles, Recycle } from 'lucide-react';
 import { cn } from '@utils/cn';
 import toast from 'react-hot-toast';
+import { SEOHead } from '@components/seo/SEOHead';
 
 const TABS = ['Description', 'Details', 'Reviews'] as const;
 type Tab = typeof TABS[number];
@@ -173,7 +174,40 @@ export default function ProductDetailPage() {
     e.currentTarget.style.transformOrigin = 'center center';
   };
 
+  const productSchema = product ? {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    'name': product.title,
+    'description': product.description || product.title,
+    'image': images,
+    'url': `https://www.elunoracrafts.com/products/${product.slug}`,
+    'brand': { '@type': 'Brand', 'name': 'ELUNORA' },
+    'offers': {
+      '@type': 'Offer',
+      'price': product.price,
+      'priceCurrency': 'INR',
+      'availability': product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      'seller': { '@type': 'Organization', 'name': 'ELUNORA' },
+    },
+    ...(product.rating?.average ? {
+      'aggregateRating': {
+        '@type': 'AggregateRating',
+        'ratingValue': product.rating.average,
+        'reviewCount': product.rating.count || 1,
+      },
+    } : {}),
+  } : undefined;
+
   return (
+    <>
+      <SEOHead
+        title={product.title}
+        description={product.description || `Buy ${product.title} — handcrafted with love by ELUNORA artisans. Premium quality, free shipping on orders ₹999+.`}
+        image={images[0]}
+        type="product"
+        schema={productSchema}
+        keywords={`${product.title}, handcrafted gifts, buy ${product.title} India, ELUNORA`}
+      />
     <div className="min-h-screen pt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -747,5 +781,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

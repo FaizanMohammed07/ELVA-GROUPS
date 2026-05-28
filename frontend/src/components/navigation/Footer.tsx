@@ -1,5 +1,5 @@
-﻿import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Youtube, MessageCircle, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Instagram, Facebook, Youtube, MessageCircle, Heart, ExternalLink } from 'lucide-react';
 
 const FOOTER_LINKS = {
   Shop: [
@@ -7,7 +7,7 @@ const FOOTER_LINKS = {
     { label: 'Best Sellers', href: '/products?sort=bestseller' },
     { label: 'Personalized Gifts', href: '/category/personalized-gifts' },
     { label: 'Corporate Gifting', href: '/category/corporate-gifting' },
-    { label: 'Subscription Boxes', href: '/category/subscription-boxes' },
+    { label: 'Luxury Hampers', href: '/category/luxury-hampers' },
     { label: 'Gift Finder', href: '/gift-finder' },
   ],
   Help: [
@@ -27,29 +27,46 @@ const FOOTER_LINKS = {
 };
 
 const SOCIAL = [
-  { icon: Instagram, href: 'https://instagram.com/elva.in', label: 'Instagram' },
-  { icon: Facebook, href: 'https://facebook.com/elva.in', label: 'Facebook' },
-  { icon: Youtube, href: 'https://youtube.com/@elva', label: 'YouTube' },
-  { icon: MessageCircle, href: 'https://wa.me/919999999999', label: 'WhatsApp' },
+  {
+    icon: Instagram,
+    href: 'https://www.instagram.com/elunoracrafts?igsh=MWdkY3VhdmU1MG13OA==',
+    label: 'Instagram',
+  },
+  {
+    icon: Facebook,
+    href: 'https://www.facebook.com/share/1B5ciQNTAX/',
+    label: 'Facebook',
+  },
+  {
+    icon: Youtube,
+    href: 'https://youtube.com/@elunoracrafts?si=c_ZYCW6a-JsZSV6U',
+    label: 'YouTube',
+  },
+  {
+    icon: MessageCircle,
+    href: 'https://wa.me/919999999999',
+    label: 'WhatsApp',
+  },
 ];
 
 export const Footer = () => (
   <footer
     style={{ background: 'linear-gradient(160deg, #1E0812 0%, #2E1428 55%, #1A0820 100%)' }}
+    aria-label="Site footer"
   >
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+
         {/* Brand */}
         <div className="col-span-2 md:col-span-1">
-          <Link to="/">
+          <Link to="/" aria-label="ELUNORA Home">
             <span className="font-display text-3xl tracking-[0.4em] text-white">ELUNORA</span>
           </Link>
-          <p
-            className="font-sans text-sm mt-4 leading-relaxed"
-            style={{ color: '#8A6070' }}
-          >
-            India's finest handcrafted gifting & lifestyle brand. Every piece made with love.
+          <p className="font-sans text-sm mt-4 leading-relaxed" style={{ color: '#8A6070' }}>
+            India's finest handcrafted gifting &amp; lifestyle brand. Every piece made with love by skilled artisans.
           </p>
+
+          {/* Social icons */}
           <div className="flex gap-3 mt-6">
             {SOCIAL.map(({ icon: Icon, href, label }) => (
               <a
@@ -63,11 +80,19 @@ export const Footer = () => (
                   border: '1px solid rgba(196,96,122,0.2)',
                   color: '#C4A0B0',
                 }}
-                aria-label={label}
+                aria-label={`Follow ELUNORA on ${label}`}
               >
                 <Icon size={15} />
               </a>
             ))}
+          </div>
+
+          {/* Trust badge */}
+          <div
+            className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-sans tracking-wider uppercase"
+            style={{ background: 'rgba(212,168,83,0.08)', border: '1px solid rgba(212,168,83,0.15)', color: '#D4A853' }}
+          >
+            <span>✦</span> Handcrafted in India
           </div>
         </div>
 
@@ -99,6 +124,41 @@ export const Footer = () => (
         ))}
       </div>
 
+      {/* DEVUP Incubation Badge */}
+      <div
+        className="mb-8 py-4 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-lg"
+        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}
+      >
+        <p className="font-sans text-xs tracking-wide" style={{ color: '#5A4050' }}>
+          Backed &amp; Incubated by
+        </p>
+        <div className="flex items-center gap-4">
+          <a
+            href="https://www.devupecosystem.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
+            style={{ color: '#7A6070' }}
+            aria-label="DEVUP Ecosystem"
+          >
+            <span className="font-sans text-xs font-semibold tracking-widest uppercase">DEVUP Ecosystem</span>
+            <ExternalLink size={10} />
+          </a>
+          <span style={{ color: '#3A2030' }}>·</span>
+          <a
+            href="https://www.devupvjit.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
+            style={{ color: '#7A6070' }}
+            aria-label="DEVUP Society VJIT"
+          >
+            <span className="font-sans text-xs font-semibold tracking-widest uppercase">DEVUP Society, VJIT</span>
+            <ExternalLink size={10} />
+          </a>
+        </div>
+      </div>
+
       {/* Bottom bar */}
       <div
         className="border-t pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
@@ -109,7 +169,9 @@ export const Footer = () => (
           <Heart size={11} className="fill-current" style={{ color: '#C4607A' }} />
           in India.
         </p>
-
+        <p className="font-sans text-[10px] tracking-wider" style={{ color: '#3A2030' }}>
+          PREMIUM · HANDCRAFTED · ETHICAL
+        </p>
       </div>
     </div>
   </footer>

@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@api/client';
 import { Mail, Phone, MapPin, Instagram, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SEOHead } from '@components/seo/SEOHead';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -31,6 +32,12 @@ export default function ContactPage() {
   });
 
   return (
+    <>
+      <SEOHead
+        title="Contact ELUNORA — Get in Touch"
+        description="Have a question or need help? Contact ELUNORA's customer support. We respond within 24 hours. Reach us via email, phone, or our contact form."
+        keywords="contact ELUNORA, customer support, ELUNORA help, gift inquiry"
+      />
     <div className="min-h-screen pt-32 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
@@ -120,5 +127,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
