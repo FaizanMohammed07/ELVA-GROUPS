@@ -1,7 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@store/authStore';
 
-const API_BASE = `${import.meta.env.VITE_API_URL || ''}/api/v1`;
+// Strip any trailing /api/v* so VITE_API_URL can be set as either
+// "https://api.elunoracrafts.com" OR "https://api.elunoracrafts.com/api/v1" without doubling
+const API_BASE = `${(import.meta.env.VITE_API_URL || '').replace(/\/api\/v\d+\/?$/, '')}/api/v1`;
 
 export const apiClient = axios.create({
   baseURL: API_BASE,

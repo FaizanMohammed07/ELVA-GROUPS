@@ -43,31 +43,57 @@ export const createApp = (): Application => {
     }),
   );
 
-  // CORS
+  // CORS — build the allowed-origin set once at startup
+  const buildAllowedOrigins = (): Set<string> => {
+    const raw = [
+      ...env.ALLOWED_ORIGINS.split(',').map((o) => o.trim()),
+      env.FRONTEND_URL,
+    ].filter(Boolean);
+
+    const set = new Set<string>(raw);
+
+    // Auto-add www ↔ non-www variants so a single entry covers both
+    raw.forEach((origin) => {
+      try {
+        const url = new URL(origin);
+        if (url.hostname.startsWith('www.')) {
+          const bare = `${url.protocol}//${url.hostname.slice(4)}${url.port ? `:${url.port}` : ''}`;
+          set.add(bare);
+        } else if (!url.hostname.includes('localhost')) {
+          const www = `${url.protocol}//www.${url.hostname}${url.port ? `:${url.port}` : ''}`;
+          set.add(www);
+        }
+      } catch { /* invalid URL — skip */ }
+    });
+
+    return set;
+  };
+
+  const allowedOrigins = buildAllowedOrigins();
+
   app.use(
     cors({
       origin: (origin, callback) => {
-        // No origin = same-origin or server-to-server — always allow
+        // No origin = same-origin request or server-to-server — always allow
         if (!origin) return callback(null, true);
 
-        const allowed = env.ALLOWED_ORIGINS.split(',').map((o) => o.trim());
-
-        // In development also allow any localhost port (dev tools, Vite preview, etc.)
+        // Development: allow any localhost port (Vite, previews, devtools)
         const isLocalhostInDev =
           env.NODE_ENV === 'development' && /^https?:\/\/localhost(:\d+)?$/.test(origin);
 
-        if (allowed.includes(origin) || isLocalhostInDev) {
-          callback(null, true);
-        } else {
-          // Return 403 — do NOT throw; throwing escalates to 500 in Express
-          const err = Object.assign(new Error(`CORS blocked: ${origin}`), { status: 403 });
-          callback(err);
+        if (allowedOrigins.has(origin) || isLocalhostInDev) {
+          return callback(null, true);
         }
+
+        // Return 403 — do NOT throw; throwing escalates to 500 in Express
+        const err = Object.assign(new Error(`CORS blocked: ${origin}`), { status: 403 });
+        callback(err);
       },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'X-CSRF-Token'],
       exposedHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+      maxAge: 86400, // preflight cache: 24 hours
     }),
   );
 
