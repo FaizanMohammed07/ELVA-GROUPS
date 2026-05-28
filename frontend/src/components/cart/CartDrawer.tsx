@@ -1,18 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useUIStore } from '@store/uiStore';
 import { useCartStore } from '@store/cartStore';
 import { apiClient } from '@api/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, ShoppingBag, Minus, Plus, Trash2, Tag } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export const CartDrawer = () => {
   const { isCartOpen, closeCart } = useUIStore();
   const { items, updateQuantity, removeItem, subtotal, shippingCost, total, couponCode, couponDiscount, applyCoupon, removeCoupon, itemCount } = useCartStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const prevPathRef = useRef(location.pathname);
   const [couponInput, setCouponInput] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isCartOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeCart(); };
+    if (isCartOpen) window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isCartOpen, closeCart]);
+
+  // Auto-close when user navigates to a different page
+  useEffect(() => {
+    if (prevPathRef.current !== location.pathname) {
+      prevPathRef.current = location.pathname;
+      closeCart();
+    }
+  }, [location.pathname, closeCart]);
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
