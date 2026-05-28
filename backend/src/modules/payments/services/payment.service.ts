@@ -5,17 +5,25 @@ import { AppError } from '../../../utils/appError';
 import { env } from '../../../config/env';
 import { logger } from '../../../utils/logger';
 
-const razorpay = new Razorpay({
-  key_id: env.RAZORPAY_KEY_ID ?? '',
-  key_secret: env.RAZORPAY_KEY_SECRET ?? '',
-});
+// Lazy init — Razorpay throws at construction if keys are missing.
+// Deferring to first use lets the server start without payment credentials.
+let _razorpay: Razorpay | null = null;
+function getRazorpay(): Razorpay {
+  if (!_razorpay) {
+    if (!env.RAZORPAY_KEY_ID || !env.RAZORPAY_KEY_SECRET) {
+      throw AppError.serviceUnavailable('Payment service is not configured yet');
+    }
+    _razorpay = new Razorpay({ key_id: env.RAZORPAY_KEY_ID, key_secret: env.RAZORPAY_KEY_SECRET });
+  }
+  return _razorpay;
+}
 
 export class PaymentService {
   async createRazorpayOrder(orderId: string, userId: string): Promise<any> {
     const order = await OrderModel.findOne({ _id: orderId, userId });
     if (!order) throw AppError.notFound('Order not found');
 
-    const razorpayOrder = await razorpay.orders.create({
+    const razorpayOrder = await getRazorpay().orders.create({
       amount: Math.round(order.total * 100),
       currency: 'INR',
       receipt: order.orderNumber,
@@ -170,7 +178,7 @@ export class PaymentService {
     const refundAmount = amount ? Math.round(amount * 100) : Math.round(order.total * 100);
 
     // Call Razorpay first; only update DB on success (atomicity)
-    await razorpay.payments.refund(order.razorpayPaymentId, { amount: refundAmount });
+    await getRazorpay().payments.refund(order.razorpayPaymentId, { amount: refundAmount });
 
     const paymentStatus = amount && amount < order.total ? 'partially_refunded' : 'refunded';
     await OrderModel.findByIdAndUpdate(orderId, {
